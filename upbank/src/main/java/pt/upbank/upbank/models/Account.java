@@ -1,34 +1,49 @@
 package pt.upbank.upbank.models;
 
 import java.math.BigDecimal;
+import javax.persistence.Entity;
 
-import org.yaml.snakeyaml.constructor.Construct;
-
-
-
+import lombok.Data;
 
 
+@Data
+@Entity
 public class Account {
 
     private Long id;
 
-    //public NIB idNib;
+    public Long idNib;
 
     private BigDecimal balance;
 
-
     private Long userId;
 
-    // private AccountStatus status;
+    private String status;
+
+    private Long nif;
 
     private String name;
 
+    private String email;
 
-    public Account(Long id, BigDecimal balance, AccountStatus status, String name) {
-        this.id = id;
-        this.balance = balance;
-        this.userId = status;
-        this.name = name;
-    }
+    private String password;
+
+    //Formato standard 
+    // primeira linha obrigatoria
+    // segunda linha opcional
+    // codigo postal
+    private String address1;
+
+    private String address2;
+
+    private String postalCode;
+
+    private String country;
+
+    private String city;
+
+    private int phone;
+
+
 
 }
