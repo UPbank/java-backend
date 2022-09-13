@@ -3,9 +3,11 @@ package pt.upbank.upbank.repositories;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import pt.upbank.upbank.models.Account;
 
+@Repository
 public interface AccountRepository extends JpaRepository<Account, Long>   {
     
 
@@ -16,7 +18,7 @@ public interface AccountRepository extends JpaRepository<Account, Long>   {
     //accounts of a user 
     Account  findByUserId(long userId);
 
-    Account findByPhoneNumber(long phoneNumber);
+    Account findByPhone(long phone);
 
 
     
