@@ -13,16 +13,13 @@ import lombok.Data;
 @Entity
 public class Account implements Serializable  {
 
-    private@Id @GeneratedValue  Long id;
-
+    private @Id @GeneratedValue Long id;
     public Long idNib;
 
     private BigDecimal balance;
 
     private Long userId;
-
     private String status;
-
     private Long nif;
 
     private String name;
@@ -46,6 +43,26 @@ public class Account implements Serializable  {
     private String city;
 
     private Integer phone;
+
+    private String email;
+
+    private String password;
+
+    //Formato standard 
+    // primeira linha obrigatoria
+    // segunda linha opcional
+    // codigo postal
+    private String address1;
+
+    private String address2;
+
+    private String postalCode;
+
+    private String country;
+
+    private String city;
+
+    private int phone;
 
 
 

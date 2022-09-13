@@ -12,7 +12,5 @@
 // @Entity
 // public class User implements Serializable {
 //     private @Id @GeneratedValue Long id;
-
-
     
 // }
