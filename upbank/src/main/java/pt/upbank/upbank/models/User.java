@@ -1,13 +1,18 @@
-package pt.upbank.upbank.models;
+// package pt.upbank.upbank.models;
 
-import javax.persistence.Entity;
+// import java.io.Serializable;
 
-import lombok.Data;
+// import javax.persistence.Entity;
+// import javax.persistence.GeneratedValue;
+// import javax.persistence.Id;
 
-@Data
-@Entity
-public class User {
+// import lombok.Data;
+
+// @Data
+// @Entity
+// public class User implements Serializable {
+//     private @Id @GeneratedValue Long id;
 
 
     
-}
+// }

@@ -1,16 +1,19 @@
 package pt.upbank.upbank.models;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 import lombok.Data;
 
 
 @Data
 @Entity
-public class Account {
+public class Account implements Serializable  {
 
-    private Long id;
+    private@Id @GeneratedValue  Long id;
 
     public Long idNib;
 
@@ -42,7 +45,7 @@ public class Account {
 
     private String city;
 
-    private int phone;
+    private Integer phone;
 
 
 
