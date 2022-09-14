@@ -8,13 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 public class UserController {
-
-        //criar um login controller?
+        
         //welcomePage() will handle all client requests which are using “/” URI.
-        
-        
-        
-
         @RequestMapping(value = { "/"}, method = RequestMethod.GET)
         public ModelAndView welcomePage() {
                 ModelAndView model = new ModelAndView();

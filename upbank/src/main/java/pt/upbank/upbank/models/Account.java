@@ -44,25 +44,11 @@ public class Account implements Serializable  {
 
     private Integer phone;
 
-    private String email;
-
-    private String password;
-
     //Formato standard 
     // primeira linha obrigatoria
     // segunda linha opcional
     // codigo postal
-    private String address1;
-
-    private String address2;
-
-    private String postalCode;
-
-    private String country;
-
-    private String city;
-
-    private int phone;
+    
 
 
 
