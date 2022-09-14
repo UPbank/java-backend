@@ -1,4 +1,4 @@
-package pt.upbank.upbank.config;
+package pt.upbank.upbank.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -7,24 +7,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 //@EnableWebSecurity - para web security personalizada
 public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	UserDetailsServiceImpl userDetailsService;
 
-
-    @Autowired
-	public void configureGlobal(AuthenticationManagerBuilder authenticationMgr) throws Exception {
-		authenticationMgr.inMemoryAuthentication()
-			.withUser("duarte")
-			.password("jd@123")
-			.authorities("ROLE_USER");
-	}
-
-	@Bean
-	
-	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -39,4 +31,28 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logout().logoutSuccessUrl("/loginPage?logout"); 
 		
 	}
+
+    // in Memory Authentication
+
+	// @Override
+	// public void configure(AuthenticationManagerBuilder authenticationMgr) throws Exception {
+	// 	authenticationMgr.inMemoryAuthentication()
+	// 		.withUser("duarte")
+	// 		.password(passwordEncoder().encode("jd@123"))
+	// 		.password("jd@123")
+	// 		.authorities("ROLE_USER");
+	// }
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth ) throws Exception {
+    auth.userDetailsService (userDetailsService)
+            .passwordEncoder(passwordEncoder( ));
+}
+	
+	@Bean
+	public PasswordEncoder passwordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
+	
+	
 }
