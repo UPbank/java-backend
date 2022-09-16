@@ -60,6 +60,8 @@ public class CardService {
         cardDTO.setName(card.getName());
         cardDTO.setExpirationDate(card.getExpirationDate());
         cardDTO.setPinCode(card.getPinCode());
+        cardDTO.setNfcPayments(card.getNfcPayments());
+        cardDTO.setOnlinePayments(card.getOnlinePayments());
         cardDTO.setAccount(card.getAccount() == null ? null : card.getAccount().getId());
         return cardDTO;
     }
@@ -68,6 +70,8 @@ public class CardService {
         card.setName(cardDTO.getName());
         card.setExpirationDate(cardDTO.getExpirationDate());
         card.setPinCode(cardDTO.getPinCode());
+        card.setNfcPayments(cardDTO.getNfcPayments());
+        card.setOnlinePayments(cardDTO.getOnlinePayments());
         final Account account = cardDTO.getAccount() == null ? null : accountRepository.findById(cardDTO.getAccount())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "account not found"));
         card.setAccount(account);
