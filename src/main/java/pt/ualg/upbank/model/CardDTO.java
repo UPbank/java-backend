@@ -22,6 +22,10 @@ public class CardDTO {
     @NotNull
     private Integer pinCode;
 
+    private Boolean nfcPayments;
+
+    private Boolean onlinePayments;
+
     @NotNull
     private Long account;
 
