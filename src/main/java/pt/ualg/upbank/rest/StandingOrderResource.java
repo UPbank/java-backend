@@ -42,23 +42,23 @@ public class StandingOrderResource {
     }
 
     @Operation(
-            parameters = {
-                    @Parameter(
-                            name = "page",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = Integer.class)
-                    ),
-                    @Parameter(
-                            name = "size",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = Integer.class)
-                    ),
-                    @Parameter(
-                            name = "sort",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = String.class)
-                    )
-            }
+        parameters = {
+            @Parameter(
+                name = "page",
+                in = ParameterIn.QUERY,
+                schema = @Schema(implementation = Integer.class)
+            ),
+            @Parameter(
+                name = "size",
+                in = ParameterIn.QUERY,
+                schema = @Schema(implementation = Integer.class)
+            ),
+            @Parameter(
+                name = "sort",
+                in = ParameterIn.QUERY,
+                schema = @Schema(implementation = String.class)
+            )
+        }
     )
     @GetMapping
     public ResponseEntity<SimplePage<StandingOrderDTO>> getAllStandingOrders(
@@ -76,6 +76,10 @@ public class StandingOrderResource {
     public ResponseEntity<Long> createStandingOrder(
             @RequestBody @Valid final StandingOrderDTO standingOrderDTO) {
         return new ResponseEntity<>(standingOrderService.create(standingOrderDTO), HttpStatus.CREATED);
+
+        //If a transfer is repeated weekly, the system shall process the transfers exactly 7 days apart, on the same week day.
+        // If a transfer is repeated monthly, the system shall process the transfers on the same day of the month. If the day doesn't exist in a given month, the last day of the month shall be used instead.
+        // If a transfer is repeated yearly, the system shall process transfers on the exact same day, If the given day is the 29th of February and a given year isn't a leap year, the payment shall be processed on the 28th of February that year."
     }
 
     @PutMapping("/{id}")
