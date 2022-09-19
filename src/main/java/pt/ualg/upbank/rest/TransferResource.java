@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.service.TransferService;
@@ -42,23 +44,23 @@ public class TransferResource {
     }
 
     @Operation(
-            parameters = {
-                    @Parameter(
-                            name = "page",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = Integer.class)
-                    ),
-                    @Parameter(
-                            name = "size",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = Integer.class)
-                    ),
-                    @Parameter(
-                            name = "sort",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = String.class)
-                    )
-            }
+        parameters = {
+            @Parameter(
+                name = "page",
+                in = ParameterIn.QUERY,
+                schema = @Schema(implementation = Integer.class)
+            ),
+            @Parameter(
+                name = "size",
+                in = ParameterIn.QUERY,
+                schema = @Schema(implementation = Integer.class)
+            ),
+            @Parameter(
+                name = "sort",
+                in = ParameterIn.QUERY,
+                schema = @Schema(implementation = String.class)
+            )
+        }
     )
     @GetMapping
     public ResponseEntity<SimplePage<TransferDTO>> getAllTransfers(
@@ -71,14 +73,21 @@ public class TransferResource {
         return ResponseEntity.ok(transferService.get(id));
     }
 
-    //eliminar
-
     @PostMapping("payments/reference")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createTransfer(@RequestBody Long entity, @RequestBody Long reference, @RequestBody Long amount) {
         //entity with 5 digits
         //reference with 9 digits
         //amount provided by the user
+        if (!transferService.checkEntity(entity)){
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "entity.must.have.5.digits");
+        }
+        if(!transferService.checkReference(reference)){
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "reference.must.have.9.digits"); 
+        }
+        if(!transferService.checkPositiveAmount(amount)){
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
+        }
         return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
     }
 
@@ -87,24 +96,42 @@ public class TransferResource {
     public ResponseEntity<Long> createTransfer(@RequestBody Long reference,@RequestBody Long amount) {
         //reference with 15 digits
         //amount provided by the user
+        if(!transferService.checkGovernamentReference(reference)){
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "reference.must.have.15.digits"); 
+            }
+        if(!transferService.checkPositiveAmount(amount)){
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
+        }
         return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/telco")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody String name, @RequestBody Short number) {
+    public ResponseEntity<Long> createTransfer(@RequestBody String name, @RequestBody Long number, @RequestBody Long amount) {
         //provider 
         //Lycamobile GT MOBile, MEO, MEO Card, MEO Card - PT HEllo/ PT Card, MEO CArd - Telefone Hello, MEO Escola Digital, Moche, NOS, NOS - Escola Digital, Sapo, Sapo ADSL, UZO, Via Card, Vodafone, WTF.
         //phone number provided by the user
         //phone number with 9 digits
         // phone number start with 91,92, 93 or 96
         //amount provided by the user
+        if(!transferService.checkTelcoProvider(name)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "telco.provider.not.found");  
+        }
+        if(!transferService.checkPhoneDigits(number)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.must.have.9.digits");
+        }
+        if(!transferService.checkPhoneNumberStartingDigits(number)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.provider.not.found");
+        }
+        if(!transferService.checkPositiveAmount(amount)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
+            }
         return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/bankTransfers")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody String iban, @RequestBody Long amount,Optional<String> note) {
+    public ResponseEntity<Long> createTransfer(@RequestBody String iban, @RequestBody Long amount, Optional<String> note) {
         // IBAN
         // If IBAN belongs to the same bank account, payment is immediatelly processed
         // If IBAN doesn´t belong to the same bank account, use external API to process payment

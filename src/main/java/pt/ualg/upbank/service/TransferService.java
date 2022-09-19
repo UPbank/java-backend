@@ -11,6 +11,7 @@ import pt.ualg.upbank.domain.Transfer;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.repos.AccountRepository;
+import pt.ualg.upbank.repos.TelcoProviderRepository;
 import pt.ualg.upbank.repos.TransferRepository;
 
 
@@ -19,26 +20,28 @@ public class TransferService {
 
     private final TransferRepository transferRepository;
     private final AccountRepository accountRepository;
+    private final TelcoProviderRepository telcoProviderRepository;
 
     public TransferService(final TransferRepository transferRepository,
-            final AccountRepository accountRepository) {
+        final AccountRepository accountRepository, final TelcoProviderRepository telcoProviderRepository) {
         this.transferRepository = transferRepository;
         this.accountRepository = accountRepository;
+        this.telcoProviderRepository = telcoProviderRepository;
     }
 
     public SimplePage<TransferDTO> findAll(final Pageable pageable) {
         final Page<Transfer> page = transferRepository.findAll(pageable);
         return new SimplePage<>(page.getContent()
-                .stream()
-                .map(transfer -> mapToDTO(transfer, new TransferDTO()))
-                .collect(Collectors.toList()),
-                page.getTotalElements(), pageable);
+            .stream()
+            .map(transfer -> mapToDTO(transfer, new TransferDTO()))
+            .collect(Collectors.toList()),
+            page.getTotalElements(), pageable);
     }
 
     public TransferDTO get(final Long id) {
         return transferRepository.findById(id)
-                .map(transfer -> mapToDTO(transfer, new TransferDTO()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .map(transfer -> mapToDTO(transfer, new TransferDTO()))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     public Long create(final TransferDTO transferDTO) {
@@ -83,4 +86,33 @@ public class TransferService {
         return transfer;
     }
 
+    public Boolean checkEntity(Long entity){     
+        return entity.toString().length()==5;
+    }
+
+    public Boolean checkReference(Long reference){
+        return reference.toString().length()==9;
+    }
+
+    public Boolean checkPositiveAmount(Long amount){
+        return amount > 0;
+    }
+
+    public Boolean checkGovernamentReference(Long reference){
+        return reference.toString().length()==15;
+    }
+
+    public Boolean checkTelcoProvider (String name){
+        return telcoProviderRepository.existByName(name);
+    }
+
+    public Boolean checkPhoneDigits(Long number){
+        return number.toString().length()==9;
+    }
+
+    public Boolean checkPhoneNumberStartingDigits(Long number){
+        int check = (int)(number/10000000);
+        return (check == 91 || check == 92 || check == 93 || check == 96);
+    }
+    
 }

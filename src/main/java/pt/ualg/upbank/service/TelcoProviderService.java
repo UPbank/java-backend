@@ -62,5 +62,4 @@ public class TelcoProviderService {
         telcoProvider.setName(telcoProviderDTO.getName());
         return telcoProvider;
     }
-
 }
