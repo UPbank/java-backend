@@ -79,7 +79,7 @@ public class TransferResource {
         //entity with 5 digits
         //reference with 9 digits
         //amount provided by the user
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/governament")
@@ -87,7 +87,7 @@ public class TransferResource {
     public ResponseEntity<Long> createTransfer(@RequestBody Long reference,@RequestBody Long amount) {
         //reference with 15 digits
         //amount provided by the user
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/telco")
@@ -99,7 +99,7 @@ public class TransferResource {
         //phone number with 9 digits
         // phone number start with 91,92, 93 or 96
         //amount provided by the user
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/bankTransfers")
@@ -111,7 +111,7 @@ public class TransferResource {
         // amount provided by the user
         // optional note given by the user
 
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
