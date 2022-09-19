@@ -5,4 +5,6 @@ import pt.ualg.upbank.domain.TelcoProvider;
 
 
 public interface TelcoProviderRepository extends JpaRepository<TelcoProvider, Long> {
+
+    boolean existByName(String name);
 }
