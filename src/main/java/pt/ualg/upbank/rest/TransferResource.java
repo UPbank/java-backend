@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.service.TransferService;
-
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/transfers", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -71,9 +71,46 @@ public class TransferResource {
         return ResponseEntity.ok(transferService.get(id));
     }
 
-    @PostMapping
+    //eliminar
+
+    @PostMapping("payments/reference")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody @Valid final TransferDTO transferDTO) {
+    public ResponseEntity<Long> createTransfer(@RequestBody Long entity, @RequestBody Long reference, @RequestBody Long amount) {
+        //entity with 5 digits
+        //reference with 9 digits
+        //amount provided by the user
+        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("payments/governament")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<Long> createTransfer(@RequestBody Long reference,@RequestBody Long amount) {
+        //reference with 15 digits
+        //amount provided by the user
+        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("payments/telco")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<Long> createTransfer(@RequestBody String name, @RequestBody Short number) {
+        //provider 
+        //Lycamobile GT MOBile, MEO, MEO Card, MEO Card - PT HEllo/ PT Card, MEO CArd - Telefone Hello, MEO Escola Digital, Moche, NOS, NOS - Escola Digital, Sapo, Sapo ADSL, UZO, Via Card, Vodafone, WTF.
+        //phone number provided by the user
+        //phone number with 9 digits
+        // phone number start with 91,92, 93 or 96
+        //amount provided by the user
+        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("payments/bankTransfers")
+    @ApiResponse(responseCode = "201")
+    public ResponseEntity<Long> createTransfer(@RequestBody String iban, @RequestBody Long amount,Optional<String> note) {
+        // IBAN
+        // If IBAN belongs to the same bank account, payment is immediatelly processed
+        // If IBAN doesn´t belong to the same bank account, use external API to process payment
+        // amount provided by the user
+        // optional note given by the user
+
         return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
     }
 
@@ -82,13 +119,6 @@ public class TransferResource {
             @RequestBody @Valid final TransferDTO transferDTO) {
         transferService.update(id, transferDTO);
         return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteTransfer(@PathVariable final Long id) {
-        transferService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 
 }
