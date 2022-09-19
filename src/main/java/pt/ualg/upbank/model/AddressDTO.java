@@ -2,6 +2,9 @@ package pt.ualg.upbank.model;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +13,7 @@ import lombok.Setter;
 @Setter
 public class AddressDTO {
 
+    @ReadOnlyProperty
     private Long id;
 
     @NotNull

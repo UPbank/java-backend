@@ -79,6 +79,7 @@ public class TransferResource {
         //entity with 5 digits
         //reference with 9 digits
         //amount provided by the user
+
         if (!transferService.checkEntity(entity)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "entity.must.have.5.digits");
         }
@@ -88,8 +89,8 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
         }
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
-    }
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
+
 
     @PostMapping("payments/governament")
     @ApiResponse(responseCode = "201")
@@ -102,7 +103,7 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
         }
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/telco")
@@ -114,6 +115,7 @@ public class TransferResource {
         //phone number with 9 digits
         // phone number start with 91,92, 93 or 96
         //amount provided by the user
+
         if(!transferService.checkTelcoProvider(name)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "telco.provider.not.found");  
         }
@@ -126,7 +128,8 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
             }
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
+
     }
 
     @PostMapping("payments/bankTransfers")
@@ -138,7 +141,7 @@ public class TransferResource {
         // amount provided by the user
         // optional note given by the user
 
-        return new ResponseEntity<>(transferService.create(transferDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
