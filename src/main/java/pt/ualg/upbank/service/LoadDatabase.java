@@ -41,7 +41,7 @@ class LoadDatabase {
 
 
       
-      log.info("Preloading " + repository.save(new Experience("MIEB", ExperienceType.WORK, "Desenvolvimento e caraterização de hidrogéis físicos e químicos a partir de polissacarídeos naturais", LocalDate.parse("2016-07-15"))));
+      // log.info("Preloading " + repository.save(new Experience("MIEB", ExperienceType.WORK, "Desenvolvimento e caraterização de hidrogéis físicos e químicos a partir de polissacarídeos naturais", LocalDate.parse("2016-07-15"))));
     };
   }
 }

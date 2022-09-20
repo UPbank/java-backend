@@ -3,6 +3,7 @@ package pt.ualg.upbank.model;
 import java.time.LocalDate;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class AccountDTO {
     @Size(max = 255)
     private String hash;
 
+    @NotBlank
     @NotNull
     @Size(max = 255)
     private String fullName;

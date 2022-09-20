@@ -54,7 +54,14 @@ public class AccountResource {
 		@DeleteMapping("/")
 		@ApiResponse(responseCode = "204")
 		public ResponseEntity<Void> deleteAccount() {
-				accountService.delete(getRequestUser().getId()); // TODO: Deletion logic
+			if(getRequestUser().getBalance()>0){
+				// accountService.redirectMoney(@RequestBody String id, getRequestUser());
+				
+			}
+			accountService.delete(getRequestUser().getId()); 
+				
+			
+				// TODO: Deletion logic
 				return ResponseEntity.noContent().build();
 		}
 
