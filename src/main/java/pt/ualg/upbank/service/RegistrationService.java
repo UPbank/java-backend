@@ -7,8 +7,11 @@ import java.time.Period;
 
 import javax.transaction.Transactional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
 import pt.ualg.upbank.model.RegistrationRequest;
@@ -43,6 +46,10 @@ public class RegistrationService {
 		@Transactional // Creates address and account in the same transaction
     public void register(final RegistrationRequest registrationRequest) {
         log.info("registering new user: {}", registrationRequest.getEmail());
+
+        if (!hasAge(registrationRequest.getBirthdate())){
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.age.underage");
+        }
 
         final Account account = new Account();
         account.setEmail(registrationRequest.getEmail());
