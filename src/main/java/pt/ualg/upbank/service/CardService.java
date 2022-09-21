@@ -1,7 +1,9 @@
 package pt.ualg.upbank.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,12 @@ public class CardService {
 
     public Long create(final CardDTO cardDTO) {
         final Card card = new Card();
+
+        //Set expiration date 2 years from now
+        cardDTO.setExpirationDate(LocalDate.now().plusYears(2));
+        
         mapToEntity(cardDTO, card);
+    
         return cardRepository.save(card).getId();
     }
 

@@ -1,16 +1,23 @@
 package pt.ualg.upbank.service;
 
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.config.TaskNamespaceHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Transfer;
+import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.repos.AccountRepository;
+import pt.ualg.upbank.repos.TelcoProviderRepository;
 import pt.ualg.upbank.repos.TransferRepository;
 
 
@@ -19,32 +26,91 @@ public class TransferService {
 
     private final TransferRepository transferRepository;
     private final AccountRepository accountRepository;
+    private final TelcoProviderRepository telcoProviderRepository;
 
     public TransferService(final TransferRepository transferRepository,
-            final AccountRepository accountRepository) {
+        final AccountRepository accountRepository, final TelcoProviderRepository telcoProviderRepository) {
         this.transferRepository = transferRepository;
         this.accountRepository = accountRepository;
+        this.telcoProviderRepository = telcoProviderRepository;
     }
 
     public SimplePage<TransferDTO> findAll(final Pageable pageable) {
         final Page<Transfer> page = transferRepository.findAll(pageable);
         return new SimplePage<>(page.getContent()
-                .stream()
-                .map(transfer -> mapToDTO(transfer, new TransferDTO()))
-                .collect(Collectors.toList()),
-                page.getTotalElements(), pageable);
+            .stream()
+            .map(transfer -> mapToDTO(transfer, new TransferDTO()))
+            .collect(Collectors.toList()),
+            page.getTotalElements(), pageable);
     }
 
     public TransferDTO get(final Long id) {
         return transferRepository.findById(id)
-                .map(transfer -> mapToDTO(transfer, new TransferDTO()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .map(transfer -> mapToDTO(transfer, new TransferDTO()))
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @Transactional
+    //Added set time of creation
     public Long create(final TransferDTO transferDTO) {
         final Transfer transfer = new Transfer();
         mapToEntity(transferDTO, transfer);
+        
+        
+        
+        //Check Balance is positive 
+        if(transfer.getSender().getBalance()<0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive");
+        }
+        //Check if amount is more than balance
+        if(transferDTO.getAmount()>transfer.getSender().getBalance()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "not.enough.balance");
+        }
+
+
+        //sender.removeMoney();
+        //reciever.recieveMoney();
+
+        
+        transfer.setDateCreated(OffsetDateTime.now());
+
+
         return transferRepository.save(transfer).getId();
+
+
+    }
+
+    @Transactional
+    //method to deal wiht reference payments
+    public Long createFromGovernament(final Long reference, final Long amount, long id) {
+        final Account reciever = accountRepository.findById((long) 10)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final Long sender = id;
+        final TransferDTO transfer = new TransferDTO();
+        transfer.setAmount(amount);
+        transfer.setReceiver(reciever.getId());
+        transfer.setSender(sender);
+        String json = "{type:\"GOV\", reference:\"" + reference + "\", amount:\"" + amount + "\"}"; 
+        transfer.setMetadata(json);
+
+        return create(transfer);
+    }
+    @Transactional
+    //method to deal wiht reference payments
+    public Long createFromPhoneNumber(final Long phone, final Long amount, AccountDTO account) {
+        final Account reciever = accountRepository.findById((long) 1)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final Long sender = account.getId();
+        final TransferDTO transfer = new TransferDTO();
+        transfer.setAmount(amount);
+        transfer.setReceiver(reciever.getId());
+        transfer.setSender(sender);
+        String json = "{type:\"GOV\", reference:\"" + "reference" + "\", amount:\"" + amount + "\"}"; 
+        transfer.setMetadata(json);
+
+        return create(transfer);
     }
 
     public void update(final Long id, final TransferDTO transferDTO) {
@@ -54,6 +120,7 @@ public class TransferService {
         transferRepository.save(transfer);
     }
 
+    @Transactional
     public void delete(final Long id) {
         transferRepository.deleteById(id);
     }
@@ -83,4 +150,34 @@ public class TransferService {
         return transfer;
     }
 
+    public Boolean checkEntity(Long entity){     
+        return entity.toString().length()==5;
+    }
+
+    public Boolean checkReference(Long reference){
+        return reference.toString().length()==9;
+    }
+
+    //already checked in create transferes
+    public Boolean checkPositiveAmount(Long amount){
+        return amount > 0;
+    }
+
+    public Boolean checkGovernamentReference(Long reference){
+        return reference.toString().length()==15;
+    }
+
+    public Boolean checkTelcoProvider (String name){
+        return telcoProviderRepository.existsByName(name);
+    }
+
+    public Boolean checkPhoneDigits(Long number){
+        return number.toString().length()==9;
+    }
+
+    public Boolean checkPhoneNumberStartingDigits(Long number){
+        int check = (int)(number/10000000);
+        return (check == 91 || check == 92 || check == 93 || check == 96);
+    }
+    
 }
