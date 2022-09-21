@@ -41,4 +41,19 @@ public class AccountDTO {
     @NotNull
     private AddressDTO address;
 
+    public AccountDTO(){}
+    
+    public AccountDTO(long id, String email, String hash, String fullName, LocalDate birthdate, String taxNumber, String idNumber, long balance, AddressDTO address){
+
+        this.id = id;
+        this.email = email;
+        this.hash = hash;
+        this.fullName = fullName;
+        this.birthdate = birthdate;
+        this.taxNumber = taxNumber;
+        this.idNumber = idNumber;
+        this.balance = balance;
+        this.address = address;
+    }
+
 }
