@@ -98,7 +98,7 @@ public class TransferResource {
         //A new method to create a transfer from a reference
     
         
-        return new ResponseEntity<>(transferService.createFromGovernament(reference, amount, accountResource.getRequestUser()), HttpStatus.CREATED);}
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);}
 
 
     @PostMapping("payments/governament")
@@ -112,7 +112,7 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
         }
-        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromGovernament(reference, amount, accountResource.getRequestUser().getId()), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/telco")

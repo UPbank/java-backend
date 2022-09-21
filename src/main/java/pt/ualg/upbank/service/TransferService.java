@@ -82,7 +82,23 @@ public class TransferService {
 
     @Transactional
     //method to deal wiht reference payments
-    public Long createFromGovernament(final Long refrence, final Long amount, AccountDTO account) {
+    public Long createFromGovernament(final Long reference, final Long amount, long id) {
+        final Account reciever = accountRepository.findById((long) 10)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final Long sender = id;
+        final TransferDTO transfer = new TransferDTO();
+        transfer.setAmount(amount);
+        transfer.setReceiver(reciever.getId());
+        transfer.setSender(sender);
+        String json = "{type:\"GOV\", reference:\"" + reference + "\", amount:\"" + amount + "\"}"; 
+        transfer.setMetadata(json);
+
+        return create(transfer);
+    }
+    @Transactional
+    //method to deal wiht reference payments
+    public Long createFromPhoneNumber(final Long phone, final Long amount, AccountDTO account) {
         final Account reciever = accountRepository.findById((long) 1)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -91,6 +107,8 @@ public class TransferService {
         transfer.setAmount(amount);
         transfer.setReceiver(reciever.getId());
         transfer.setSender(sender);
+        String json = "{type:\"GOV\", reference:\"" + "reference" + "\", amount:\"" + amount + "\"}"; 
+        transfer.setMetadata(json);
 
         return create(transfer);
     }
