@@ -36,7 +36,7 @@ public class RegistrationService {
     }
 
     //Verifies the user's age
-    public static boolean hasAge (LocalDate birthdate) {
+    public  boolean hasAge (LocalDate birthdate) {
 	    LocalDate currentDate = LocalDate.now();  
       Period userAge = Period.between(birthdate, currentDate) ; 
       return userAge.getYears() > 18;
@@ -47,9 +47,6 @@ public class RegistrationService {
     public void register(final RegistrationRequest registrationRequest) {
         log.info("registering new user: {}", registrationRequest.getEmail());
 
-        if (!hasAge(registrationRequest.getBirthdate())){
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.age.underage");
-        }
 
         final Account account = new Account();
         account.setEmail(registrationRequest.getEmail());

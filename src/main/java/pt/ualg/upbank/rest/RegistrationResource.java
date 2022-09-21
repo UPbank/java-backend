@@ -34,6 +34,10 @@ public class RegistrationResource {
         if (registrationService.emailExists(registrationRequest)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.register.taken");
         }
+        if(!registrationService.hasAge(registrationRequest.getBirthdate())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.age.underage");
+
+        }
         registrationService.register(registrationRequest);
         return ResponseEntity.ok().build();
     }
