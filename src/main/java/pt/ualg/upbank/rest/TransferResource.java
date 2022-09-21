@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import javax.validation.Valid;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,11 +36,17 @@ import java.util.Optional;
 @PreAuthorize("hasRole('" + ROLE_USER + "')")
 @SecurityRequirement(name = "bearer-jwt")
 public class TransferResource {
+    //Added to request the account of the user to make transfers
+
+    private final AccountResource accountResource;
 
     private final TransferService transferService;
 
-    public TransferResource(final TransferService transferService) {
+    public TransferResource(final TransferService transferService, final AccountResource accountResource) {
         this.transferService = transferService;
+
+        this.accountResource = accountResource;
+    
     }
 
     @Operation(
@@ -89,7 +95,10 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
         }
-        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
+        //A new method to create a transfer from a reference
+    
+        
+        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);}
 
 
     @PostMapping("payments/governament")
@@ -103,7 +112,7 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
         }
-        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromGovernament(reference, amount, accountResource.getRequestUser().getId()), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/telco")

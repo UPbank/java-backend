@@ -1,6 +1,10 @@
 package pt.ualg.upbank.service;
 
+import java.time.OffsetDateTime;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -9,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Transfer;
+import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.repos.AccountRepository;
@@ -45,10 +50,67 @@ public class TransferService {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @Transactional
+    //Added set time of creation
     public Long create(final TransferDTO transferDTO) {
         final Transfer transfer = new Transfer();
         mapToEntity(transferDTO, transfer);
+        
+        
+        
+        //Check Balance is positive 
+        if(transfer.getSender().getBalance()<0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive");
+        }
+        //Check if amount is more than balance
+        if(transferDTO.getAmount()>transfer.getSender().getBalance()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "not.enough.balance");
+        }
+
+
+        //sender.removeMoney();
+        //reciever.recieveMoney();
+
+        
+        transfer.setDateCreated(OffsetDateTime.now());
+
+
         return transferRepository.save(transfer).getId();
+
+
+    }
+
+    @Transactional
+    //method to deal wiht reference payments
+    public Long createFromGovernament(final Long reference, final Long amount, long id) {
+        final Account reciever = accountRepository.findById((long) 10)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final Long sender = id;
+        final TransferDTO transfer = new TransferDTO();
+        transfer.setAmount(amount);
+        transfer.setReceiver(reciever.getId());
+        transfer.setSender(sender);
+        String json = "{type:\"GOV\", reference:\"" + reference + "\", amount:\"" + amount + "\"}"; 
+        transfer.setMetadata(json);
+
+        return create(transfer);
+    }
+    @Transactional
+    //method to deal wiht reference payments
+    public Long createFromPhoneNumber(final Long phone, final Long amount, AccountDTO account) {
+        final Account reciever = accountRepository.findById((long) 1)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final Long sender = account.getId();
+        final TransferDTO transfer = new TransferDTO();
+        transfer.setAmount(amount);
+        transfer.setReceiver(reciever.getId());
+        transfer.setSender(sender);
+        String json = "{type:\"GOV\", reference:\"" + "reference" + "\", amount:\"" + amount + "\"}"; 
+        transfer.setMetadata(json);
+
+        return create(transfer);
     }
 
     public void update(final Long id, final TransferDTO transferDTO) {
@@ -58,6 +120,7 @@ public class TransferService {
         transferRepository.save(transfer);
     }
 
+    @Transactional
     public void delete(final Long id) {
         transferRepository.deleteById(id);
     }
@@ -80,14 +143,6 @@ public class TransferService {
         transfer.setImage(transferDTO.getImage());
         final Account sender = transferDTO.getSender() == null ? null : accountRepository.findById(transferDTO.getSender())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender not found"));
-
-        //Check Balance is positive 
-        if(sender.getBalance()<0){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive");
-        }
-        if(transferDTO.getAmount()>sender.getBalance()){
-             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "not.enough.balance");
-            }
         transfer.setSender(sender);
         final Account receiver = transferDTO.getReceiver() == null ? null : accountRepository.findById(transferDTO.getReceiver())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found"));
@@ -103,6 +158,7 @@ public class TransferService {
         return reference.toString().length()==9;
     }
 
+    //already checked in create transferes
     public Boolean checkPositiveAmount(Long amount){
         return amount > 0;
     }
@@ -112,7 +168,7 @@ public class TransferService {
     }
 
     public Boolean checkTelcoProvider (String name){
-        return telcoProviderRepository.existByName(name);
+        return telcoProviderRepository.existsByName(name);
     }
 
     public Boolean checkPhoneDigits(Long number){

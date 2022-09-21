@@ -94,6 +94,7 @@ class LoadDatabase {
 
       log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)5, "Uzo")));
       
+
       log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)6, "Via Card")));
 
       log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)7, "Vodafone")));
@@ -108,6 +109,7 @@ class LoadDatabase {
 
       //telecomunicações
       log.info("Preloading " + accountService.create(new AccountDTO((long)11, "telco@telco.pt", "3456", "Telecomunicações", LocalDate.of(1990, 1, 1) , "030303030", "0000000003", (long)0, new AddressDTO()))); //NOSONAR
+
     };
 
       

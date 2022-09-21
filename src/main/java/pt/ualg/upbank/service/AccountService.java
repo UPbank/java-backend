@@ -2,6 +2,10 @@ package pt.ualg.upbank.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.transaction.TransactionScoped;
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
+import pt.ualg.upbank.domain.Transfer;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
+import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.AddressRepository;
 
@@ -18,15 +24,22 @@ import pt.ualg.upbank.repos.AddressRepository;
 @Service
 public class AccountService {
 
+//Added TransferService to create a transefer in the delete operation.
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
 
+
+    private final TransferService transferService;
+
     public AccountService(final AccountRepository accountRepository,
-            final AddressRepository addressRepository, final PasswordEncoder passwordEncoder) {
+            final AddressRepository addressRepository, final PasswordEncoder passwordEncoder, final TransferService transferService) {
         this.accountRepository = accountRepository;
         this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
+
+
+        this.transferService = transferService;
     }
 
     public List<AccountDTO> findAll() {
@@ -48,8 +61,11 @@ public class AccountService {
 							.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 
+    @Transactional
     public Long create(final AccountDTO accountDTO) {
         final Account account = new Account();
+        
+        //Create two cards
         mapToEntity(accountDTO, account);
         return accountRepository.save(account).getId();
     }
@@ -63,6 +79,15 @@ public class AccountService {
 
     public void delete(final Long id) {
         accountRepository.deleteById(id);
+    }
+
+    public void redirectMoney(String iban,AccountDTO accountDTO) {
+        final TransferDTO transefer = new TransferDTO();
+        //set reciever to iban 
+        //set amount to amount 
+        //set sender to accountDTO.getid()
+
+        transferService.create(transefer);
     }
 
     private AccountDTO mapToDTO(final Account account, final AccountDTO accountDTO) {
@@ -95,4 +120,18 @@ public class AccountService {
         return accountRepository.existsByEmailIgnoreCase(email);
     }
 
+    public boolean checkBalance(final AccountDTO accountDTO){
+        return accountDTO.getBalance() > 0;
+
+    }
+
+    //Method for taking money from a bank account
+    public void removeMoney(final AccountDTO accountDTO ,Long amount){
+        accountDTO.setBalance(accountDTO.getBalance()-amount);
+    }
+
+     //Method for Adding money to a bank account
+     public void addMoney(final AccountDTO accountDTO ,Long amount){
+        accountDTO.setBalance(accountDTO.getBalance()+amount);
+    }
 }
