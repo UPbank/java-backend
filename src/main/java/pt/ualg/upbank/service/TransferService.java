@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.config.TaskNamespaceHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pt.ualg.upbank.domain.Account;
@@ -79,6 +80,14 @@ public class TransferService {
         transfer.setImage(transferDTO.getImage());
         final Account sender = transferDTO.getSender() == null ? null : accountRepository.findById(transferDTO.getSender())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender not found"));
+
+        //Check Balance is positive 
+        if(sender.getBalance()<0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive");
+        }
+        if(transferDTO.getAmount()>sender.getBalance()){
+             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "not.enough.balance");
+            }
         transfer.setSender(sender);
         final Account receiver = transferDTO.getReceiver() == null ? null : accountRepository.findById(transferDTO.getReceiver())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found"));
