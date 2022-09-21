@@ -2,7 +2,6 @@ package pt.ualg.upbank.model;
 
 import java.time.LocalDate;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,7 +17,6 @@ public class AccountDTO {
 
     @NotNull
     @Size(max = 255)
-    @Email
     private String email;
 
     @Size(max = 255)

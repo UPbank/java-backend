@@ -64,6 +64,8 @@ public class AccountService {
     @Transactional
     public Long create(final AccountDTO accountDTO) {
         final Account account = new Account();
+        
+        //Create two cards
         mapToEntity(accountDTO, account);
         return accountRepository.save(account).getId();
     }

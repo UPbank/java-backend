@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.service.AccountService;
@@ -34,7 +37,7 @@ public class AccountResource {
 				this.accountService = accountService;
 		}
 
-		private AccountDTO getRequestUser() {
+		public AccountDTO getRequestUser() {
 				UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 				String email = userDetails.getUsername();
 				return accountService.getByEmail(email);
@@ -55,8 +58,7 @@ public class AccountResource {
 		@ApiResponse(responseCode = "204")
 		public ResponseEntity<Void> deleteAccount() {
 			if(getRequestUser().getBalance()>0){
-				// accountService.redirectMoney(@RequestBody String id, getRequestUser());
-				
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "balance.notEmpty"); 
 			}
 			accountService.delete(getRequestUser().getId()); 
 				

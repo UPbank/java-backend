@@ -55,17 +55,34 @@ public class TransferService {
     public Long create(final TransferDTO transferDTO) {
         final Transfer transfer = new Transfer();
         mapToEntity(transferDTO, transfer);
+        
+        
+        
+        //Check Balance is positive 
+        if(transfer.getSender().getBalance()<0){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive");
+        }
+        //Check if amount is more than balance
+        if(transferDTO.getAmount()>transfer.getSender().getBalance()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "not.enough.balance");
+        }
 
-        transfer.setDateCreated(OffsetDateTime.now());
 
         //sender.removeMoney();
         //reciever.recieveMoney();
+
+        
+        transfer.setDateCreated(OffsetDateTime.now());
+
+
         return transferRepository.save(transfer).getId();
+
+
     }
 
     @Transactional
     //method to deal wiht reference payments
-    public TransferDTO createFromGovernament(final Long refrence, final Long amount, AccountDTO account) {
+    public Long createFromGovernament(final Long refrence, final Long amount, AccountDTO account) {
         final Account reciever = accountRepository.findById((long) 1)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -75,7 +92,7 @@ public class TransferService {
         transfer.setReceiver(reciever.getId());
         transfer.setSender(sender);
 
-        return transfer;
+        return create(transfer);
     }
 
     public void update(final Long id, final TransferDTO transferDTO) {
@@ -108,15 +125,6 @@ public class TransferService {
         transfer.setImage(transferDTO.getImage());
         final Account sender = transferDTO.getSender() == null ? null : accountRepository.findById(transferDTO.getSender())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender not found"));
-
-        //Check Balance is positive 
-        if(sender.getBalance()<0){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive");
-        }
-        //Check if amount is more than balance
-        if(transferDTO.getAmount()>sender.getBalance()){
-             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "not.enough.balance");
-            }
         transfer.setSender(sender);
         final Account receiver = transferDTO.getReceiver() == null ? null : accountRepository.findById(transferDTO.getReceiver())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found"));
