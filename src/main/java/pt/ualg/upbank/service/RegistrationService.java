@@ -2,6 +2,9 @@ package pt.ualg.upbank.service;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 import javax.transaction.Transactional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +31,14 @@ public class RegistrationService {
     public boolean emailExists(final RegistrationRequest registrationRequest) {
         return accountRepository.existsByEmailIgnoreCase(registrationRequest.getEmail());
     }
+
+    //Verifies the user's age
+    public static boolean hasAge (LocalDate birthdate) {
+	    LocalDate currentDate = LocalDate.now();  
+      Period userAge = Period.between(birthdate, currentDate) ; 
+      return userAge.getYears() > 18;
+  }
+
 
 		@Transactional // Creates address and account in the same transaction
     public void register(final RegistrationRequest registrationRequest) {
