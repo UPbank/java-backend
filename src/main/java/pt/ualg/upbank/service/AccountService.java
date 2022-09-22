@@ -1,7 +1,11 @@
 package pt.ualg.upbank.service;
 
+import java.util.ArrayDeque;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.smartcardio.Card;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +15,7 @@ import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
+import pt.ualg.upbank.model.CardDTO;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.AddressRepository;
 
@@ -21,12 +26,16 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CardService cardService;
 
     public AccountService(final AccountRepository accountRepository,
-            final AddressRepository addressRepository, final PasswordEncoder passwordEncoder) {
+            final AddressRepository addressRepository, 
+            final PasswordEncoder passwordEncoder, 
+            final CardService cardService) {
         this.accountRepository = accountRepository;
         this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cardService = cardService;
     }
 
     public List<AccountDTO> findAll() {
@@ -51,9 +60,11 @@ public class AccountService {
     public Long create(final AccountDTO accountDTO) {
         final Account account = new Account();
         mapToEntity(accountDTO, account);
+
         return accountRepository.save(account).getId();
     }
 
+     
     public void update(final Long id, final AccountDTO accountDTO) {
         final Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -94,5 +105,5 @@ public class AccountService {
     public boolean emailExists(final String email) {
         return accountRepository.existsByEmailIgnoreCase(email);
     }
-
+   
 }
