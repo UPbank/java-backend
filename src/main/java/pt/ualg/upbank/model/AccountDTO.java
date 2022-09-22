@@ -1,6 +1,8 @@
 package pt.ualg.upbank.model;
 
 import java.time.LocalDate;
+
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -20,6 +22,7 @@ public class AccountDTO {
     @Size(max = 255)
     private String hash;
 
+    @NotBlank
     @NotNull
     @Size(max = 255)
     private String fullName;
@@ -40,5 +43,20 @@ public class AccountDTO {
 
     @NotNull
     private AddressDTO address;
+
+    public AccountDTO(){}
+    
+    public AccountDTO( String email, String hash, String fullName, LocalDate birthdate, String taxNumber, String idNumber, long balance, AddressDTO address){
+
+        
+        this.email = email;
+        this.hash = hash;
+        this.fullName = fullName;
+        this.birthdate = birthdate;
+        this.taxNumber = taxNumber;
+        this.idNumber = idNumber;
+        this.balance = balance;
+        this.address = address;
+    }
 
 }

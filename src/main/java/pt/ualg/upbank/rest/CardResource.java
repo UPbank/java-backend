@@ -50,13 +50,20 @@ public class CardResource {
         return new ResponseEntity<>(cardService.create(cardDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCard(@PathVariable final Long id,
+    @PutMapping("/nfc/{id}")
+    public ResponseEntity<Void> updateCardNfc(@PathVariable final Long id,
             @RequestBody @Valid final CardDTO cardDTO) {
         cardService.update(id, cardDTO);
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/online/{id}")
+    public ResponseEntity<Void> updateCardOnline(@PathVariable final Long id,
+            @RequestBody @Valid final CardDTO cardDTO) {
+        cardService.update(id, cardDTO);
+        return ResponseEntity.ok().build();
+    }
+    
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteCard(@PathVariable final Long id) {

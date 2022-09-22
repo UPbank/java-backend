@@ -1,5 +1,6 @@
 package pt.ualg.upbank.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Sort;
@@ -36,6 +37,8 @@ public class TelcoProviderService {
     public Long create(final TelcoProviderDTO telcoProviderDTO) {
         final TelcoProvider telcoProvider = new TelcoProvider();
         mapToEntity(telcoProviderDTO, telcoProvider);
+        telcoProvider.setDateCreated(OffsetDateTime.now());
+        telcoProvider.setLastUpdated(OffsetDateTime.now());
         return telcoProviderRepository.save(telcoProvider).getId();
     }
 
@@ -62,5 +65,4 @@ public class TelcoProviderService {
         telcoProvider.setName(telcoProviderDTO.getName());
         return telcoProvider;
     }
-
 }

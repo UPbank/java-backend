@@ -1,13 +1,16 @@
 package pt.ualg.upbank.service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.StandingOrder;
+import pt.ualg.upbank.model.Frequency;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.StandingOrderDTO;
 import pt.ualg.upbank.repos.AccountRepository;
@@ -80,5 +83,38 @@ public class StandingOrderService {
         standingOrder.setReceiver(receiver);
         return standingOrder;
     }
+    //segundo, minuto, hora, dia, mês, dia da semana
+
+    public void executeScheduledTransfers(Frequency frequency) {
+        List<StandingOrder> transfers = standingOrderRepository.findByFrequency(frequency);
+        for (StandingOrder so : transfers) {
+            createFromIban(so.getIban(), so.getAmount(), so.getSender());
+        }
+    }
+
+    //a cada dia 
+    @Scheduled(cron = "0 0 * * *", zone = "Europe/Portugal")
+    public void scheduleDailyTask() {
+        executeScheduledTransfers(Frequency.DAILY);
+    }
+
+    //a cada semana
+    @Scheduled(cron = "0 0 * * 0", zone="Europe/Portugal")
+    public void scheduleWeeklyTask() {
+        executeScheduledTransfers(Frequency.WEEKLY);
+    }
+
+    // a cada mês
+    @Scheduled(cron = "0 0 1 * *", zone = "Europe/Portugal")
+    public void scheduleMonthlyTask() {
+        executeScheduledTransfers(Frequency.MONTHLY);
+    }
+
+    // 0 0 1 1 *
+    @Scheduled(cron = "0 0 1 1 *", zone = "Europe/Portugal")
+    public void scheduleYearlyTask() {
+        executeScheduledTransfers(Frequency.YEARLY);
+    }
+
 
 }

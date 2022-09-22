@@ -1,12 +1,9 @@
 package pt.ualg.upbank.service;
 
 import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalDate;
 import java.time.Period;
-
 import javax.transaction.Transactional;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pt.ualg.upbank.domain.Account;
@@ -33,15 +30,36 @@ public class RegistrationService {
     }
 
     //Verifies the user's age
-    public static boolean hasAge (LocalDate birthdate) {
+    public  boolean hasAge (LocalDate birthdate) {
 	    LocalDate currentDate = LocalDate.now();  
-        Period userAge = Period.between(birthdate, currentDate) ; 
-        return userAge.getYears() > 18;
+
+
+      Period userAge = Period.between(birthdate, currentDate) ; 
+      return userAge.getYears() > 18;
+  }
+
+  public static boolean isNifValid(String nif) {
+    final int max=9;
+    if (!nif.matches("[\\d]+") || nif.length()!=max) {
+    return false;
     }
+    int checkSum=0;
+    for (int i = 0; i < max-1; i++){
+        checkSum += (nif.charAt(i)-'0')*(max-i);
+    }
+    int checkDigit = 11 - (checkSum % 11);
+    if (checkDigit > 9) {
+        checkDigit = 0;
+    }
+    return checkDigit == nif.charAt(max-1)-'0';
+}
+
+
 
 		@Transactional // Creates address and account in the same transaction
     public void register(final RegistrationRequest registrationRequest) {
         log.info("registering new user: {}", registrationRequest.getEmail());
+
 
         final Account account = new Account();
         account.setEmail(registrationRequest.getEmail());

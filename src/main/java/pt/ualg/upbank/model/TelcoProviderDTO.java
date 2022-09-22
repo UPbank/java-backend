@@ -16,4 +16,11 @@ public class TelcoProviderDTO {
     @Size(max = 255)
     private String name;
 
+    public TelcoProviderDTO() {
+    }
+
+    public TelcoProviderDTO (long id, String name){
+        this.id = id;
+        this.name= name;
+    }
 }

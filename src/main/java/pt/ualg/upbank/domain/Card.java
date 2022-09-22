@@ -48,6 +48,12 @@ public class Card {
     @Column(nullable = false)
     private Integer pinCode;
 
+    @Column
+    private Boolean nfcPayments;
+
+    @Column
+    private Boolean onlinePayments;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
