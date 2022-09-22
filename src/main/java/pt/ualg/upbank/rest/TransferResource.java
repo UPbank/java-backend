@@ -150,7 +150,7 @@ public class TransferResource {
         // amount provided by the user
         // optional note given by the user
 
-        return new ResponseEntity<>(transferService.createFromIban(iban, amount, accountResource.getRequestUser()), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromIban(iban, amount, accountResource.getRequestUser(), note), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

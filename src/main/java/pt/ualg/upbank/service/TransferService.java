@@ -1,6 +1,7 @@
 package pt.ualg.upbank.service;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -129,27 +130,30 @@ public class TransferService {
 
     @Transactional
     //method to deal wiht reference payments
-    public Long createFromIban(final String Iban, final Long amount, AccountDTO account) {
+    public Long createFromIban(final String Iban, final Long amount, AccountDTO account, Optional<String> note) {
         if (!new IBAN(Iban).validate()) {
-            // Dar erro
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IBAN.invalid");
         }
         
         final long receiverId = IBANGenerator.ibanToId(Iban);
         final TransferDTO transfer = new TransferDTO();
 
         if(accountRepository.findById((receiverId)) == null){
-
             transfer.setReceiver((long)11);
-        }else {
-
+        }else{
             transfer.setReceiver(receiverId);
         }
        
         final Long sender = account.getId();
         transfer.setAmount(amount);
         transfer.setSender(sender);
+
         String json = "{type:\"TRAN\", IBAN:\"" + Iban + "\", amount:\"" + amount + "\"}";
         transfer.setMetadata(json);
+
+        String newNotes = note == null ? null : note.get(); 
+        if(newNotes != null)
+            transfer.setNotes(newNotes);
 
         return create(transfer);
     }
