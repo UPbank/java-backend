@@ -32,6 +32,8 @@ public class RegistrationService {
     //Verifies the user's age
     public  boolean hasAge (LocalDate birthdate) {
 	    LocalDate currentDate = LocalDate.now();  
+
+
       Period userAge = Period.between(birthdate, currentDate) ; 
       return userAge.getYears() > 18;
   }
@@ -53,6 +55,7 @@ public class RegistrationService {
 }
 
 
+
 		@Transactional // Creates address and account in the same transaction
     public void register(final RegistrationRequest registrationRequest) {
         log.info("registering new user: {}", registrationRequest.getEmail());
@@ -67,7 +70,15 @@ public class RegistrationService {
         account.setIdNumber(registrationRequest.getIdNumber());
         account.setBalance((long) 10000); // TODO: Move default balance to an env variable
 				account.setAddress(AddressService.toEntity(registrationRequest.getAddress(), new Address()));
-        accountRepository.save(account);
+        
+                CardDTO cardPhysical = new CardDTO();
+                CardDTO cardVirtual = new CardDTO();
+                cardService.create(cardPhysical);
+                cardService.create(cardVirtual);
+                cardPhysical.setName("Physical Card");
+                cardPhysical.setName("Virtual Card"); 
+                
+                accountRepository.save(account);
     }
 
 }
