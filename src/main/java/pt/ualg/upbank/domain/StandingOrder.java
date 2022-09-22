@@ -52,9 +52,8 @@ public class StandingOrder {
     @JoinColumn(name = "sender_id", nullable = false)
     private Account sender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private Account receiver;
+    @Column(nullable = false)
+    private String iban;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
