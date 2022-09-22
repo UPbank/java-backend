@@ -7,10 +7,8 @@ import java.time.Period;
 
 import javax.transaction.Transactional;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
@@ -41,6 +39,22 @@ public class RegistrationService {
       Period userAge = Period.between(birthdate, currentDate) ; 
       return userAge.getYears() > 18;
   }
+
+  public static boolean isNifValid(String nif) {
+    final int max=9;
+    if (!nif.matches("[\\d]+") || nif.length()!=max) {
+    return false;
+    }
+    int checkSum=0;
+    for (int i = 0; i < max-1; i++){
+        checkSum += (nif.charAt(i)-'0')*(max-i);
+    }
+    int checkDigit = 11 - (checkSum % 11);
+    if (checkDigit > 9) {
+        checkDigit = 0;
+    }
+    return checkDigit == nif.charAt(max-1)-'0';
+}
 
 
 		@Transactional // Creates address and account in the same transaction

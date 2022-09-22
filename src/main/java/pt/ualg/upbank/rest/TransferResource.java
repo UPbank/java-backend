@@ -137,7 +137,7 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
             }
-        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromPhoneNumber(number, amount, accountResource.getRequestUser()), HttpStatus.CREATED);
 
     }
 
@@ -150,7 +150,7 @@ public class TransferResource {
         // amount provided by the user
         // optional note given by the user
 
-        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromIban(iban, amount, accountResource.getRequestUser()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

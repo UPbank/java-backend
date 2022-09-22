@@ -46,9 +46,9 @@ public class AccountDTO {
 
     public AccountDTO(){}
     
-    public AccountDTO(long id, String email, String hash, String fullName, LocalDate birthdate, String taxNumber, String idNumber, long balance, AddressDTO address){
+    public AccountDTO( String email, String hash, String fullName, LocalDate birthdate, String taxNumber, String idNumber, long balance, AddressDTO address){
 
-        this.id = id;
+        
         this.email = email;
         this.hash = hash;
         this.fullName = fullName;
