@@ -35,4 +35,15 @@ public class AddressDTO {
     @Size(max = 255)
     private String district;
 
+    public AddressDTO() {   };
+
+    public AddressDTO(Long id, String line1, String line2, String zipCode, String city, String district) {
+        this.id = id;
+        this.line1 = line1;
+        this.line2 = line2;
+        this.zipCode = zipCode;
+        this.city = city;
+        this.district = district;
+    };
+
 }

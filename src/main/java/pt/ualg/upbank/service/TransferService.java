@@ -8,9 +8,10 @@ import javax.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.config.TaskNamespaceHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import pt.ualg.upbank.IBAN.IBANGenerator;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Transfer;
 import pt.ualg.upbank.model.AccountDTO;
@@ -67,17 +68,28 @@ public class TransferService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "not.enough.balance");
         }
 
+        final Account sender = accountRepository.findById(transferDTO.getSender()) //Add number of telecomunicações account
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        //sender.removeMoney();
-        //reciever.recieveMoney();
+        removeMoney(sender, transfer.getAmount());
 
+        final Account reciever = accountRepository.findById(transferDTO.getReceiver()) //Add number of telecomunicações account
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        addMoney(reciever, transfer.getAmount());
         
         transfer.setDateCreated(OffsetDateTime.now());
-
-
         return transferRepository.save(transfer).getId();
+    }
 
+     //Method for taking money from a bank account
+     public void removeMoney(Account account,Long amount){
+        account.setBalance(account.getBalance()-amount);
+    }
 
+     //Method for Adding money to a bank account
+     public void addMoney(final Account account ,Long amount){
+        account.setBalance(account.getBalance()+amount);
     }
 
     @Transactional
@@ -97,9 +109,9 @@ public class TransferService {
         return create(transfer);
     }
     @Transactional
-    //method to deal wiht reference payments
+    //method to deal wiht phone payments
     public Long createFromPhoneNumber(final Long phone, final Long amount, AccountDTO account) {
-        final Account reciever = accountRepository.findById((long) 1)
+        final Account reciever = accountRepository.findById((long) 1) //Add number of telecomunicações account
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         final Long sender = account.getId();
@@ -107,7 +119,26 @@ public class TransferService {
         transfer.setAmount(amount);
         transfer.setReceiver(reciever.getId());
         transfer.setSender(sender);
-        String json = "{type:\"GOV\", reference:\"" + "reference" + "\", amount:\"" + amount + "\"}"; 
+        String json = "{type:\"TEL\", PhoneNumber:\"" + phone + "\", amount:\"" + amount + "\"}"; 
+        transfer.setMetadata(json);
+
+        return create(transfer);
+    }
+
+    @Transactional
+    //method to deal wiht reference payments
+    public Long createFromIban(final String Iban, final Long amount, AccountDTO account) {
+
+        final long recieverId = IBANGenerator.ibanToId(Iban);
+        final Account reciever = accountRepository.findById((recieverId))//Add number of telecomunicações account
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final Long sender = account.getId();
+        final TransferDTO transfer = new TransferDTO();
+        transfer.setAmount(amount);
+        transfer.setReceiver(reciever.getId());
+        transfer.setSender(sender);
+        String json = "{type:\"TRAN\", IBAN:\"" + Iban + "\", amount:\"" + amount + "\"}"; 
         transfer.setMetadata(json);
 
         return create(transfer);

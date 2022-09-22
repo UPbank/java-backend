@@ -11,6 +11,8 @@ import lombok.Setter;
 @Setter
 public class RegistrationRequest {
 
+
+
     @NotNull
     @Size(max = 255)
     private String email;
@@ -36,5 +38,19 @@ public class RegistrationRequest {
 
 		@NotNull
 		private AddressDTO address;
+
+    public RegistrationRequest() {
+
+    }
+    public RegistrationRequest(String email, String password, String fullName, LocalDate birthdate, String taxNumber, String idNumber, AddressDTO address) {  
+      this.email = email;
+      this.password = password;
+      this.fullName = fullName;
+      this.birthdate = birthdate;
+      this.taxNumber = taxNumber; 
+      this.idNumber = idNumber;
+      this.address = address;
+      
+    }
 
 }

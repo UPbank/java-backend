@@ -3,7 +3,6 @@ package pt.ualg.upbank.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.TransactionScoped;
 import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Sort;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
-import pt.ualg.upbank.domain.Transfer;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
 import pt.ualg.upbank.model.TransferDTO;
@@ -102,7 +100,7 @@ public class AccountService {
         return accountDTO;
     }
 
-    private Account mapToEntity(final AccountDTO accountDTO, final Account account) {
+    public Account mapToEntity(final AccountDTO accountDTO, final Account account) {
         account.setEmail(accountDTO.getEmail());
         account.setHash(passwordEncoder.encode(accountDTO.getHash()));
         account.setFullName(accountDTO.getFullName());
@@ -110,7 +108,7 @@ public class AccountService {
         account.setTaxNumber(accountDTO.getTaxNumber());
         account.setIdNumber(accountDTO.getIdNumber());
         account.setBalance(accountDTO.getBalance());
-        final Address address = accountDTO.getAddress() == null ? null : addressRepository.findById(accountDTO.getAddress().getId()) // NOSONAR
+        final Address address = accountDTO.getAddress() == null ? null : addressRepository.findById(accountDTO.getAddress().getId()) 
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "address not found"));
         account.setAddress(address);
         return account;
@@ -125,13 +123,5 @@ public class AccountService {
 
     }
 
-    //Method for taking money from a bank account
-    public void removeMoney(final AccountDTO accountDTO ,Long amount){
-        accountDTO.setBalance(accountDTO.getBalance()-amount);
-    }
-
-     //Method for Adding money to a bank account
-     public void addMoney(final AccountDTO accountDTO ,Long amount){
-        accountDTO.setBalance(accountDTO.getBalance()+amount);
-    }
+   
 }
