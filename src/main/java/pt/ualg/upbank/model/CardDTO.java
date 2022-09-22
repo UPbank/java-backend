@@ -20,6 +20,7 @@ public class CardDTO {
     private LocalDate expirationDate;
 
     @NotNull
+    @Size(max = 4)
     private Integer pinCode;
 
     private Boolean nfcPayments;

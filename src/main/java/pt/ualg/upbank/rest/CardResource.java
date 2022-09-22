@@ -5,7 +5,11 @@ import static pt.ualg.upbank.service.JwtUserDetailsService.ROLE_USER;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
+import java.util.Optional;
+
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,19 +54,13 @@ public class CardResource {
         return new ResponseEntity<>(cardService.create(cardDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/nfc/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Void> updateCardNfc(@PathVariable final Long id,
-            @RequestBody @Valid final CardDTO cardDTO) {
-        cardService.update(id, cardDTO);
+            @RequestBody Boolean nfc , @RequestBody Boolean online, @RequestBody @Size(max = 4) Optional <Integer> pinCode) {
+        // cardService.update(id);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/online/{id}")
-    public ResponseEntity<Void> updateCardOnline(@PathVariable final Long id,
-            @RequestBody @Valid final CardDTO cardDTO) {
-        cardService.update(id, cardDTO);
-        return ResponseEntity.ok().build();
-    }
     
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")

@@ -46,6 +46,7 @@ public class Card {
     private LocalDate expirationDate;
 
     @Column(nullable = false)
+
     private Integer pinCode;
 
     @Column
