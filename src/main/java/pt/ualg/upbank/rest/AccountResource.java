@@ -61,10 +61,8 @@ public class AccountResource {
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "balance.notEmpty"); 
 			}
 			accountService.delete(getRequestUser().getId()); 
-				
 			
-				// TODO: Deletion logic
-				return ResponseEntity.noContent().build();
+			return ResponseEntity.noContent().build();
 		}
 
 }

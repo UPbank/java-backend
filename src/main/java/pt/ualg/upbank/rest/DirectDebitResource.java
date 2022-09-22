@@ -80,8 +80,8 @@ public class DirectDebitResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateDirectDebit(@PathVariable final Long id,
-            @RequestBody @Valid final DirectDebitDTO directDebitDTO) {
-        directDebitService.update(id, directDebitDTO);
+            @RequestBody @Valid final DirectDebitDTO directDebitDTO, @RequestBody Boolean bool) {
+        directDebitService.update(id, directDebitDTO, bool);
         return ResponseEntity.ok().build();
     }
 

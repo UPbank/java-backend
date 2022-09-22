@@ -47,9 +47,10 @@ public class DirectDebitService {
         return directDebitRepository.save(directDebit).getId();
     }
 
-    public void update(final Long id, final DirectDebitDTO directDebitDTO) {
+    public void update(final Long id, final DirectDebitDTO directDebitDTO, Boolean boll) {
         final DirectDebit directDebit = directDebitRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            directDebitDTO.setActive(boll);
         mapToEntity(directDebitDTO, directDebit);
         directDebitRepository.save(directDebit);
     }

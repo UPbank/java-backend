@@ -9,11 +9,7 @@ public class IBANGenerator {
         return IBAN.addCheckDigits("PT", nib);
     }
     public static Long ibanToId(String iban){
-        return (long) Integer.parseInt(iban.substring(12,  iban.length()-2));
+        return Long.parseLong(iban.substring(12,  iban.length()-2));
     }
   
-    
-    
-
-    
 }

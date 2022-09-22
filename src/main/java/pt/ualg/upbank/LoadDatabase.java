@@ -79,37 +79,49 @@ class LoadDatabase {
     // wtf.setDateCreated(OffsetDateTime.now());
     // wtf.setLastUpdated(OffsetDateTime.now());
     
-    
-          Address address = new Address();
-          address.setId((long)1);
-          address.setCity("city");
-          address.setDistrict("district");
-          address.setLine1("line1");
-          address.setLine2("line2");
-          address.setZipCode("zipCode");
 
-    
-          Account government =new Account();
-          government.setAddress(address);
-          government.setFullName("Governo de Portugal");
-          government.setId((long)9);
-          government.setBalance((long)0);
-          government.setBirthdate(LocalDate.parse("1143-10-05"));
-          government.setTaxNumber("9999999");
-          government.setIdNumber("0000000001");
-          government.setEmail("gov@gov.pt");
-          government.setHash("1234");
+    //   Address address = new Address();
+    //   address.setId((long)1);
+    //   address.setCity("city");
+    //   address.setDistrict("district");
+    //   address.setLine1("line1");
+    //   address.setLine2("line2");
+    //   address.setZipCode("zipCode");
 
-          Account entity =new Account();
-          entity.setAddress(address);
-          entity.setFullName("Pedro Charlito");
-          entity.setId((long)10);
-          entity.setBalance((long)0);
-          entity.setBirthdate(LocalDate.parse("1994-02-03"));
-          entity.setTaxNumber("020202020");
-          entity.setIdNumber("0000000002");
-          entity.setEmail("pdrchrld@gmail.com");
-          entity.setHash("2345");
+
+    //   Account government =new Account();
+    //   government.setAddress(address);
+    //   government.setFullName("Governo de Portugal");
+    //   government.setId((long)9);
+    //   government.setBalance((long)0);
+    //   government.setBirthdate(LocalDate.parse("1143-10-05"));
+    //   government.setTaxNumber("9999999");
+    //   government.setIdNumber("0000000001");
+    //   government.setEmail("gov@gov.pt");
+    //   government.setHash("1234");
+
+    //   Account entity =new Account();
+    //   entity.setAddress(address);
+    //   entity.setFullName("Pedro Charlito");
+    //   entity.setId((long)10);
+    //   entity.setBalance((long)0);
+    //   entity.setBirthdate(LocalDate.parse("1994-02-03"));
+    //   entity.setTaxNumber("020202020");
+    //   entity.setIdNumber("0000000002");
+    //   entity.setEmail("pdrchrld@gmail.com");
+    //   entity.setHash("2345");
+
+    //   Account telecomunicações =new Account();
+    //   entity.setAddress(address);
+    //   entity.setFullName("Telecomunicações");
+    //   entity.setId((long)11);
+    //   entity.setBalance((long)0);
+    //   entity.setBirthdate(LocalDate.parse("1990/01/01 "));
+    //   entity.setTaxNumber("020202020");
+    //   entity.setIdNumber("0000000002");
+    //   entity.setEmail("telco@telco.pt");
+    //   entity.setHash("2345");
+
 
 
     return args -> {

@@ -79,9 +79,9 @@ public class TransferResource {
         return ResponseEntity.ok(transferService.get(id));
     }
 
-    @PostMapping("payments/reference")
+    @PostMapping("/servicePayments")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody Long entity, @RequestBody Long reference, @RequestBody Long amount) {
+    public ResponseEntity<Long> createServicePayment(@RequestBody Long entity, @RequestBody Long reference, @RequestBody Long amount) {
         //entity with 5 digits
         //reference with 9 digits
         //amount provided by the user
@@ -101,7 +101,7 @@ public class TransferResource {
         return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);}
 
 
-    @PostMapping("payments/governament")
+    @PostMapping("/governmentPayments")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createTransfer(@RequestBody Long reference,@RequestBody Long amount) {
         //reference with 15 digits
@@ -112,7 +112,7 @@ public class TransferResource {
         if(!transferService.checkPositiveAmount(amount)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
         }
-        return new ResponseEntity<>(transferService.createFromGovernament(reference, amount, accountResource.getRequestUser().getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromGovernment(reference, amount, accountResource.getRequestUser().getId()), HttpStatus.CREATED);
     }
 
     @PostMapping("payments/telco")

@@ -14,30 +14,21 @@ import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
-import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.AddressRepository;
 
 
 @Service
 public class AccountService {
-
-//Added TransferService to create a transefer in the delete operation.
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
 
-
-    private final TransferService transferService;
-
     public AccountService(final AccountRepository accountRepository,
-            final AddressRepository addressRepository, final PasswordEncoder passwordEncoder, final TransferService transferService) {
+            final AddressRepository addressRepository, final PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
-
-
-        this.transferService = transferService;
     }
 
     public List<AccountDTO> findAll() {
@@ -53,10 +44,10 @@ public class AccountService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-		public AccountDTO getByEmail(final String email) {
-			return accountRepository.findByEmailIgnoreCase(email)
-							.map(account -> mapToDTO(account, new AccountDTO()))
-							.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public AccountDTO getByEmail(final String email) {
+        return accountRepository.findByEmailIgnoreCase(email)
+                        .map(account -> mapToDTO(account, new AccountDTO()))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
 
     @Transactional
@@ -77,15 +68,6 @@ public class AccountService {
 
     public void delete(final Long id) {
         accountRepository.deleteById(id);
-    }
-
-    public void redirectMoney(String iban,AccountDTO accountDTO) {
-        final TransferDTO transefer = new TransferDTO();
-        //set reciever to iban 
-        //set amount to amount 
-        //set sender to accountDTO.getid()
-
-        transferService.create(transefer);
     }
 
     private AccountDTO mapToDTO(final Account account, final AccountDTO accountDTO) {
@@ -122,6 +104,15 @@ public class AccountService {
         return accountDTO.getBalance() > 0;
 
     }
+       //Method for taking money from a bank account
+       public void removeMoney(Account account,Long amount){
+        accountRepository.addToAccountBalance(account.getId(), -amount);
+    }
 
+     //Method for Adding money to a bank account
+     public void addMoney(final Account account ,Long amount){
+        accountRepository.addToAccountBalance(account.getId(), amount);
+    }
+    
    
 }
