@@ -21,6 +21,6 @@ public class StandingOrderDTO {
     private Long sender;
 
     @NotNull
-    private Long receiver;
+    private String iban;
 
 }

@@ -1,15 +1,11 @@
 package pt.ualg.upbank.service;
 
 import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalDate;
 import java.time.Period;
-
 import javax.transaction.Transactional;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
 import pt.ualg.upbank.model.RegistrationRequest;

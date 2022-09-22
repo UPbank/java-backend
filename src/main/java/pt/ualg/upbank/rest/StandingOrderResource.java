@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import pt.ualg.upbank.model.Frequency;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.StandingOrderDTO;
 import pt.ualg.upbank.service.StandingOrderService;
