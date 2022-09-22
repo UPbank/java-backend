@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
+import pt.ualg.upbank.model.CardDTO;
 import pt.ualg.upbank.model.RegistrationRequest;
 import pt.ualg.upbank.repos.AccountRepository;
 
@@ -18,11 +19,13 @@ public class RegistrationService {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CardService cardService;
 
     public RegistrationService(final AccountRepository accountRepository,
-            final PasswordEncoder passwordEncoder) {
+            final PasswordEncoder passwordEncoder, final CardService cardService) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cardService = cardService;
     }
 
     public boolean emailExists(final RegistrationRequest registrationRequest) {

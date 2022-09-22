@@ -78,7 +78,7 @@ public class AccountService {
         accountRepository.deleteById(id);
     }
 
-    private AccountDTO mapToDTO(final Account account, final AccountDTO accountDTO) {
+    AccountDTO mapToDTO(final Account account, final AccountDTO accountDTO) {
         accountDTO.setId(account.getId());
         accountDTO.setEmail(account.getEmail());
         accountDTO.setFullName(account.getFullName());

@@ -8,8 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import pt.ualg.upbank.IBAN.IBAN;
+import pt.ualg.upbank.IBAN.IBANGenerator;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.StandingOrder;
+import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.Frequency;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.StandingOrderDTO;
@@ -22,11 +26,15 @@ public class StandingOrderService {
 
     private final StandingOrderRepository standingOrderRepository;
     private final AccountRepository accountRepository;
+    private final TransferService transferService;
+    private final AccountService accountService;
 
     public StandingOrderService(final StandingOrderRepository standingOrderRepository,
-            final AccountRepository accountRepository) {
+            final AccountRepository accountRepository,final TransferService transferService, final AccountService accountService) {
         this.standingOrderRepository = standingOrderRepository;
         this.accountRepository = accountRepository;
+        this.transferService = transferService;
+        this.accountService = accountService;
     }
 
     public SimplePage<StandingOrderDTO> findAll(final Pageable pageable) {
@@ -67,7 +75,7 @@ public class StandingOrderService {
         standingOrderDTO.setAmount(standingOrder.getAmount());
         standingOrderDTO.setFrequency(standingOrder.getFrequency());
         standingOrderDTO.setSender(standingOrder.getSender() == null ? null : standingOrder.getSender().getId());
-        standingOrderDTO.setReceiver(standingOrder.getReceiver() == null ? null : standingOrder.getReceiver().getId());
+        standingOrderDTO.setIban(standingOrder.getIban() == null ? null : standingOrder.getIban());
         return standingOrderDTO;
     }
 
@@ -78,9 +86,9 @@ public class StandingOrderService {
         final Account sender = standingOrderDTO.getSender() == null ? null : accountRepository.findById(standingOrderDTO.getSender())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender not found"));
         standingOrder.setSender(sender);
-        final Account receiver = standingOrderDTO.getReceiver() == null ? null : accountRepository.findById(standingOrderDTO.getReceiver())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found"));
-        standingOrder.setReceiver(receiver);
+                if(!new IBAN(standingOrderDTO.getIban()).validate()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found");}
+        standingOrder.setIban(standingOrderDTO.getIban());
         return standingOrder;
     }
     //segundo, minuto, hora, dia, mês, dia da semana
@@ -88,7 +96,7 @@ public class StandingOrderService {
     public void executeScheduledTransfers(Frequency frequency) {
         List<StandingOrder> transfers = standingOrderRepository.findByFrequency(frequency);
         for (StandingOrder so : transfers) {
-            createFromIban(so.getIban(), so.getAmount(), so.getSender());
+            transferService.createFromIban(so.getIban(), so.getAmount(), accountService.mapToDTO(so.getSender(), new AccountDTO()));
         }
     }
 
