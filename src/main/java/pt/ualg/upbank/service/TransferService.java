@@ -145,7 +145,7 @@ public class TransferService {
 
     @Transactional
     //method to deal wiht Iban payments
-    public Long createFromIban(final String Iban, final Long amount, AccountDTO account, Optional<String> note) {
+    public Long createFromIban(final String Iban, final Long amount, AccountDTO account, Optional<String> note, Optional<String> image) {
         if (!new IBAN(Iban).validate()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IBAN.invalid");
         }
@@ -169,6 +169,10 @@ public class TransferService {
         String newNotes = note == null ? null : note.get(); 
         if(newNotes != null)
             transfer.setNotes(newNotes);
+
+        String newImage = image == null ? null : image.get();
+        if(newImage != null)
+            transfer.setImage(newImage);
 
         return create(transfer);
     }
