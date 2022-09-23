@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import net.bytebuddy.asm.Advice.Local;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
+import pt.ualg.upbank.domain.TelcoProvider;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
 import pt.ualg.upbank.model.TelcoProviderDTO;
@@ -31,107 +32,107 @@ class LoadDatabase {
 
   @Bean
   CommandLineRunner initDatabase(TelcoProviderRepository telcoProviderRepository, AccountRepository accountRepository, AddressRepository addressRepository, TelcoProviderService telcoProviderService, AccountService accountService, AddressService addressService) {
-    // TelcoProvider altice = new TelcoProvider();
-    // altice.setId((long)1);//TODO: create env variable
-    // altice.setName("Altice");
-    // altice.setDateCreated(OffsetDateTime.now());
-    // altice.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider altice = new TelcoProvider();
+    altice.setId((long)1);//TODO: create env variable
+    altice.setName("Altice");
+    altice.setDateCreated(OffsetDateTime.now());
+    altice.setLastUpdated(OffsetDateTime.now());
 
-    // TelcoProvider nos = new TelcoProvider();
-    // nos.setId((long)2);//TODO: create env variable
-    // nos.setName("NOS");
-    // nos.setDateCreated(OffsetDateTime.now());
-    // nos.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider nos = new TelcoProvider();
+    nos.setId((long)2);//TODO: create env variable
+    nos.setName("NOS");
+    nos.setDateCreated(OffsetDateTime.now());
+    nos.setLastUpdated(OffsetDateTime.now());
 
-    // TelcoProvider moche = new TelcoProvider();
-    // moche.setId((long)3);//TODO: create env variable
-    // moche.setName("Moche");
-    // moche.setDateCreated(OffsetDateTime.now());
-    // moche.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider moche = new TelcoProvider();
+    moche.setId((long)3);//TODO: create env variable
+    moche.setName("Moche");
+    moche.setDateCreated(OffsetDateTime.now());
+    moche.setLastUpdated(OffsetDateTime.now());
 
-    // TelcoProvider sapo = new TelcoProvider();
-    // sapo.setId((long)4);//TODO: create env variable
-    // sapo.setName("Sapo");
-    // sapo.setDateCreated(OffsetDateTime.now());
-    // sapo.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider sapo = new TelcoProvider();
+    sapo.setId((long)4);//TODO: create env variable
+    sapo.setName("Sapo");
+    sapo.setDateCreated(OffsetDateTime.now());
+    sapo.setLastUpdated(OffsetDateTime.now());
 
-    // TelcoProvider uzo = new TelcoProvider();
-    // uzo.setId((long)5);//TODO: create env variable
-    // uzo.setName("UZO");
-    // uzo.setDateCreated(OffsetDateTime.now());
-    // uzo.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider uzo = new TelcoProvider();
+    uzo.setId((long)5);//TODO: create env variable
+    uzo.setName("UZO");
+    uzo.setDateCreated(OffsetDateTime.now());
+    uzo.setLastUpdated(OffsetDateTime.now());
 
-    // TelcoProvider viaCard = new TelcoProvider();
-    // viaCard.setId((long)6);//TODO: create env variable
-    // viaCard.setName("Via Card");
-    // viaCard.setDateCreated(OffsetDateTime.now());
-    // viaCard.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider viaCard = new TelcoProvider();
+    viaCard.setId((long)6);//TODO: create env variable
+    viaCard.setName("Via Card");
+    viaCard.setDateCreated(OffsetDateTime.now());
+    viaCard.setLastUpdated(OffsetDateTime.now());
 
-    // TelcoProvider vodafone = new TelcoProvider();
-    // vodafone.setId((long)7);//TODO: create env variable
-    // vodafone.setName("Vodafone");
-    // vodafone.setDateCreated(OffsetDateTime.now());
-    // vodafone.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider vodafone = new TelcoProvider();
+    vodafone.setId((long)7);//TODO: create env variable
+    vodafone.setName("Vodafone");
+    vodafone.setDateCreated(OffsetDateTime.now());
+    vodafone.setLastUpdated(OffsetDateTime.now());
 
-    // TelcoProvider wtf = new TelcoProvider();
-    // wtf.setId((long)8);//TODO: create env variable
-    // wtf.setName("WTF");
-    // wtf.setDateCreated(OffsetDateTime.now());
-    // wtf.setLastUpdated(OffsetDateTime.now());
+    TelcoProvider wtf = new TelcoProvider();
+    wtf.setId((long)8);//TODO: create env variable
+    wtf.setName("WTF");
+    wtf.setDateCreated(OffsetDateTime.now());
+    wtf.setLastUpdated(OffsetDateTime.now());
     
 
-    //   Address address = new Address();
-    //   address.setId((long)1);//TODO: create env variable
-    //   address.setCity("city");
-    //   address.setDistrict("district");
-    //   address.setLine1("line1");
-    //   address.setLine2("line2");
-    //   address.setZipCode("zipCode");
+      Address address = new Address();
+      address.setId((long)10);//TODO: create env variable
+      address.setCity("city");
+      address.setDistrict("district");
+      address.setLine1("line1");
+      address.setLine2("line2");
+      address.setZipCode("zipCode");
 
 
-    //   Account government =new Account();
-    //   government.setAddress(address);
-    //   government.setFullName("Governo de Portugal");
-    //   government.setId((long)9);
-    //   government.setBalance((long)0);//TODO: create env variable
-    //   government.setBirthdate(LocalDate.parse("1143-10-05"));
-    //   government.setTaxNumber("9999999");
-    //   government.setIdNumber("0000000001");
-    //   government.setEmail("gov@gov.pt");
-    //   government.setHash("1234");
+      Account government =new Account();
+      government.setAddress(address);
+      government.setFullName("Governo de Portugal");
+      government.setId((long)100);
+      government.setBalance((long)0);//TODO: create env variable
+      government.setBirthdate(LocalDate.parse("1143-10-05"));
+      government.setTaxNumber("9999999");
+      government.setIdNumber("0000000001");
+      government.setEmail("gov@gov.pt");
+      government.setHash("1234");
 
-    //   Account entity =new Account();
-    //   entity.setAddress(address);
-    //   entity.setFullName("Pedro Charlito");
-    //   entity.setId((long)10);//TODO: create env variable
-    //   entity.setBalance((long)0);
-    //   entity.setBirthdate(LocalDate.parse("1994-02-03"));
-    //   entity.setTaxNumber("020202020");
-    //   entity.setIdNumber("0000000002");
-    //   entity.setEmail("pdrchrld@gmail.com");
-    //   entity.setHash("2345");
+      Account entity =new Account();
+      entity.setAddress(address);
+      entity.setFullName("Pedro Charlito");
+      entity.setId((long)110);//TODO: create env variable
+      entity.setBalance((long)0);
+      entity.setBirthdate(LocalDate.parse("1994-02-03"));
+      entity.setTaxNumber("020202020");
+      entity.setIdNumber("0000000002");
+      entity.setEmail("pdrchrld@gmail.com");
+      entity.setHash("2345");
 
-    //   Account telecomunicações =new Account();
-    //   entity.setAddress(address);
-    //   entity.setFullName("Telecomunicações");
-    //   entity.setId((long)11);//TODO: create env variable
-    //   entity.setBalance((long)0);
-    //   entity.setBirthdate(LocalDate.parse("1990/01/01 "));
-    //   entity.setTaxNumber("020202020");
-    //   entity.setIdNumber("0000000002");
-    //   entity.setEmail("telco@telco.pt");
-    //   entity.setHash("2345");
+      Account telecomunication =new Account();
+      entity.setAddress(address);
+      entity.setFullName("Telecomunicações");
+      entity.setId((long)120);//TODO: create env variable
+      entity.setBalance((long)0);
+      entity.setBirthdate(LocalDate.parse("1990-01-01"));
+      entity.setTaxNumber("020202020");
+      entity.setIdNumber("0000000002");
+      entity.setEmail("telco@telco.pt");
+      entity.setHash("2345");
 
-      //  Account bankAccount =new Account();
-      // bankAccount.setAddress(address);
-      // bankAccount.setFullName("Bank Account");
-      // bankAccount.setId((long)11); //TODO: create env variable
-      // bankAccount.setBalance((long)0);
-      // bankAccount.setBirthdate(LocalDate.parse("1990/01/01 "));
-      // bankAccount.setTaxNumber("020202020");
-      // bankAccount.setIdNumber("0000000002");
-      // bankAccount.setEmail("bank@account.pt");
-      // bankAccount.setHash("2345");
+       Account bankAccount =new Account();
+      bankAccount.setAddress(address);
+      bankAccount.setFullName("Bank Account");
+      bankAccount.setId((long)130); //TODO: create env variable
+      bankAccount.setBalance((long)0);
+      bankAccount.setBirthdate(LocalDate.parse("1990-01-01"));
+      bankAccount.setTaxNumber("020202020");
+      bankAccount.setIdNumber("0000000002");
+      bankAccount.setEmail("bank@account.pt");
+      bankAccount.setHash("2345");
 
 
     return args -> {

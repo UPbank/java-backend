@@ -1,7 +1,10 @@
 package pt.ualg.upbank.service;
 
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice.Local;
+
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.Period;
 import javax.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -78,14 +81,14 @@ public class RegistrationService {
         final Address address =AddressService.toEntity(registrationRequest.getAddress(), new Address());
         addressRepository.save(address);
 				account.setAddress(address);
-        
-                
+                account.setDateCreated(OffsetDateTime.now());
+                account.setLastUpdated(OffsetDateTime.now());
                 accountRepository.save(account);
                
                 CardDTO cardPhysical = new CardDTO();
                 CardDTO cardVirtual = new CardDTO();
                 cardService.createFromRegister(cardPhysical,"Physical Card",account.getId(), 0000);
                 cardService.createFromRegister(cardVirtual,"Virtual Card",account.getId(),0000);
-            }
+    }
 
 }
