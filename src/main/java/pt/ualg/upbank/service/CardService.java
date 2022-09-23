@@ -39,8 +39,24 @@ public class CardService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    public Long createFromRegister(final CardDTO cardDTO, String name, Long account, int pinCode) {
+        final Card card = new Card();
+
+        cardDTO.setAccount(account);
+        cardDTO.setName(name);
+        cardDTO.setPinCode(pinCode);
+
+        //Set expiration date 2 years from now
+        cardDTO.setExpirationDate(LocalDate.now().plusYears(2));
+        
+        mapToEntity(cardDTO, card);
+    
+        return cardRepository.save(card).getId();
+    }
+
     public Long create(final CardDTO cardDTO) {
         final Card card = new Card();
+
 
         //Set expiration date 2 years from now
         cardDTO.setExpirationDate(LocalDate.now().plusYears(2));

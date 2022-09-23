@@ -3,10 +3,13 @@ package pt.ualg.upbank.IBAN;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
+ * @author Pedro Cavalheiro
+ * Abstract Class representing a general Basic Bank Account Number
+ * 
  * Up to 30 alphanumeric characters
  */
+ 
 public abstract class BBAN {
 	protected String value;
 

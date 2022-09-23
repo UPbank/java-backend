@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,17 +61,29 @@ public class AccountService {
     @Transactional
     public Long create(final AccountDTO accountDTO) {
         final Account account = new Account();
-        
-        //Create two cards
         mapToEntity(accountDTO, account);
-
         return accountRepository.save(account).getId();
     }
 
-     
-    public void update(final Long id, final AccountDTO accountDTO) {
+     @Transactional
+    public void update(Long id, String email, AddressDTO addressDTO) {
         final Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        final AccountDTO accountDTO =  new AccountDTO();
+        if(email != null){
+            accountDTO.setEmail(email);
+        }else{
+            accountDTO.setEmail(account.getEmail());
+        }
+
+        if(addressDTO != null){
+            final Address address = AddressService.toEntity(addressDTO, new Address());
+            addressRepository.save(address);
+            accountDTO.setAddress(addressDTO);
+        }else{
+            accountDTO.setAddress(AddressService.toDTO(account.getAddress(), new AddressDTO()));
+        }
+
         mapToEntity(accountDTO, account);
         accountRepository.save(account);
     }
@@ -108,8 +122,6 @@ public class AccountService {
         return accountRepository.existsByEmailIgnoreCase(email);
     }
 
-
-
     public boolean checkBalance(final AccountDTO accountDTO){
         return accountDTO.getBalance() > 0;
 
@@ -123,6 +135,7 @@ public class AccountService {
      public void addMoney(final Account account ,Long amount){
         accountRepository.addToAccountBalance(account.getId(), amount);
     }
+
 
    
 }

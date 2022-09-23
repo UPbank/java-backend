@@ -32,56 +32,56 @@ class LoadDatabase {
   @Bean
   CommandLineRunner initDatabase(TelcoProviderRepository telcoProviderRepository, AccountRepository accountRepository, AddressRepository addressRepository, TelcoProviderService telcoProviderService, AccountService accountService, AddressService addressService) {
     // TelcoProvider altice = new TelcoProvider();
-    // altice.setId((long)1);
+    // altice.setId((long)1);//TODO: create env variable
     // altice.setName("Altice");
     // altice.setDateCreated(OffsetDateTime.now());
     // altice.setLastUpdated(OffsetDateTime.now());
 
     // TelcoProvider nos = new TelcoProvider();
-    // nos.setId((long)2);
+    // nos.setId((long)2);//TODO: create env variable
     // nos.setName("NOS");
     // nos.setDateCreated(OffsetDateTime.now());
     // nos.setLastUpdated(OffsetDateTime.now());
 
     // TelcoProvider moche = new TelcoProvider();
-    // moche.setId((long)3);
+    // moche.setId((long)3);//TODO: create env variable
     // moche.setName("Moche");
     // moche.setDateCreated(OffsetDateTime.now());
     // moche.setLastUpdated(OffsetDateTime.now());
 
     // TelcoProvider sapo = new TelcoProvider();
-    // sapo.setId((long)4);
+    // sapo.setId((long)4);//TODO: create env variable
     // sapo.setName("Sapo");
     // sapo.setDateCreated(OffsetDateTime.now());
     // sapo.setLastUpdated(OffsetDateTime.now());
 
     // TelcoProvider uzo = new TelcoProvider();
-    // uzo.setId((long)5);
+    // uzo.setId((long)5);//TODO: create env variable
     // uzo.setName("UZO");
     // uzo.setDateCreated(OffsetDateTime.now());
     // uzo.setLastUpdated(OffsetDateTime.now());
 
     // TelcoProvider viaCard = new TelcoProvider();
-    // viaCard.setId((long)6);
+    // viaCard.setId((long)6);//TODO: create env variable
     // viaCard.setName("Via Card");
     // viaCard.setDateCreated(OffsetDateTime.now());
     // viaCard.setLastUpdated(OffsetDateTime.now());
 
     // TelcoProvider vodafone = new TelcoProvider();
-    // vodafone.setId((long)7);
+    // vodafone.setId((long)7);//TODO: create env variable
     // vodafone.setName("Vodafone");
     // vodafone.setDateCreated(OffsetDateTime.now());
     // vodafone.setLastUpdated(OffsetDateTime.now());
 
     // TelcoProvider wtf = new TelcoProvider();
-    // wtf.setId((long)8);
+    // wtf.setId((long)8);//TODO: create env variable
     // wtf.setName("WTF");
     // wtf.setDateCreated(OffsetDateTime.now());
     // wtf.setLastUpdated(OffsetDateTime.now());
     
 
     //   Address address = new Address();
-    //   address.setId((long)1);
+    //   address.setId((long)1);//TODO: create env variable
     //   address.setCity("city");
     //   address.setDistrict("district");
     //   address.setLine1("line1");
@@ -93,7 +93,7 @@ class LoadDatabase {
     //   government.setAddress(address);
     //   government.setFullName("Governo de Portugal");
     //   government.setId((long)9);
-    //   government.setBalance((long)0);
+    //   government.setBalance((long)0);//TODO: create env variable
     //   government.setBirthdate(LocalDate.parse("1143-10-05"));
     //   government.setTaxNumber("9999999");
     //   government.setIdNumber("0000000001");
@@ -103,7 +103,7 @@ class LoadDatabase {
     //   Account entity =new Account();
     //   entity.setAddress(address);
     //   entity.setFullName("Pedro Charlito");
-    //   entity.setId((long)10);
+    //   entity.setId((long)10);//TODO: create env variable
     //   entity.setBalance((long)0);
     //   entity.setBirthdate(LocalDate.parse("1994-02-03"));
     //   entity.setTaxNumber("020202020");
@@ -114,7 +114,7 @@ class LoadDatabase {
     //   Account telecomunicações =new Account();
     //   entity.setAddress(address);
     //   entity.setFullName("Telecomunicações");
-    //   entity.setId((long)11);
+    //   entity.setId((long)11);//TODO: create env variable
     //   entity.setBalance((long)0);
     //   entity.setBirthdate(LocalDate.parse("1990/01/01 "));
     //   entity.setTaxNumber("020202020");
@@ -122,6 +122,16 @@ class LoadDatabase {
     //   entity.setEmail("telco@telco.pt");
     //   entity.setHash("2345");
 
+      //  Account bankAccount =new Account();
+      // bankAccount.setAddress(address);
+      // bankAccount.setFullName("Bank Account");
+      // bankAccount.setId((long)11); //TODO: create env variable
+      // bankAccount.setBalance((long)0);
+      // bankAccount.setBirthdate(LocalDate.parse("1990/01/01 "));
+      // bankAccount.setTaxNumber("020202020");
+      // bankAccount.setIdNumber("0000000002");
+      // bankAccount.setEmail("bank@account.pt");
+      // bankAccount.setHash("2345");
 
 
     return args -> {
@@ -134,38 +144,17 @@ class LoadDatabase {
       // log.info("Preloading " + telcoProviderRepository.save(vodafone));
       // log.info("Preloading " + telcoProviderRepository.save(wtf));
 
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)1, "Altice")));
-
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)2, "Nos")));
-
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)3, "Moche")));
-
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)4, "Sapo")));
-
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)5, "Uzo")));
-      
-
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)6, "Via Card")));
-
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)7, "Vodafone")));
-
-      // log.info("Preloading " + telcoProviderService.create(new TelcoProviderDTO((long)8, "WTF")));
 
       // log.info("Preloading " + addressRepository.save(address));
 
       // log.info("Preloading " + accountRepository.save(government));
-      
-      // log.info("Preloading " + accountService.create(new AccountDTO((long)9, "gov@gov.pt", "1234", "Governo de Portugal", LocalDate.parse("1143/10/5") , "9999999", "0000000001", (long)0, new AddressDTO((long)1)))); 
 
 
       // log.info("Preloading " + accountRepository.save(entity));
 
-    //   //entidade
-      // log.info("Preloading " + accountService.create(new AccountDTO((long)10, "pdrchrld@gmail.com", "2345", "Pedro Charlito", LocalDate.of(1994, 2, 3) , "020202020", "0000000002", (long)0, new AddressDTO())));
+       // log.info("Preloading " + accountRepository.save(telecomunicações));
 
-    //   //telecomunicações
-    //   log.info("Preloading " + accountService.create(new AccountDTO((long)11, "telco@telco.pt", "3456", "Telecomunicações", LocalDate.of(1990, 1, 1) , "030303030", "0000000003", (long)0, new AddressDTO()))); 
-
+       // log.info("Preloading " + accountRepository.save(bankAccount));
     // };
 
       

@@ -2,6 +2,9 @@ package pt.ualg.upbank.rest;
 
 import static pt.ualg.upbank.service.JwtUserDetailsService.ROLE_USER;
 
+import java.util.Optional;
+import java.util.regex.Matcher;
+
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
@@ -22,7 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import pt.ualg.upbank.model.AccountDTO;
+import pt.ualg.upbank.model.AddressDTO;
 import pt.ualg.upbank.service.AccountService;
+import pt.ualg.upbank.service.RegistrationService;
 
 
 @RestController
@@ -32,9 +37,13 @@ import pt.ualg.upbank.service.AccountService;
 public class AccountResource {
 
 		private final AccountService accountService;
+		private final RegistrationService registrationService;
+		
 
-		public AccountResource(final AccountService accountService) {
+		public AccountResource(final AccountService accountService, final RegistrationService registrationService) {
 				this.accountService = accountService;
+				this.registrationService = registrationService;
+				
 		}
 
 		public AccountDTO getRequestUser() {
@@ -49,8 +58,24 @@ public class AccountResource {
 		}
 
 		@PutMapping("/")
-		public ResponseEntity<Void> updateAccount(@RequestBody @Valid final AccountDTO accountDTO) {
-				accountService.update(getRequestUser().getId(), accountDTO); // TODO: user can only update some fields
+		public ResponseEntity<Void> updateAccount(@RequestBody @Valid final Optional<String> email, @RequestBody @Valid final Optional<AddressDTO> addressDTO) {
+			final String newEmail = email==null ? null : email.get();
+			if(email != null){
+				
+			}
+			final Matcher mat = RegistrationResource.pattern.matcher(newEmail);
+        if (!mat.matches()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.email.invalid");
+        }
+		if (accountService.emailExists(newEmail)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.register.taken");
+        }
+
+		final AddressDTO newAddressDTO = addressDTO==null ? null: addressDTO.get();
+		
+				accountService.update(getRequestUser().getId(), newEmail, newAddressDTO); // TODO: user can only update some fields
+
+				// The system shall use the Account and Address tables. The system shall be able to accept changes in the email, phone number and address details. Address details shall be in conformity with the fields requested (Address line 1, Address line 2 (optional), Postal code (####-###), City, District). The system shall not be accepting changes in attributes such as name and tax number for security reasons. When changes in the account table are performed, the attribute updatedAt shall be automatically changed to the date of the performed changes.
 				return ResponseEntity.ok().build();
 		}
 

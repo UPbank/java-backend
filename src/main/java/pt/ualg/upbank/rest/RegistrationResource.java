@@ -18,7 +18,9 @@ import pt.ualg.upbank.service.RegistrationService;
 public class RegistrationResource {
 
     private final RegistrationService registrationService;
-    private static final Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+    static final Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+    static final Pattern patternZipCode = Pattern.compile("\\d{4}\\-\\d{3}");
+
 
     public RegistrationResource(final RegistrationService registrationService) {
         this.registrationService = registrationService;
@@ -38,6 +40,14 @@ public class RegistrationResource {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.age.underage");
 
         }
+        if(!RegistrationService.isNifValid(registrationRequest.getTaxNumber())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.taxNumber.invalid");
+        }
+        final Matcher matZipCode = patternZipCode.matcher(registrationRequest.getAddress().getZipCode());
+        if (!matZipCode.matches()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.zip-code.invalid");
+        }
+
         registrationService.register(registrationRequest);
         return ResponseEntity.ok().build();
     }

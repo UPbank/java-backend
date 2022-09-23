@@ -12,6 +12,11 @@ import java.util.List;
 	11 digits account number
 	2 digits check digit
  */
+/**
+ * @author Pedro Cavalheiro
+ * Class representing an International Bank Account Number.
+ * Constructs a Valid International Bank Account Number, uses a String countryCode, an integer countryCheckDigits and a {@link BBAN}.
+ */
 public class IBAN {
 
 	private String countryCode;

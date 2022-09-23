@@ -92,13 +92,9 @@ public class TransferResource {
         if(!transferService.checkReference(reference)){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "reference.must.have.9.digits"); 
         }
-        if(!transferService.checkPositiveAmount(amount)){
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
-        }
-        //A new method to create a transfer from a reference
     
         
-        return new ResponseEntity<>(transferService.create(null/*transferDTO*/), HttpStatus.CREATED);}
+        return new ResponseEntity<>(transferService.createFromEntity(entity, reference, amount, accountResource.getRequestUser().getId()), HttpStatus.CREATED);}
 
 
     @PostMapping("/governmentPayments")
@@ -134,9 +130,7 @@ public class TransferResource {
         if(!transferService.checkPhoneNumberStartingDigits(number)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.provider.not.found");
         }
-        if(!transferService.checkPositiveAmount(amount)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
-            }
+      
         return new ResponseEntity<>(transferService.createFromPhoneNumber(number, amount, accountResource.getRequestUser()), HttpStatus.CREATED);
 
     }

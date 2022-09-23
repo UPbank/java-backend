@@ -98,9 +98,24 @@ public class TransferService {
     // }
 
     @Transactional
+    //method to deal wiht Entity and Reference payments
+    public Long createFromEntity(final Long entity, final Long reference, final Long amount, long id) {
+    final Account reciever = accountRepository.findById((long) 10)//TODO: change to env variable
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        final TransferDTO transfer = new TransferDTO();
+        transfer.setAmount(amount);
+        transfer.setReceiver(reciever.getId());
+        transfer.setSender(id);
+        transfer.setMetadata("{type:\"SERV\", reference:\"" + reference +", entity:\"" + entity + "\"}");
+
+        return create(transfer);
+    }
+
+    @Transactional
     //method to deal wiht reference payments
     public Long createFromGovernment(final Long reference, final Long amount, long id) {
-        final Account reciever = accountRepository.findById((long) 10)
+        final Account reciever = accountRepository.findById((long) 10) //TODO: change to env variabl
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         final TransferDTO transfer = new TransferDTO();
@@ -114,7 +129,7 @@ public class TransferService {
     @Transactional
     //method to deal with phone payments
     public Long createFromPhoneNumber(final Long phone, final Long amount, AccountDTO account) {
-        final Account reciever = accountRepository.findById((long) 1) //Add number of telecomunicações account
+        final Account reciever = accountRepository.findById((long) 1) //TODO: change to env variabl
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         final Long sender = account.getId();
@@ -122,14 +137,14 @@ public class TransferService {
         transfer.setAmount(amount);
         transfer.setReceiver(reciever.getId());
         transfer.setSender(sender);
-        String json = "{type:\"TEL\", PhoneNumber:\"" + phone + "\", amount:\"" + amount + "\"}"; 
+        String json = "{type:\"TEL\", PhoneNumber:\"" + phone + "\", TelCO:\"" + reciever.getFullName() + "\"}"; 
         transfer.setMetadata(json);
 
         return create(transfer);
     }
 
     @Transactional
-    //method to deal wiht reference payments
+    //method to deal wiht Iban payments
     public Long createFromIban(final String Iban, final Long amount, AccountDTO account, Optional<String> note) {
         if (!new IBAN(Iban).validate()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IBAN.invalid");
@@ -139,7 +154,7 @@ public class TransferService {
         final TransferDTO transfer = new TransferDTO();
 
         if(accountRepository.findById((receiverId)) == null){
-            transfer.setReceiver((long)11);
+            transfer.setReceiver((long)11); //TODO: change to env variable
         }else{
             transfer.setReceiver(receiverId);
         }

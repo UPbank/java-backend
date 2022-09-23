@@ -77,9 +77,6 @@ public class Account {
     @OneToMany(mappedBy = "sender")
     private Set<StandingOrder> senderStandingOrders;
 
-    @OneToMany(mappedBy = "receiver")
-    private Set<StandingOrder> receiverStandingOrders;
-
     @OneToMany(mappedBy = "account")
     private Set<Card> accountCards;
 

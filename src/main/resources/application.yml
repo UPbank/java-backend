@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${JDBC_DATABASE_URL:jdbc:h2:file:~/test2;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE}
+    url: ${JDBC_DATABASE_URL:jdbc:h2:file:~/test;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE}
     username: ${JDBC_DATABASE_USERNAME:sa}
     password: ${JDBC_DATABASE_PASSWORD:password}
     dbcp2:

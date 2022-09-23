@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import pt.ualg.upbank.IBAN.IBAN;
-import pt.ualg.upbank.IBAN.IBANGenerator;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.StandingOrder;
 import pt.ualg.upbank.model.AccountDTO;
@@ -94,9 +93,10 @@ public class StandingOrderService {
     //segundo, minuto, hora, dia, mês, dia da semana
 
     public void executeScheduledTransfers(Frequency frequency) {
-        List<StandingOrder> transfers = standingOrderRepository.findByFrequency(frequency);
-        for (StandingOrder so : transfers) {
-            transferService.createFromIban(so.getIban(), so.getAmount(), accountService.mapToDTO(so.getSender(), new AccountDTO()));
+        List<StandingOrder> transfers = standingOrderRepository.findByFrequency(frequency)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "standingOrders.empty"));       
+         for (StandingOrder so : transfers) {
+            transferService.createFromIban(so.getIban(), so.getAmount(), accountService.mapToDTO(so.getSender(), new AccountDTO()),null );
         }
     }
 

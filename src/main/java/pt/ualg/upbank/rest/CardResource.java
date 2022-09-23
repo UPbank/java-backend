@@ -57,7 +57,15 @@ public class CardResource {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCardNfc(@PathVariable final Long id,
             @RequestBody Boolean nfc , @RequestBody Boolean online, @RequestBody @Size(max = 4) Optional <Integer> pinCode) {
-        // cardService.update(id);
+        CardDTO cardDTO = new CardDTO();
+        cardDTO.setNfcPayments(nfc);
+        cardDTO.setOnlinePayments(online);
+        Integer pin = pinCode==null ? null : pinCode.get();
+
+        if(pin != null){
+            cardDTO.setPinCode(pin);
+        }
+        cardService.update(id ,cardDTO);
         return ResponseEntity.ok().build();
     }
 

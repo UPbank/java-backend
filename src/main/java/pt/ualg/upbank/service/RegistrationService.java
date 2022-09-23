@@ -11,6 +11,7 @@ import pt.ualg.upbank.domain.Address;
 import pt.ualg.upbank.model.CardDTO;
 import pt.ualg.upbank.model.RegistrationRequest;
 import pt.ualg.upbank.repos.AccountRepository;
+import pt.ualg.upbank.repos.AddressRepository;
 
 
 @Service
@@ -20,12 +21,14 @@ public class RegistrationService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final CardService cardService;
+    private final AddressRepository addressRepository;
 
     public RegistrationService(final AccountRepository accountRepository,
-            final PasswordEncoder passwordEncoder, final CardService cardService) {
+            final PasswordEncoder passwordEncoder, final CardService cardService, final AddressRepository addressRepository) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.cardService = cardService;
+        this.addressRepository = addressRepository;
     }
 
     public boolean emailExists(final RegistrationRequest registrationRequest) {
@@ -72,16 +75,17 @@ public class RegistrationService {
         account.setTaxNumber(registrationRequest.getTaxNumber());
         account.setIdNumber(registrationRequest.getIdNumber());
         account.setBalance((long) 10000); // TODO: Move default balance to an env variable
-				account.setAddress(AddressService.toEntity(registrationRequest.getAddress(), new Address()));
+        final Address address =AddressService.toEntity(registrationRequest.getAddress(), new Address());
+        addressRepository.save(address);
+				account.setAddress(address);
         
-                CardDTO cardPhysical = new CardDTO();
-                CardDTO cardVirtual = new CardDTO();
-                cardService.create(cardPhysical);
-                cardService.create(cardVirtual);
-                cardPhysical.setName("Physical Card");
-                cardPhysical.setName("Virtual Card"); 
                 
                 accountRepository.save(account);
-    }
+               
+                CardDTO cardPhysical = new CardDTO();
+                CardDTO cardVirtual = new CardDTO();
+                cardService.createFromRegister(cardPhysical,"Physical Card",account.getId(), 0000);
+                cardService.createFromRegister(cardVirtual,"Virtual Card",account.getId(),0000);
+            }
 
 }
