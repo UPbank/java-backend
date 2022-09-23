@@ -137,14 +137,14 @@ public class TransferResource {
 
     @PostMapping("payments/bankTransfers")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody String iban, @RequestBody Long amount, Optional<String> note) {
+    public ResponseEntity<Long> createTransfer(@RequestBody String iban, @RequestBody Long amount, Optional<String> note, Optional<String> image) {
         // IBAN
         // If IBAN belongs to the same bank account, payment is immediatelly processed
         // If IBAN doesn´t belong to the same bank account, use external API to process payment
         // amount provided by the user
         // optional note given by the user
 
-        return new ResponseEntity<>(transferService.createFromIban(iban, amount, accountResource.getRequestUser(), note), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromIban(iban, amount, accountResource.getRequestUser(), note, image), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
