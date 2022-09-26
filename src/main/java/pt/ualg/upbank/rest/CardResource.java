@@ -35,9 +35,11 @@ import pt.ualg.upbank.service.CardService;
 public class CardResource {
 
     private final CardService cardService;
+    private final AccountResource accountResource;
 
-    public CardResource(final CardService cardService) {
+    public CardResource(final CardService cardService, final AccountResource accountResource) {
         this.cardService = cardService;
+        this.accountResource = accountResource;
     }
 
     //TODO: delete mapping
@@ -48,7 +50,7 @@ public class CardResource {
 
     @GetMapping("/{id}")
     public ResponseEntity<CardDTO> getCard(@PathVariable final Long id) {
-        return ResponseEntity.ok(cardService.get(id));
+        return ResponseEntity.ok(cardService.get(id,accountResource.getRequestUser().getId()));
     }
 
     @PostMapping

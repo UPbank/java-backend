@@ -44,6 +44,10 @@ public class AccountDTO {
     @NotNull
     private AddressDTO address;
 
+    
+    @Size(max = 255)
+    private String identifier;
+
     public AccountDTO(){}
     
     public AccountDTO( String email, String hash, String fullName, LocalDate birthdate, String taxNumber, String idNumber, long balance, AddressDTO address){

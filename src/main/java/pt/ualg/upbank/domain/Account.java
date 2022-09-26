@@ -94,4 +94,7 @@ public class Account {
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
 
+    @Column(unique = true)
+    private String identifier;
+
 }

@@ -62,5 +62,9 @@ public class Address {
     @LastModifiedDate
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
+    
+    @Column(unique = true)
+    private String identifier;
+
 
 }

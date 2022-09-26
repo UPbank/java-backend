@@ -62,7 +62,7 @@ public class StandingOrderResource {
             )
         }
     )
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<SimplePage<StandingOrderDTO>> getAllStandingOrders(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
         return ResponseEntity.ok(standingOrderService.findAll(pageable));

@@ -37,6 +37,7 @@ public class TelcoProvider {
 
     @Column(nullable = false)
     private String name;
+    
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

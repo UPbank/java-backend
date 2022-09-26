@@ -5,4 +5,6 @@ import pt.ualg.upbank.domain.Address;
 
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
+
+    boolean existsByIdentifier(String identifier);
 }

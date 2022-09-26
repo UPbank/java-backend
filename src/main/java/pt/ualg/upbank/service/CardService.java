@@ -35,8 +35,10 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
-    public CardDTO get(final Long id) {
-        return cardRepository.findById(id)
+    public CardDTO get(final Long id, final Long accountId) {
+        Account account = accountRepository.findById(accountId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return cardRepository.findByIdAndAccount(account, id)
                 .map(card -> mapToDTO(card, new CardDTO()))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }

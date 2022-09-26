@@ -38,7 +38,7 @@ public class DirectDebitResource {
     private final DirectDebitService directDebitService;
     private final AccountResource accountResource;
 
-    public DirectDebitResource(final DirectDebitService directDebitService, AccountResource accountResource) {
+    public DirectDebitResource(final DirectDebitService directDebitService, final AccountResource accountResource) {
         this.directDebitService = directDebitService;
         this.accountResource = accountResource; 
     }
@@ -62,7 +62,7 @@ public class DirectDebitResource {
                     )
             }
     )
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<SimplePage<DirectDebitDTO>> getAllDirectDebits(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
         return ResponseEntity.ok(directDebitService.findAll(pageable));

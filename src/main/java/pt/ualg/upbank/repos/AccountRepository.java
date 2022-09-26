@@ -15,10 +15,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByEmailIgnoreCase(String email);
 
-
-
     boolean existsByEmailIgnoreCase(String email);
+
     boolean existsById(Long id);
+    boolean existsByIdentifier(String identifier);
+
     Optional<Account> findById(Long id);
 
     Optional<List<Account>> findByFullNameContaining(String fullName);

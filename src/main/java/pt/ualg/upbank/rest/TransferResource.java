@@ -71,7 +71,7 @@ public class TransferResource {
             )
         }
     )
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<SimplePage<TransferDTO>> getAllTransfers(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
         return ResponseEntity.ok(transferService.findAll(pageable));
