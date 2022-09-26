@@ -36,9 +36,11 @@ import pt.ualg.upbank.service.DirectDebitService;
 public class DirectDebitResource {
 
     private final DirectDebitService directDebitService;
+    private final AccountResource accountResource;
 
-    public DirectDebitResource(final DirectDebitService directDebitService) {
+    public DirectDebitResource(final DirectDebitService directDebitService, AccountResource accountResource) {
         this.directDebitService = directDebitService;
+        this.accountResource = accountResource; 
     }
 
     @Operation(
@@ -80,8 +82,8 @@ public class DirectDebitResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateDirectDebit(@PathVariable final Long id,
-            @RequestBody @Valid final DirectDebitDTO directDebitDTO, @RequestBody Boolean bool) {
-        directDebitService.update(id, directDebitDTO, bool);
+            @RequestBody @Valid final Boolean bool) {
+        directDebitService.update(id,accountResource.getRequestUser().getId(), bool);
         return ResponseEntity.ok().build();
     }
 

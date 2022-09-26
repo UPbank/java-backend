@@ -26,7 +26,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import pt.ualg.upbank.model.IbanTransferDTO;
+import pt.ualg.upbank.model.ServiceTransferDTO;
 import pt.ualg.upbank.model.SimplePage;
+import pt.ualg.upbank.model.TelcoTransferDTO;
 import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.service.TransferService;
 import java.util.Optional;
@@ -79,41 +82,44 @@ public class TransferResource {
         return ResponseEntity.ok(transferService.get(id));
     }
 
+
     @PostMapping("/servicePayments")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createServicePayment(@RequestBody Long entity, @RequestBody Long reference, @RequestBody Long amount) {
+    public ResponseEntity<Long> createServicePayment(@RequestBody ServiceTransferDTO serviceTransferDTO) {
         //entity with 5 digits
         //reference with 9 digits
         //amount provided by the user
 
-        if (!transferService.checkEntity(entity)){
+        if (!transferService.checkEntity(serviceTransferDTO.getEntity())){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "entity.must.have.5.digits");
         }
-        if(!transferService.checkReference(reference)){
+        if(!transferService.checkReference(serviceTransferDTO.getReference())){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "reference.must.have.9.digits"); 
         }
     
         
-        return new ResponseEntity<>(transferService.createFromEntity(entity, reference, amount, accountResource.getRequestUser().getId()), HttpStatus.CREATED);}
+        return new ResponseEntity<>(transferService.createFromEntity(serviceTransferDTO.getEntity(), serviceTransferDTO.getReference(), serviceTransferDTO.getAmount(), accountResource.getRequestUser().getId()), HttpStatus.CREATED);}
 
+		//TODO: Create DTO
 
     @PostMapping("/governmentPayments")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody Long reference,@RequestBody Long amount) {
+    public ResponseEntity<Long> createTransfer(@RequestBody ServiceTransferDTO serviceTransferDTO) {
         //reference with 15 digits
         //amount provided by the user
-        if(!transferService.checkGovernamentReference(reference)){
+        if(!transferService.checkGovernamentReference(serviceTransferDTO.getReference())){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "reference.must.have.15.digits"); 
             }
-        if(!transferService.checkPositiveAmount(amount)){
+        if(!transferService.checkPositiveAmount(serviceTransferDTO.getAmount())){
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive"); 
         }
-        return new ResponseEntity<>(transferService.createFromGovernment(reference, amount, accountResource.getRequestUser().getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromGovernment(serviceTransferDTO.getReference(), serviceTransferDTO.getAmount(), accountResource.getRequestUser().getId()), HttpStatus.CREATED);
     }
+		//TODO: Create DTO
 
-    @PostMapping("payments/telco")
+    @PostMapping("/telco")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody String name, @RequestBody Long number, @RequestBody Long amount) {
+    public ResponseEntity<Long> createTransfer(@RequestBody TelcoTransferDTO telcoTransferDTO) {
         //provider 
         //Lycamobile GT MOBile, MEO, MEO Card, MEO Card - PT HEllo/ PT Card, MEO CArd - Telefone Hello, MEO Escola Digital, Moche, NOS, NOS - Escola Digital, Sapo, Sapo ADSL, UZO, Via Card, Vodafone, WTF.
         //phone number provided by the user
@@ -121,30 +127,30 @@ public class TransferResource {
         // phone number start with 91,92, 93 or 96
         //amount provided by the user
 
-        if(!transferService.checkTelcoProvider(name)){
+        if(!transferService.checkTelcoProvider(telcoTransferDTO.getName())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "telco.provider.not.found");  
         }
-        if(!transferService.checkPhoneDigits(number)){
+        if(!transferService.checkPhoneDigits(telcoTransferDTO.getPhoneNumber())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.must.have.9.digits");
         }
-        if(!transferService.checkPhoneNumberStartingDigits(number)){
+        if(!transferService.checkPhoneNumberStartingDigits(telcoTransferDTO.getPhoneNumber())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.provider.not.found");
         }
       
-        return new ResponseEntity<>(transferService.createFromPhoneNumber(number, amount, accountResource.getRequestUser()), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromPhoneNumber(telcoTransferDTO.getPhoneNumber(), telcoTransferDTO.getAmount(), accountResource.getRequestUser()), HttpStatus.CREATED );
 
     }
 
-    @PostMapping("payments/bankTransfers")
+    @PostMapping("/bankTransfers")
     @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createTransfer(@RequestBody String iban, @RequestBody Long amount, Optional<String> note, Optional<String> image) {
+    public ResponseEntity<Long> createTransfer(@RequestBody IbanTransferDTO ibanTransferDTO) {
         // IBAN
         // If IBAN belongs to the same bank account, payment is immediatelly processed
         // If IBAN doesn´t belong to the same bank account, use external API to process payment
         // amount provided by the user
         // optional note given by the user
 
-        return new ResponseEntity<>(transferService.createFromIban(iban, amount, accountResource.getRequestUser(), note, image), HttpStatus.CREATED);
+        return new ResponseEntity<>(transferService.createFromIban(ibanTransferDTO, accountResource.getRequestUser().getId()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

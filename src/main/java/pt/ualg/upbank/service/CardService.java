@@ -8,6 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import io.swagger.v3.oas.models.security.SecurityScheme.In;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Card;
 import pt.ualg.upbank.model.CardDTO;
@@ -56,19 +58,36 @@ public class CardService {
 
     public Long create(final CardDTO cardDTO) {
         final Card card = new Card();
-
-
         //Set expiration date 2 years from now
         cardDTO.setExpirationDate(LocalDate.now().plusYears(2));
-        
         mapToEntity(cardDTO, card);
     
         return cardRepository.save(card).getId();
     }
 
-    public void update(final Long id, final CardDTO cardDTO) {
+    public void update(final Long id, final Boolean nfcPayments, final Boolean onlinePayments, final Integer pinCode) {
+        CardDTO cardDTO = new CardDTO(); 
         final Card card = cardRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if(nfcPayments == null){
+            cardDTO.setNfcPayments(card.getNfcPayments());
+        }else{
+            cardDTO.setNfcPayments(nfcPayments);
+        }
+        if(onlinePayments == null){
+            cardDTO.setOnlinePayments(card.getOnlinePayments());
+        }else{
+            cardDTO.setOnlinePayments(onlinePayments);
+        }
+        if(pinCode == null){
+            cardDTO.setPinCode(card.getPinCode());
+        }else{
+            if(cardDTO.getPinCode().toString().length()!=4){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "card.update.invalidPin");
+            }
+            cardDTO.setPinCode(pinCode);
+        }
         mapToEntity(cardDTO, card);
         cardRepository.save(card);
     }

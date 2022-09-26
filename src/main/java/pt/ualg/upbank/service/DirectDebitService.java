@@ -1,5 +1,6 @@
 package pt.ualg.upbank.service;
 
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,11 +48,13 @@ public class DirectDebitService {
         return directDebitRepository.save(directDebit).getId();
     }
 
-    public void update(final Long id, final DirectDebitDTO directDebitDTO, Boolean boll) {
-        final DirectDebit directDebit = directDebitRepository.findById(id)
+    public void update(final Long id ,final Long accountId ,final Boolean boll) {
+    final Account account= accountRepository.findById(accountId)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        final DirectDebit directDebit = directDebitRepository.findBySenderOrReceiverAndId(account, account ,id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-            directDebitDTO.setActive(boll);
-        mapToEntity(directDebitDTO, directDebit);
+            directDebit.setActive(boll);
+            directDebit.setLastDebit(LocalDate.now());
         directDebitRepository.save(directDebit);
     }
 

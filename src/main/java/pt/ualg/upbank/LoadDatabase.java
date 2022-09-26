@@ -22,6 +22,7 @@ import pt.ualg.upbank.service.TelcoProviderService;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 
 
@@ -126,7 +127,7 @@ class LoadDatabase {
        Account bankAccount =new Account();
       bankAccount.setAddress(address);
       bankAccount.setFullName("Bank Account");
-      bankAccount.setId((long)130); //TODO: create env variable
+      bankAccount.setId((long)1001); //TODO: create env variable
       bankAccount.setBalance((long)0);
       bankAccount.setBirthdate(LocalDate.parse("1990-01-01"));
       bankAccount.setTaxNumber("020202020");
@@ -154,11 +155,17 @@ class LoadDatabase {
       // log.info("Preloading " + accountRepository.save(entity));
 
        // log.info("Preloading " + accountRepository.save(telecomunicações));
+       if(!accountRepository.existsByEmailIgnoreCase("bank@account.pt")){
 
-       // log.info("Preloading " + accountRepository.save(bankAccount));
+       log.info("Preloading " + accountRepository.save(bankAccount));
+      }
+       else{
+      }
+      
     // };
 
       
   };
 }
 }
+

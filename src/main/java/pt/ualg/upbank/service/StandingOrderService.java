@@ -96,7 +96,8 @@ public class StandingOrderService {
         List<StandingOrder> transfers = standingOrderRepository.findByFrequency(frequency)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "standingOrders.empty"));       
          for (StandingOrder so : transfers) {
-            transferService.createFromIban(so.getIban(), so.getAmount(), accountService.mapToDTO(so.getSender(), new AccountDTO()),null,null );
+            StandingOrderDTO soDTO =  mapToDTO(so, new StandingOrderDTO());
+            transferService.createFromIban(soDTO, soDTO.getSender());
         }
     }
 

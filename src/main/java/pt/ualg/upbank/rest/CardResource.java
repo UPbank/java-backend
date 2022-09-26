@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
 import pt.ualg.upbank.model.CardDTO;
 import pt.ualg.upbank.service.CardService;
 
@@ -38,7 +40,8 @@ public class CardResource {
         this.cardService = cardService;
     }
 
-    @GetMapping
+    //TODO: delete mapping
+    @GetMapping("/all")
     public ResponseEntity<List<CardDTO>> getAllCards() {
         return ResponseEntity.ok(cardService.findAll());
     }
@@ -51,21 +54,17 @@ public class CardResource {
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createCard(@RequestBody @Valid final CardDTO cardDTO) {
+        if(cardDTO.getPinCode()!=null && cardDTO.getPinCode().toString().length()!=4){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "card.update.invalidPin");
+        }
         return new ResponseEntity<>(cardService.create(cardDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCardNfc(@PathVariable final Long id,
-            @RequestBody Boolean nfc , @RequestBody Boolean online, @RequestBody @Size(max = 4) Optional <Integer> pinCode) {
-        CardDTO cardDTO = new CardDTO();
-        cardDTO.setNfcPayments(nfc);
-        cardDTO.setOnlinePayments(online);
-        Integer pin = pinCode==null ? null : pinCode.get();
 
-        if(pin != null){
-            cardDTO.setPinCode(pin);
-        }
-        cardService.update(id ,cardDTO);
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateCard(@PathVariable final Long id,
+            @RequestBody @Valid final CardDTO cardDTO) {
+        cardService.update(id ,cardDTO.getNfcPayments(), cardDTO.getOnlinePayments(), cardDTO.getPinCode());
         return ResponseEntity.ok().build();
     }
 

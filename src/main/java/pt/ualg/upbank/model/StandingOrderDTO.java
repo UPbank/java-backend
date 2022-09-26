@@ -1,14 +1,18 @@
 package pt.ualg.upbank.model;
 
 import javax.validation.constraints.NotNull;
+
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import lombok.Getter;
 import lombok.Setter;
 
 
 @Getter
 @Setter
-public class StandingOrderDTO {
+public class StandingOrderDTO extends IbanTransferDTO { 
 
+    @ReadOnlyProperty
     private Long id;
 
     @NotNull

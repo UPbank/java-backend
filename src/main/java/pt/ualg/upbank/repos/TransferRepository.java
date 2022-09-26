@@ -13,7 +13,9 @@ import pt.ualg.upbank.domain.Transfer;
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
     Optional <List<Transfer>> findBySender(Account sender);
     Optional <List<Transfer>>  findByDateCreated(OffsetDateTime dateCreated);
-    List<Transfer> findByDateCreatedGreaterThan(OffsetDateTime start);
+    Optional <List<Transfer>> findBySenderAndDateCreatedBetween(Account sender, OffsetDateTime start, OffsetDateTime end);
+    Optional <List<Transfer>> 
+    findByReceiverAndDateCreatedBetween(Account receiver, OffsetDateTime start, OffsetDateTime end);
 
     
 

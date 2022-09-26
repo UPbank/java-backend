@@ -1,6 +1,7 @@
 package pt.ualg.upbank.service;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,8 @@ import pt.ualg.upbank.domain.Transfer;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TransferDTO;
+import pt.ualg.upbank.model.IbanTransferDTO;
+
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.TelcoProviderRepository;
 import pt.ualg.upbank.repos.TransferRepository;
@@ -99,7 +102,7 @@ public class TransferService {
 
     @Transactional
     //method to deal wiht Entity and Reference payments
-    public Long createFromEntity(final Long entity, final Long reference, final Long amount, long id) {
+    public Long createFromEntity(final Long entity, final Long reference, final Long amount, final long id) {
     final Account reciever = accountRepository.findById((long) 10)//TODO: change to env variable
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -114,7 +117,7 @@ public class TransferService {
 
     @Transactional
     //method to deal wiht reference payments
-    public Long createFromGovernment(final Long reference, final Long amount, long id) {
+    public Long createFromGovernment(final Long reference, final Long amount, final long id) {
         final Account reciever = accountRepository.findById((long) 10) //TODO: change to env variabl
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -128,7 +131,7 @@ public class TransferService {
     }
     @Transactional
     //method to deal with phone payments
-    public Long createFromPhoneNumber(final Long phone, final Long amount, AccountDTO account) {
+    public Long createFromPhoneNumber(final Long phone, final Long amount, final AccountDTO account) {
         final Account reciever = accountRepository.findById((long) 1) //TODO: change to env variabl
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -145,32 +148,32 @@ public class TransferService {
 
     @Transactional
     //method to deal wiht Iban payments
-    public Long createFromIban(final String Iban, final Long amount, AccountDTO account, Optional<String> note, Optional<String> image) {
-        if (!new IBAN(Iban).validate()) {
+    public Long createFromIban(IbanTransferDTO accountDTO, Long id) {
+        if (!new IBAN(accountDTO.getIban()).validate()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IBAN.invalid");
         }
         
-        final long receiverId = IBANGenerator.ibanToId(Iban);
+        final long receiverId = IBANGenerator.ibanToId(accountDTO.getIban());
         final TransferDTO transfer = new TransferDTO();
 
-        if(accountRepository.findById((receiverId)) == null){
-            transfer.setReceiver((long)11); //TODO: change to env variable
+        if(!accountRepository.existsById((receiverId))){
+            transfer.setReceiver((long)1001); //TODO: change to env variable
         }else{
             transfer.setReceiver(receiverId);
         }
        
-        final Long sender = account.getId();
-        transfer.setAmount(amount);
+        final Long sender = id;
+        transfer.setAmount(accountDTO.getAmount());
         transfer.setSender(sender);
 
-        String json = "{type:\"TRAN\", IBAN:\"" + Iban + "\", amount:\"" + amount + "\"}";
+        String json = "{type:\"TRAN\", IBAN:\"" + accountDTO.getIban() + "\", amount:\"" + accountDTO.getAmount() + "\"}";
         transfer.setMetadata(json);
 
-        String newNotes = note == null ? null : note.get(); 
+        String newNotes = accountDTO.getNote() == null ? null : accountDTO.getNote(); 
         if(newNotes != null)
             transfer.setNotes(newNotes);
 
-        String newImage = image == null ? null : image.get();
+        String newImage = accountDTO.getImage() == null ? null : accountDTO.getImage();
         if(newImage != null)
             transfer.setImage(newImage);
 
@@ -208,8 +211,11 @@ public class TransferService {
         final Account sender = transferDTO.getSender() == null ? null : accountRepository.findById(transferDTO.getSender())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender not found"));
         transfer.setSender(sender);
+    
+        
         final Account receiver = transferDTO.getReceiver() == null ? null : accountRepository.findById(transferDTO.getReceiver())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found" ));
+        
         transfer.setReceiver(receiver);
         return transfer;
     }

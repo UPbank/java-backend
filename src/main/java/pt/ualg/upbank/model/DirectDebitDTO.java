@@ -2,6 +2,9 @@ package pt.ualg.upbank.model;
 
 import java.time.LocalDate;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DirectDebitDTO {
-
+    
+    @ReadOnlyProperty
     private Long id;
 
     @NotNull
