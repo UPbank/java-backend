@@ -48,9 +48,9 @@ public class CardResource {
         return ResponseEntity.ok(cardService.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CardDTO> getCard(@PathVariable final Long id) {
-        return ResponseEntity.ok(cardService.get(id,accountResource.getRequestUser().getId()));
+    @GetMapping("/")
+    public ResponseEntity<List<CardDTO>> getCard() {
+        return ResponseEntity.ok(cardService.get(accountResource.getRequestUser().getId()));
     }
 
     @PostMapping

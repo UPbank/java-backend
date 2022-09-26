@@ -131,8 +131,8 @@ public class TransferService {
     }
     @Transactional
     //method to deal with phone payments
-    public Long createFromPhoneNumber(final Long phone, final Long amount, final AccountDTO account) {
-        final Account reciever = accountRepository.findById((long) 1) //TODO: change to env variabl
+    public Long createFromPhoneNumber(final String name, final Long amount, final AccountDTO account, Long phone) {
+        final Account reciever = accountRepository.findByIdentifier("Telecomunication") //TODO: change to env variabl
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         final Long sender = account.getId();

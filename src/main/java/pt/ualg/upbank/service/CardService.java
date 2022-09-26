@@ -35,12 +35,13 @@ public class CardService {
                 .collect(Collectors.toList());
     }
 
-    public CardDTO get(final Long id, final Long accountId) {
+    public List<CardDTO> get(final Long accountId) {
         Account account = accountRepository.findById(accountId)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        return cardRepository.findByIdAndAccount(account, id)
+        return cardRepository.findByAccount(account)
+                .stream()
                 .map(card -> mapToDTO(card, new CardDTO()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .collect(Collectors.toList());
     }
 
     public Long createFromRegister(final CardDTO cardDTO, String name, Long account, int pinCode) {

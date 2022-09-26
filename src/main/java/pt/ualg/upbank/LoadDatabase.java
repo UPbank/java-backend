@@ -129,7 +129,7 @@ class LoadDatabase {
 
         log.info("Preloading " + telcoProviderRepository.save(altice));
       }
-      if( !telcoProviderRepository.existsByName("Nos")){
+      if( !telcoProviderRepository.existsByName("NOS")){
         log.info("Preloading " + telcoProviderRepository.save(nos));
 
       }

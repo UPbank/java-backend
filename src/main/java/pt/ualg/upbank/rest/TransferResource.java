@@ -137,7 +137,7 @@ public class TransferResource {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.provider.not.found");
         }
       
-        return new ResponseEntity<>(transferService.createFromPhoneNumber(telcoTransferDTO.getPhoneNumber(), telcoTransferDTO.getAmount(), accountResource.getRequestUser()), HttpStatus.CREATED );
+        return new ResponseEntity<>(transferService.createFromPhoneNumber(telcoTransferDTO.getName(), telcoTransferDTO.getAmount(), accountResource.getRequestUser(), telcoTransferDTO.getPhoneNumber()), HttpStatus.CREATED );
 
     }
 

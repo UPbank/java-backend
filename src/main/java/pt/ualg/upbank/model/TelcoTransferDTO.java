@@ -17,8 +17,7 @@ public class TelcoTransferDTO {
     private String name;
 
     @Size(max = 511)
-    private String note
-    ;
+    private String note;
 
     @NotNull
     private Long phoneNumber;

@@ -13,7 +13,7 @@ public interface TelcoProviderRepository extends JpaRepository<TelcoProvider, Lo
     Optional <TelcoProvider> findById(Long id);
     boolean existsById(Long Id);
 
-    Optional <List<TelcoProvider>> findByNameLike(String name);
+     List<TelcoProvider> findByNameLike(String name);
     
     boolean existsByName(String name);
 
