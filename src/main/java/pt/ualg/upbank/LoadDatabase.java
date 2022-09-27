@@ -11,12 +11,14 @@ import org.springframework.web.server.ResponseStatusException;
 import net.bytebuddy.asm.Advice.Local;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
+import pt.ualg.upbank.domain.DirectDebit;
 import pt.ualg.upbank.domain.TelcoProvider;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
 import pt.ualg.upbank.model.TelcoProviderDTO;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.AddressRepository;
+import pt.ualg.upbank.repos.DirectDebitRepository;
 import pt.ualg.upbank.repos.TelcoProviderRepository;
 import pt.ualg.upbank.service.AccountService;
 import pt.ualg.upbank.service.AddressService;
@@ -34,7 +36,7 @@ class LoadDatabase {
   private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
   @Bean
-  CommandLineRunner initDatabase(TelcoProviderRepository telcoProviderRepository, AccountRepository accountRepository, AddressRepository addressRepository, TelcoProviderService telcoProviderService, AccountService accountService, AddressService addressService) {
+  CommandLineRunner initDatabase(TelcoProviderRepository telcoProviderRepository, AccountRepository accountRepository, AddressRepository addressRepository, TelcoProviderService telcoProviderService, AccountService accountService, AddressService addressService, DirectDebitRepository directDebitRepository) {
     TelcoProvider altice = new TelcoProvider();
     altice.setName("Altice");
     altice.setDateCreated(OffsetDateTime.now());
@@ -87,10 +89,19 @@ class LoadDatabase {
   
 
       Account telecomunication =new Account();
-      
+  
 
-       Account bankAccount =new Account();
+      Account bankAccount =new Account();
+
+
+      Account directDebit = new Account();
       
+      // DirectDebit joao = new DirectDebit();
+      // joao.setActive(true);
+      // joao.setDateCreated(2022,10,01);
+      // joao.setId(200);
+      // joao.setLastDebit(2021,01,01);
+      // joao.setLastUpdated(2021,02,01);
       
       
 
@@ -202,11 +213,27 @@ class LoadDatabase {
         government.setIdNumber("0000000001");
         government.setEmail("government@gov.pt");
         government.setHash("1234");
-      government.setIdentifier("Government");
+        government.setIdentifier("Government");
 
      
         log.info("Preloading " + accountRepository.save(government));
       }
+
+      // if(accountRepository.existsByIdentifier("")==false){
+      //   directDebit.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
+      //   directDebit.setFullName("Débito Direto");
+      //   directDebit.setBalance((long)0);//TODO: create env variable
+      //   directDebit.setBirthdate(LocalDate.parse("2000-01-01"));
+      //   directDebit.setTaxNumber("9898989");
+      //   directDebit.setIdNumber("0000000002");
+      //   directDebit.setEmail("direct_debit@test.pt");
+      //   directDebit.setHash("1423");
+      //   directDebit.setIdentifier("Diresct Debit");
+
+      //   log.info("Preloading " + accountRepository.save(directDebit));
+      // }
+
+      // if(directDebitRepository.findBySenderOrReceiverAndId())
 
       
 
