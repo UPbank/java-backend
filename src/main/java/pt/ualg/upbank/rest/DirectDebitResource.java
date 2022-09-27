@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ualg.upbank.model.DirectDebitDTO;
 import pt.ualg.upbank.model.ListDirectDebitDTO;
 import pt.ualg.upbank.model.SimplePage;
+import pt.ualg.upbank.model.UpdateDirectDebitDTO;
 import pt.ualg.upbank.service.DirectDebitService;
 
 
@@ -83,8 +84,8 @@ public class DirectDebitResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateDirectDebit(@PathVariable final Long id,
-            @RequestBody @Valid final Boolean bool) {
-        directDebitService.update(id,accountResource.getRequestUser().getId(), bool);
+            @RequestBody final UpdateDirectDebitDTO active) {
+        directDebitService.update(id,accountResource.getRequestUser().getId(), active.getActive());
         return ResponseEntity.ok().build();
     }
 
