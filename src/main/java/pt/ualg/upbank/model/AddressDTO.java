@@ -35,7 +35,6 @@ public class AddressDTO {
     @Size(max = 255)
     private String district;
     
-    
     @Size(max = 255)
     private String identifier;
 

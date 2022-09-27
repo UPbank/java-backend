@@ -27,8 +27,10 @@ public class DirectDebitService {
         this.accountRepository = accountRepository;
     }
 
-    public SimplePage<DirectDebitDTO> findAll(final Pageable pageable) {
-        final Page<DirectDebit> page = directDebitRepository.findAll(pageable);
+    public SimplePage<DirectDebitDTO> findAll(final Long id,final Pageable pageable) {
+        final Account account = accountRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+        final Page<DirectDebit> page = directDebitRepository.findBySender(account ,pageable);
         return new SimplePage<>(page.getContent()
                 .stream()
                 .map(directDebit -> mapToDTO(directDebit, new DirectDebitDTO()))

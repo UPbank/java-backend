@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import net.bytebuddy.asm.Advice.Local;
 import pt.ualg.upbank.domain.Account;
@@ -74,55 +76,23 @@ class LoadDatabase {
     wtf.setLastUpdated(OffsetDateTime.now());
     
 
-      Address address = new Address();
-      address.setCity("city");
-      address.setDistrict("district");
-      address.setLine1("line1");
-      address.setLine2("line2");
-      address.setZipCode("zipCode");
-      
+     final AddressDTO addressDTO = new AddressDTO();
+     
 
 
       Account government =new Account();
-      government.setAddress(address);
-      government.setFullName("Governo de Portugal");
-      government.setBalance((long)0);//TODO: create env variable
-      government.setBirthdate(LocalDate.parse("1143-10-05"));
-      government.setTaxNumber("9999999");
-      government.setIdNumber("0000000001");
-      government.setEmail("gov@gov.pt");
-      government.setHash("1234");
+      
 
       Account entity =new Account();
-      entity.setAddress(address);
-      entity.setFullName("Pedro Charlito");
-      entity.setBalance((long)0);
-      entity.setBirthdate(LocalDate.parse("1994-02-03"));
-      entity.setTaxNumber("020202020");
-      entity.setIdNumber("0000000002");
-      entity.setEmail("pdrchrld@gmail.com");
-      entity.setHash("2345");
+  
 
       Account telecomunication =new Account();
-      telecomunication.setAddress(address);
-      telecomunication.setFullName("Telecomunicações");
-      telecomunication.setBalance((long)0);
-      telecomunication.setBirthdate(LocalDate.parse("1990-01-01"));
-      telecomunication.setTaxNumber("020202020");
-      telecomunication.setIdNumber("0000000002");
-      telecomunication.setEmail("telco@telco.pt");
-      telecomunication.setHash("2345");
+      
 
        Account bankAccount =new Account();
-      bankAccount.setAddress(address);
-      bankAccount.setFullName("Bank Account");
-      bankAccount.setBalance((long)0);
-      bankAccount.setBirthdate(LocalDate.parse("1990-01-01"));
-      bankAccount.setTaxNumber("020202020");
-      bankAccount.setIdNumber("0000000002");
-      bankAccount.setEmail("bank@account.pt");
-      bankAccount.setHash("2345");
-
+      
+      
+      
 
     return args -> {
       if( !telcoProviderRepository.existsByName("Altice")){
@@ -142,7 +112,7 @@ class LoadDatabase {
         log.info("Preloading " + telcoProviderRepository.save(sapo));
       }
       if( !telcoProviderRepository.existsByName("UZO")){
-
+        
         log.info("Preloading " + telcoProviderRepository.save(uzo));
       }
       if( !telcoProviderRepository.existsByName("Via Card")){
@@ -158,31 +128,87 @@ class LoadDatabase {
         log.info("Preloading " + telcoProviderRepository.save(wtf));
       }
 
-      if(!addressRepository.existsByIdentifier("General")){
-        address.setIdentifier("General");
+      if(addressRepository.existsByIdentifier("General5")==false){
+        addressDTO.setCity("city");
+        addressDTO.setDistrict("district");
+        addressDTO.setLine1("line1");
+        addressDTO.setLine2("line2");
+        addressDTO.setZipCode("1234-123");
+        // addressDTO.setIdentifier("General5");
 
-      log.info("Preloading " + addressRepository.save(address));
+        // log.info("Preloading " + addressRepository.save(AddressService.toEntity(addressDTO, new Address())));
+      }
+      // final Address ddress= addressRepository.findByIdentifier("General5").
+      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
+      
+      if(accountRepository.existsByIdentifier("Bank Account")==false){
+        
+      bankAccount.setIdentifier("Bank Account");
+      bankAccount.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
+      bankAccount.setFullName("Bank Account");
+      bankAccount.setBalance((long)0);
+      bankAccount.setBirthdate(LocalDate.parse("1990-01-01"));
+      bankAccount.setTaxNumber("020202020");
+      bankAccount.setIdNumber("0000000002");
+      bankAccount.setEmail("bank@account.pt");
+      bankAccount.setHash("2345");
+        
+        log.info("Preloading " + accountRepository.save(bankAccount));
       }
 
-      if(!accountRepository.existsByIdentifier("Bank Account")){
-        government.setIdentifier("Bank Account");
-
-
-        log.info("Preloading " + accountRepository.save(government));
-      }
-
-      if(!accountRepository.existsByIdentifier("Services")){
+      if(accountRepository.existsByIdentifier("Services")==false){
+      //   Address ddress= addressRepository.findByIdentifier("General1").
+      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
+        entity.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
+        entity.setFullName("Services");
+        entity.setBalance((long)0);
+        entity.setBirthdate(LocalDate.parse("1994-02-03"));
+        entity.setTaxNumber("020202020");
+        entity.setIdNumber("0000000002");
+        entity.setEmail("services@services.com");
+        entity.setHash("2345");
+        
         entity.setIdentifier("Services");
-
         log.info("Preloading " + accountRepository.save(entity));
         
       }
-      if(!accountRepository.existsByIdentifier("Telecomunications")){
-        telecomunication.setIdentifier("Telecomunications");
+      if(accountRepository.existsByIdentifier("TelCos")==false){
+      //   Address ddress= addressRepository.findByIdentifier("General1").
+      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
+
+
+      telecomunication.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
+      telecomunication.setFullName("Telecomunications");
+      telecomunication.setBalance((long)0);
+      telecomunication.setBirthdate(LocalDate.parse("1990-01-01"));
+      telecomunication.setTaxNumber("020202020");
+      telecomunication.setIdNumber("0000000002");
+      telecomunication.setEmail("telcos@telco.pt");
+      telecomunication.setHash("2345");
+      telecomunication.setIdentifier("TelCos");
 
      
         log.info("Preloading " + accountRepository.save(telecomunication));
       }
+
+      if(accountRepository.existsByIdentifier("Government")==false){
+      //   Address ddress= addressRepository.findByIdentifier("General1").
+      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
+        government.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
+        government.setFullName("Governo de Portugal");
+        government.setBalance((long)0);//TODO: create env variable
+        government.setBirthdate(LocalDate.parse("1143-10-05"));
+        government.setTaxNumber("9999999");
+        government.setIdNumber("0000000001");
+        government.setEmail("government@gov.pt");
+        government.setHash("1234");
+      government.setIdentifier("Government");
+
+     
+        log.info("Preloading " + accountRepository.save(government));
+      }
+
+      
 
       
     

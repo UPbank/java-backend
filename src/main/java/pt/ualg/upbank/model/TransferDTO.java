@@ -1,5 +1,7 @@
 package pt.ualg.upbank.model;
 
+import java.time.OffsetDateTime;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -29,5 +31,7 @@ public class TransferDTO {
 
     @NotNull
     private Long receiver;
+    @NotNull
+    private OffsetDateTime created;
 
 }

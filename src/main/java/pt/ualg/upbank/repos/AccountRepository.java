@@ -24,11 +24,15 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findById(Long id);
 
-    Optional<List<Account>> findByFullNameContaining(String fullName);
+    List<Account> findByFullNameContaining(String fullName);
 
     @Modifying
     @Query("UPDATE Account t set t.balance = t.balance + :amount WHERE t.id = :id")
     void addToAccountBalance(@Param("id") Long id, @Param("amount") Long amount);
+
+    @Modifying
+    @Query("UPDATE Account t set t.identifier = :identifier  WHERE t.id = :id")
+    void changeIdentifier(@Param("id") Long id, @Param("identifier") String identifier);
 
 
     

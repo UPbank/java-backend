@@ -101,6 +101,7 @@ public class AccountService {
         accountDTO.setTaxNumber(account.getTaxNumber());
         accountDTO.setIdNumber(account.getIdNumber());
         accountDTO.setBalance(account.getBalance());
+        accountDTO.setIdentifier(account.getIdentifier());
         accountDTO.setAddress(account.getAddress() == null ? null : AddressService.toDTO(account.getAddress(), new AddressDTO()));
         return accountDTO;
     }

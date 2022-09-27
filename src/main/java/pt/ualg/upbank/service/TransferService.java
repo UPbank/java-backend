@@ -53,11 +53,48 @@ public class TransferService {
             page.getTotalElements(), pageable);
     }
 
+    public SimplePage<TransferDTO> getAll(final Long id, final Pageable pageable) {
+        final Account account = accountRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"transfers.account.notFound"));
+        final Page<Transfer> page =  transferRepository.findBySenderOrReceiver(account, account , pageable);
+            return new SimplePage<>(page.getContent()
+            .stream()
+            .map(transfer -> mapToDTO(transfer, new TransferDTO()))
+            .collect(Collectors.toList()),
+            page.getTotalElements(), pageable);
+    }
+
+    
+    public SimplePage<TransferDTO> getByName(final Long id,final String name, final Pageable pageable) {
+        final Account account = accountRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"transfers.account.notFound"));
+        
+        final Page<Transfer> page =  transferRepository.getByNameAndByDate(id, name, pageable);
+   
+        return new SimplePage<>(page.getContent()
+            .stream()
+            .map(transfer -> mapToDTO(transfer, new TransferDTO()))
+            .collect(Collectors.toList()),
+            page.getTotalElements(), pageable);
+    }
+
+    public SimplePage<TransferDTO> getByStartDateandEndDate(final Long id,final OffsetDateTime startDate,final OffsetDateTime endDate, final Pageable pageable) {
+        final Account account = accountRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"transfers.account.notFound"));
+        final Page<Transfer> page =  transferRepository.findBySenderAndDateCreatedGreaterThanAndDateCreatedLessThanOrReceiverAndDateCreatedGreaterThanAndDateCreatedLessThan(account,startDate,endDate, account, startDate,endDate, pageable);
+            return new SimplePage<>(page.getContent()
+            .stream()
+            .map(transfer -> mapToDTO(transfer, new TransferDTO()))
+            .collect(Collectors.toList()),
+            page.getTotalElements(), pageable);
+    }
+
     public TransferDTO get(final Long id) {
         return transferRepository.findById(id)
             .map(transfer -> mapToDTO(transfer, new TransferDTO()))
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
+
 
     @Transactional
     //Added set time of creation
@@ -85,6 +122,7 @@ public class TransferService {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         accountService.addMoney(reciever, transfer.getAmount());
+
         
         transfer.setDateCreated(OffsetDateTime.now());
         return transferRepository.save(transfer).getId();
@@ -103,8 +141,8 @@ public class TransferService {
     @Transactional
     //method to deal wiht Entity and Reference payments
     public Long createFromEntity(final Long entity, final Long reference, final Long amount, final long id) {
-    final Account reciever = accountRepository.findById((long) 10)//TODO: change to env variable
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        final Account reciever = accountRepository.findByIdentifier("Services")//TODO: change to env variable
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Service.account.notFound"));
 
         final TransferDTO transfer = new TransferDTO();
         transfer.setAmount(amount);
@@ -118,8 +156,8 @@ public class TransferService {
     @Transactional
     //method to deal wiht reference payments
     public Long createFromGovernment(final Long reference, final Long amount, final long id) {
-        final Account reciever = accountRepository.findById((long) 10) //TODO: change to env variabl
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        final Account reciever = accountRepository.findByIdentifier("Government") //TODO: change to env variabl
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Government.account.notFound"));
 
         final TransferDTO transfer = new TransferDTO();
         transfer.setAmount(amount);
@@ -131,9 +169,9 @@ public class TransferService {
     }
     @Transactional
     //method to deal with phone payments
-    public Long createFromPhoneNumber(final String name, final Long amount, final AccountDTO account, Long phone) {
-        final Account reciever = accountRepository.findByIdentifier("Telecomunication") //TODO: change to env variabl
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public Long createFromPhoneNumber(final String provider, final Long amount, final AccountDTO account, Long phone) {
+        final Account reciever = accountRepository.findByIdentifier("TelCo") //TODO: change to env variabl
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"TelCo.account.notFound"));
 
         final Long sender = account.getId();
         final TransferDTO transfer = new TransferDTO();
@@ -148,21 +186,21 @@ public class TransferService {
 
     @Transactional
     //method to deal wiht Iban payments
-    public Long createFromIban(IbanTransferDTO accountDTO, Long id) {
+    public Long createFromIban(IbanTransferDTO accountDTO, Long sender) {
         if (!new IBAN(accountDTO.getIban()).validate()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IBAN.invalid");
         }
         
         final long receiverId = IBANGenerator.ibanToId(accountDTO.getIban());
+        final Account receiver = accountRepository.findByIdentifier("Bank Account") //TODO: change to env variabl
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Bank.account.notFound"));
         final TransferDTO transfer = new TransferDTO();
-
-        if(!accountRepository.existsById((receiverId))){
-            transfer.setReceiver((long)1001); //TODO: change to env variable
+       
+        if(!accountRepository.existsById((receiver.getId()))){
+            transfer.setReceiver(receiver.getId()); //TODO: change to env variable
         }else{
             transfer.setReceiver(receiverId);
         }
-       
-        final Long sender = id;
         transfer.setAmount(accountDTO.getAmount());
         transfer.setSender(sender);
 
@@ -183,7 +221,13 @@ public class TransferService {
     public void update(final Long id, final TransferDTO transferDTO) {
         final Transfer transfer = transferRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mapToEntity(transferDTO, transfer);
+        if(transferDTO.getNotes() != null){
+            transfer.setNotes(transferDTO.getNotes());
+        }
+        if(transferDTO.getImage()!=null){
+            transfer.setImage(transferDTO.getImage());
+        }
+        transfer.setLastUpdated(OffsetDateTime.now());
         transferRepository.save(transfer);
     }
 
@@ -198,6 +242,7 @@ public class TransferService {
         transferDTO.setMetadata(transfer.getMetadata());
         transferDTO.setNotes(transfer.getNotes());
         transferDTO.setImage(transfer.getImage());
+        transferDTO.setCreated(transfer.getDateCreated());
         transferDTO.setSender(transfer.getSender() == null ? null : transfer.getSender().getId());
         transferDTO.setReceiver(transfer.getReceiver() == null ? null : transfer.getReceiver().getId());
         return transferDTO;

@@ -1,7 +1,11 @@
 package pt.ualg.upbank.service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -14,6 +18,7 @@ import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.StandingOrder;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.Frequency;
+import pt.ualg.upbank.model.IbanTransferDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.StandingOrderDTO;
 import pt.ualg.upbank.repos.AccountRepository;
@@ -36,8 +41,10 @@ public class StandingOrderService {
         this.accountService = accountService;
     }
 
-    public SimplePage<StandingOrderDTO> findAll(final Pageable pageable) {
-        final Page<StandingOrder> page = standingOrderRepository.findAll(pageable);
+    public SimplePage<StandingOrderDTO> findAll(final Long id,final Pageable pageable) {
+        final Account account = accountRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"transfers.account.notFound"));
+        final Page<StandingOrder> page = standingOrderRepository.findBySender(account ,pageable);
         return new SimplePage<>(page.getContent()
                 .stream()
                 .map(standingOrder -> mapToDTO(standingOrder, new StandingOrderDTO()))
@@ -53,14 +60,26 @@ public class StandingOrderService {
 
     public Long create(final StandingOrderDTO standingOrderDTO) {
         final StandingOrder standingOrder = new StandingOrder();
+        standingOrder.setDateCreated(OffsetDateTime.now());
+        standingOrder.setLastUpdated(OffsetDateTime.now());
         mapToEntity(standingOrderDTO, standingOrder);
         return standingOrderRepository.save(standingOrder).getId();
     }
 
-    public void update(final Long id, final StandingOrderDTO standingOrderDTO) {
+    public void update(final Long id,Long amount, Frequency frequency, String iban) {
         final StandingOrder standingOrder = standingOrderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        mapToEntity(standingOrderDTO, standingOrder);
+        if(amount!=null){
+            standingOrder.setAmount(amount);
+        }
+        if(iban!=null) {
+            standingOrder.setIban(iban);
+        }
+        if(frequency!=null) {
+            standingOrder.setFrequency(frequency);
+        }
+
+        standingOrder.setLastUpdated(OffsetDateTime.now());
         standingOrderRepository.save(standingOrder);
     }
 
@@ -93,11 +112,14 @@ public class StandingOrderService {
     //segundo, minuto, hora, dia, mês, dia da semana
 
     public void executeScheduledTransfers(Frequency frequency) {
-        List<StandingOrder> transfers = standingOrderRepository.findByFrequency(frequency)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "standingOrders.empty"));       
+        List<StandingOrder> transfers = standingOrderRepository.findByFrequency(frequency);
          for (StandingOrder so : transfers) {
             StandingOrderDTO soDTO =  mapToDTO(so, new StandingOrderDTO());
-            transferService.createFromIban(soDTO, soDTO.getSender());
+            IbanTransferDTO ibanTransferDTO = new IbanTransferDTO();
+            ibanTransferDTO.setAmount(soDTO.getAmount());
+            ibanTransferDTO.setIban(soDTO.getIban());
+            
+            transferService.createFromIban(ibanTransferDTO, soDTO.getSender());
         }
     }
 
@@ -124,6 +146,7 @@ public class StandingOrderService {
     public void scheduleYearlyTask() {
         executeScheduledTransfers(Frequency.YEARLY);
     }
+
 
 
 }

@@ -60,7 +60,10 @@ public class Account {
 
     @Column(nullable = false)
     private String idNumber;
-
+    
+    @Column(unique = true)
+    private String identifier;
+    
     @Column(nullable = false)
     private Long balance;
 
@@ -94,7 +97,5 @@ public class Account {
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
 
-    @Column(unique = true)
-    private String identifier;
 
 }

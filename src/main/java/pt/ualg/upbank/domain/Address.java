@@ -2,6 +2,8 @@ package pt.ualg.upbank.domain;
 
 import java.time.OffsetDateTime;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -51,8 +53,11 @@ public class Address {
 
     @Column(nullable = false)
     private String district;
+    
+    @Column(unique = true)
+    private String identifier;
 
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "address", cascade = CascadeType.REMOVE)
     private Set<Account> addressAccounts;
 
     @CreatedDate
@@ -62,9 +67,6 @@ public class Address {
     @LastModifiedDate
     @Column(nullable = false)
     private OffsetDateTime lastUpdated;
-    
-    @Column(unique = true)
-    private String identifier;
 
 
 }

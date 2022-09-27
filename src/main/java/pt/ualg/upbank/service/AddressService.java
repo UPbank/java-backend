@@ -70,10 +70,11 @@ public class AddressService {
         address.setZipCode(addressDTO.getZipCode());
         address.setCity(addressDTO.getCity());
         address.setDistrict(addressDTO.getDistrict());
+        address.setIdentifier(addressDTO.getIdentifier());
         return address;
     }
 
-		private Address mapToEntity(final AddressDTO addressDTO, final Address address) {
+		public Address mapToEntity(final AddressDTO addressDTO, final Address address) {
 			return toEntity(addressDTO, address);
 		}
 

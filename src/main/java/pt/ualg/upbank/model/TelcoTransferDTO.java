@@ -14,7 +14,7 @@ public class TelcoTransferDTO {
 
     @Size(max = 255)
     @NotNull
-    private String name;
+    private String provider;
 
     @Size(max = 511)
     private String note;

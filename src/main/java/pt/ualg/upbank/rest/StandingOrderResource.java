@@ -38,9 +38,11 @@ import pt.ualg.upbank.service.StandingOrderService;
 public class StandingOrderResource {
 
     private final StandingOrderService standingOrderService;
+    private final AccountResource accountResource;
 
-    public StandingOrderResource(final StandingOrderService standingOrderService) {
+    public StandingOrderResource(final StandingOrderService standingOrderService, final AccountResource accountResource) {
         this.standingOrderService = standingOrderService;
+        this.accountResource = accountResource;
     }
 
     @Operation(
@@ -62,10 +64,10 @@ public class StandingOrderResource {
             )
         }
     )
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<SimplePage<StandingOrderDTO>> getAllStandingOrders(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
-        return ResponseEntity.ok(standingOrderService.findAll(pageable));
+        return ResponseEntity.ok(standingOrderService.findAll(accountResource.getRequestUser().getId(), pageable));
     }
 
     @GetMapping("/{id}")
@@ -77,17 +79,15 @@ public class StandingOrderResource {
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createStandingOrder(
             @RequestBody @Valid final StandingOrderDTO standingOrderDTO) {
+                standingOrderDTO.setSender(accountResource.getRequestUser().getId());
         return new ResponseEntity<>(standingOrderService.create(standingOrderDTO), HttpStatus.CREATED);
 
-        //If a transfer is repeated weekly, the system shall process the transfers exactly 7 days apart, on the same week day.
-        // If a transfer is repeated monthly, the system shall process the transfers on the same day of the month. If the day doesn't exist in a given month, the last day of the month shall be used instead.
-        // If a transfer is repeated yearly, the system shall process transfers on the exact same day, If the given day is the 29th of February and a given year isn't a leap year, the payment shall be processed on the 28th of February that year."
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStandingOrder(@PathVariable final Long id,
             @RequestBody @Valid final StandingOrderDTO standingOrderDTO) {
-        standingOrderService.update(id, standingOrderDTO);
+        standingOrderService.update(id, standingOrderDTO.getAmount(), standingOrderDTO.getFrequency(), standingOrderDTO.getIban());
         return ResponseEntity.ok().build();
     }
 
