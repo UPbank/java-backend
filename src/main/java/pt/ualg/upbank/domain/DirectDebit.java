@@ -2,6 +2,7 @@ package pt.ualg.upbank.domain;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -45,7 +46,7 @@ public class DirectDebit {
     @Column
     private LocalDate lastDebit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "receiver_id", nullable = false)
     private Account receiver;
 

@@ -10,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.DirectDebit;
 import pt.ualg.upbank.model.DirectDebitDTO;
+import pt.ualg.upbank.model.ListDirectDebitDTO;
+import pt.ualg.upbank.model.OtherAccountDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.DirectDebitRepository;
@@ -37,6 +39,17 @@ public class DirectDebitService {
                 .collect(Collectors.toList()),
                 page.getTotalElements(), pageable);
     }
+
+		public SimplePage<ListDirectDebitDTO> listAll(final Long id,final Pageable pageable) {
+			final Account account = accountRepository.findById(id)
+					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+			final Page<DirectDebit> page = directDebitRepository.findBySender(account ,pageable);
+			return new SimplePage<>(page.getContent()
+							.stream()
+							.map(directDebit -> mapToListDTO(directDebit, new ListDirectDebitDTO()))
+							.collect(Collectors.toList()),
+							page.getTotalElements(), pageable);
+	}
 
     public DirectDebitDTO get(final Long id) {
         return directDebitRepository.findById(id)
@@ -70,6 +83,24 @@ public class DirectDebitService {
         directDebitDTO.setActive(directDebit.getActive());
         directDebitDTO.setLastDebit(directDebit.getLastDebit());
         directDebitDTO.setReceiver(directDebit.getReceiver() == null ? null : directDebit.getReceiver().getId());
+        directDebitDTO.setSender(directDebit.getSender() == null ? null : directDebit.getSender().getId());
+        return directDebitDTO;
+    }
+
+		private ListDirectDebitDTO mapToListDTO(final DirectDebit directDebit,
+            final ListDirectDebitDTO directDebitDTO) {
+        directDebitDTO.setId(directDebit.getId());
+        directDebitDTO.setActive(directDebit.getActive());
+        directDebitDTO.setLastDebit(directDebit.getLastDebit());
+				directDebitDTO.setDateCreated(directDebit.getDateCreated());
+				OtherAccountDTO receiver = null;
+				if (directDebit.getReceiver() != null) {
+					receiver = new OtherAccountDTO();
+					receiver.setId(directDebit.getReceiver().getId());
+					receiver.setFullName(directDebit.getReceiver().getFullName());
+				}
+				
+        directDebitDTO.setReceiver(receiver);
         directDebitDTO.setSender(directDebit.getSender() == null ? null : directDebit.getSender().getId());
         return directDebitDTO;
     }

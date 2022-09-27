@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pt.ualg.upbank.model.DirectDebitDTO;
+import pt.ualg.upbank.model.ListDirectDebitDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.service.DirectDebitService;
 
@@ -63,9 +64,9 @@ public class DirectDebitResource {
             }
     )
     @GetMapping("/all")
-    public ResponseEntity<SimplePage<DirectDebitDTO>> getAllDirectDebits(
+    public ResponseEntity<SimplePage<ListDirectDebitDTO>> getAllDirectDebits(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
-        return ResponseEntity.ok(directDebitService.findAll(accountResource.getRequestUser().getId(), pageable));
+        return ResponseEntity.ok(directDebitService.listAll(accountResource.getRequestUser().getId(), pageable));
     }
 
     @GetMapping("/{id}")
