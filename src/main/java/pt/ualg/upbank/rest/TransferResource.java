@@ -34,6 +34,7 @@ import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TelcoTransferDTO;
 import pt.ualg.upbank.model.TransferDTO;
 import pt.ualg.upbank.model.TransferFilterDTO;
+import pt.ualg.upbank.model.UpdateTransferDTO;
 import pt.ualg.upbank.service.TransferService;
 
 import java.time.OffsetDateTime;
@@ -76,11 +77,8 @@ public class TransferResource {
             )
         }
     )
-    @GetMapping("/all")
-    public ResponseEntity<SimplePage<TransferDTO>> getAllTransfers(
-            @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
-        return ResponseEntity.ok(transferService.findAll(pageable));
-    }
+
+    
     @GetMapping("/")
     public ResponseEntity<SimplePage<TransferDTO>> getTransfers(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
@@ -113,30 +111,7 @@ public class TransferResource {
         }
         // return ResponseEntity.ok(transferService.getByStartDateAndEndDateAndName(accountResource)
         return null;
-
-
-
     }
-
-    // @GetMapping("/")
-    // public ResponseEntity<TransferDTO> getTransfer(@RequestBody  final TransferFilterDTO transferFilterDTO) {
-    //     // if(transferFilterDTO == null){
-    //     //     // TODO: Filter all
-    //     // }else if( transferFilterDTO.getReceiver()==null){
-    //     //     if(transferFilterDTO.getSender()==null){
-    //     //         if(transferFilterDTO.getEndDate()==null){
-    //     //             // TODO: Filter all by name and startdate
-    //     //             if(transferFilterDTO.getStartDate()==null){
-    //     //             //TODO: Filter all by name
-    //     //             }
-    //     //         }
-    //     //     }
-    //     // }
-
-    //     // }
-      
-    //     return ResponseEntity.ok(transferService.getAll(id, pageable));
-    // }
 
 
     @PostMapping("/servicePayments")
@@ -168,7 +143,7 @@ public class TransferResource {
         return new ResponseEntity<>(transferService.createFromGovernment(governmentTransferDTO.getReference(), governmentTransferDTO.getAmount(), accountResource.getRequestUser().getId()), HttpStatus.CREATED);
     }
 
-    @PostMapping("/telco")
+    @PostMapping("/telcoPayments")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createTransfer(@RequestBody TelcoTransferDTO telcoTransferDTO) {
         //provider 
@@ -200,8 +175,9 @@ public class TransferResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateTransfer(@PathVariable final Long id,
-            @RequestBody @Valid final TransferDTO transferDTO) {
-        transferService.update(id, transferDTO);
+            @RequestBody @Valid final UpdateTransferDTO updatetransferDTO) {
+            
+        transferService.update(id, updatetransferDTO);
         return ResponseEntity.ok().build();
     }
 

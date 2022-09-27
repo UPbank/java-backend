@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ualg.upbank.model.Frequency;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.StandingOrderDTO;
+import pt.ualg.upbank.model.UpdateAccountDTO;
+import pt.ualg.upbank.model.UpdateStandingOrderDTO;
 import pt.ualg.upbank.service.StandingOrderService;
 
 
@@ -64,7 +66,7 @@ public class StandingOrderResource {
             )
         }
     )
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<SimplePage<StandingOrderDTO>> getAllStandingOrders(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
         return ResponseEntity.ok(standingOrderService.findAll(accountResource.getRequestUser().getId(), pageable));
@@ -75,7 +77,7 @@ public class StandingOrderResource {
         return ResponseEntity.ok(standingOrderService.get(id));
     }
 
-    @PostMapping
+    @PostMapping("")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createStandingOrder(
             @RequestBody @Valid final StandingOrderDTO standingOrderDTO) {
@@ -86,8 +88,8 @@ public class StandingOrderResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStandingOrder(@PathVariable final Long id,
-            @RequestBody @Valid final StandingOrderDTO standingOrderDTO) {
-        standingOrderService.update(id, standingOrderDTO.getAmount(), standingOrderDTO.getFrequency(), standingOrderDTO.getIban());
+            @RequestBody @Valid final UpdateStandingOrderDTO updateStandingOrderDTO) {
+        standingOrderService.update(id, updateStandingOrderDTO);
         return ResponseEntity.ok().build();
     }
 
