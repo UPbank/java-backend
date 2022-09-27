@@ -86,11 +86,13 @@ public class CardService {
         if(pinCode == null){
             cardDTO.setPinCode(card.getPinCode());
         }else{
-            if(cardDTO.getPinCode().toString().length()!=4){
+            if(pinCode.toString().length()!=4){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "card.update.invalidPin");
             }
             cardDTO.setPinCode(pinCode);
         }
+        cardDTO.setExpirationDate(card.getExpirationDate());
+        cardDTO.setAccount(card.getAccount().getId());
         mapToEntity(cardDTO, card);
         cardRepository.save(card);
     }

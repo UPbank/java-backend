@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import pt.ualg.upbank.IBAN.IBANGenerator;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
 import pt.ualg.upbank.model.AccountDTO;
@@ -102,6 +104,7 @@ public class AccountService {
         accountDTO.setIdNumber(account.getIdNumber());
         accountDTO.setBalance(account.getBalance());
         accountDTO.setIdentifier(account.getIdentifier());
+        accountDTO.setIban(IBANGenerator.generateIBAN(account.getId()));
         accountDTO.setAddress(account.getAddress() == null ? null : AddressService.toDTO(account.getAddress(), new AddressDTO()));
         return accountDTO;
     }

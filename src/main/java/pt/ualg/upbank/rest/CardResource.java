@@ -49,7 +49,7 @@ public class CardResource {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<CardDTO>> getCard() {
+    public ResponseEntity<List<CardDTO>> getCards() {
         return ResponseEntity.ok(cardService.get(accountResource.getRequestUser().getId()));
     }
 
