@@ -22,7 +22,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
+/**
+ * Class representing a Bank Account,
+ * Unique Id that can be tranlated to a valid {@link IBAN}, a unique valid email, a hash from the password, a name, a birthday, a valid taxNumber,a citizen id number, a current balance, a date of creation and last time updated, and a {@link Address}.
+ * @param identifier is used only to populate  Database with Service Accounts
+ */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
