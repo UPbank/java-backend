@@ -30,7 +30,7 @@ public class AuthenticationResource {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtTokenService = jwtTokenService;
     }
-
+ 
     @PostMapping("/authenticate")
     public AuthenticationResponse authenticate(
             @RequestBody @Valid final AuthenticationRequest authenticationRequest) {

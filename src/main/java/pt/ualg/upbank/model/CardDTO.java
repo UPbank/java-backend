@@ -1,6 +1,8 @@
 package pt.ualg.upbank.model;
 
 import java.time.LocalDate;
+
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -24,7 +26,7 @@ public class CardDTO {
     private LocalDate expirationDate;
 
     @NotNull
-    @Size(max = 4)
+    @Max(value = 9999)
     private Integer pinCode;
 
     private Boolean nfcPayments;
