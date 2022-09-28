@@ -168,7 +168,7 @@ public class TransferResource {
         return new ResponseEntity<>(transferService.createFromGovernment(governmentTransferDTO.getReference(), governmentTransferDTO.getAmount(), accountResource.getRequestUser().getId()), HttpStatus.CREATED);
     }
 
-    @PostMapping("/telco")
+    @PostMapping("/telcoPayments")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createTransfer(@RequestBody TelcoTransferDTO telcoTransferDTO) {
         //provider 
