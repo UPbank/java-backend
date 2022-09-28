@@ -1,8 +1,11 @@
 package pt.ualg.upbank.service;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -68,10 +71,21 @@ public class CardService {
         return cardRepository.save(card).getId();
     }
 
-    public void update(final Long id, final Boolean nfcPayments, final Boolean onlinePayments, final Integer pinCode) {
+    /**
+     * Transactional method updates the information for the {@link Card}, checks if a the account exists, and the card exists in the account and the pin as 4 digits. Updates Date of last updated
+     * @param id - of the {@link Card} to update
+     * @param nfcPayments
+     * @param onlinePayments
+     * @param pinCode
+     * @param accountId - {@link Account} to confirm the id of the user
+     */
+    @Transactional
+    public void update(final Long id, final Boolean nfcPayments, final Boolean onlinePayments, final Integer pinCode, final Long accountId) {
         CardDTO cardDTO = new CardDTO(); 
-        final Card card = cardRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        final Account account = accountRepository.findById(accountId)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Card.account.notFound"));
+        final Card card = cardRepository.findByIdAndAccount(id, account)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Card.card.notFound"));
 
         if(nfcPayments == null){
             cardDTO.setNfcPayments(card.getNfcPayments());
@@ -92,13 +106,21 @@ public class CardService {
             cardDTO.setPinCode(pinCode);
         }
         cardDTO.setExpirationDate(card.getExpirationDate());
+        cardDTO.setName(card.getName());
         cardDTO.setAccount(card.getAccount().getId());
         mapToEntity(cardDTO, card);
+        card.setLastUpdated(OffsetDateTime.now());
         cardRepository.save(card);
     }
 
-    public void delete(final Long id) {
-        cardRepository.deleteById(id);
+    @Transactional
+    public void delete(final Long id, final Long accountId) {
+        final Account account = accountRepository.findById(accountId)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Card.account.notFound"));
+        final Card card = cardRepository.findByIdAndAccount(id, account)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Card.card.notFound"));
+
+        cardRepository.deleteById(card.getId());
     }
 
     private CardDTO mapToDTO(final Card card, final CardDTO cardDTO) {

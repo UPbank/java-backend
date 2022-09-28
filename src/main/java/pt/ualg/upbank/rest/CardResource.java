@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import pt.ualg.upbank.model.CardDTO;
+import pt.ualg.upbank.model.UpdateCardDTO;
 import pt.ualg.upbank.service.CardService;
 
 
@@ -48,7 +49,7 @@ public class CardResource {
         return ResponseEntity.ok(cardService.findAll());
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<CardDTO>> getCards() {
         return ResponseEntity.ok(cardService.get(accountResource.getRequestUser().getId()));
     }
@@ -65,8 +66,8 @@ public class CardResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCard(@PathVariable final Long id,
-            @RequestBody @Valid final CardDTO cardDTO) {
-        cardService.update(id ,cardDTO.getNfcPayments(), cardDTO.getOnlinePayments(), cardDTO.getPinCode());
+            @RequestBody @Valid final UpdateCardDTO updateCardDTO) {
+        cardService.update(id ,updateCardDTO.getNfcPayments(), updateCardDTO.getOnlinePayments(), updateCardDTO.getPinCode(), accountResource.getRequestUser().getId());
         return ResponseEntity.ok().build();
     }
 
@@ -74,7 +75,7 @@ public class CardResource {
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteCard(@PathVariable final Long id) {
-        cardService.delete(id);
+        cardService.delete(id,accountResource.getRequestUser().getId());
         return ResponseEntity.noContent().build();
     }
 

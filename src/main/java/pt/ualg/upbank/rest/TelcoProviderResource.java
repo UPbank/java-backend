@@ -26,7 +26,7 @@ public class TelcoProviderResource {
         this.telcoProviderService = telcoProviderService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<List<TelcoProviderDTO>> getAllTelcoProviders() {
         return ResponseEntity.ok(telcoProviderService.findAll());
     }

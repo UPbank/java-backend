@@ -21,6 +21,7 @@ import pt.ualg.upbank.model.Frequency;
 import pt.ualg.upbank.model.IbanTransferDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.StandingOrderDTO;
+import pt.ualg.upbank.model.UpdateStandingOrderDTO;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.StandingOrderRepository;
 
@@ -66,17 +67,18 @@ public class StandingOrderService {
         return standingOrderRepository.save(standingOrder).getId();
     }
 
-    public void update(final Long id,Long amount, Frequency frequency, String iban) {
+    public void update(final Long id,final UpdateStandingOrderDTO updateStandingOrder) {
+    
         final StandingOrder standingOrder = standingOrderRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        if(amount!=null){
-            standingOrder.setAmount(amount);
+        if(updateStandingOrder.getAmount()!=null){
+            standingOrder.setAmount(updateStandingOrder.getAmount());
         }
-        if(iban!=null) {
-            standingOrder.setIban(iban);
+        if(updateStandingOrder.getReceiverIban()!=null) {
+            standingOrder.setIban(updateStandingOrder.getReceiverIban());
         }
-        if(frequency!=null) {
-            standingOrder.setFrequency(frequency);
+        if(updateStandingOrder.getFrequency()!=null) {
+            standingOrder.setFrequency(updateStandingOrder.getFrequency());
         }
 
         standingOrder.setLastUpdated(OffsetDateTime.now());

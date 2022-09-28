@@ -64,7 +64,7 @@ public class DirectDebitResource {
                     )
             }
     )
-    @GetMapping("/all")
+    @GetMapping("/")
     public ResponseEntity<SimplePage<ListDirectDebitDTO>> getAllDirectDebits(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
         return ResponseEntity.ok(directDebitService.listAll(accountResource.getRequestUser().getId(), pageable));

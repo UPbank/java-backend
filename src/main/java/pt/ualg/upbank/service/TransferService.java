@@ -20,6 +20,7 @@ import pt.ualg.upbank.domain.Transfer;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.TransferDTO;
+import pt.ualg.upbank.model.UpdateTransferDTO;
 import pt.ualg.upbank.model.IbanTransferDTO;
 
 import pt.ualg.upbank.repos.AccountRepository;
@@ -218,7 +219,10 @@ public class TransferService {
         return create(transfer);
     }
 
-    public void update(final Long id, final TransferDTO transferDTO) {
+    public void update(final Long id, final UpdateTransferDTO updateTransferDTO) {
+        final TransferDTO transferDTO = new TransferDTO();
+        transferDTO.setImage(updateTransferDTO.getImage());
+        transferDTO.setNotes(updateTransferDTO.getNotes());
         final Transfer transfer = transferRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(transferDTO.getNotes() != null){
