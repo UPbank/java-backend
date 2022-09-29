@@ -160,7 +160,7 @@ public class TransferResource {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.must.have.9.digits");
         }
         if(!transferService.checkPhoneNumberStartingDigits(telcoTransferDTO.getPhoneNumber())){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phone.provider.not.found");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "phoneNumber.invalid");
         }
       
         return new ResponseEntity<>(transferService.createFromPhoneNumber(telcoTransferDTO.getProvider(), telcoTransferDTO.getAmount(), accountResource.getRequestUser(), telcoTransferDTO.getPhoneNumber()), HttpStatus.CREATED );
@@ -177,7 +177,7 @@ public class TransferResource {
     public ResponseEntity<Void> updateTransfer(@PathVariable final Long id,
             @RequestBody @Valid final UpdateTransferDTO updatetransferDTO) {
             
-        transferService.update(id, updatetransferDTO);
+        transferService.update(id, updatetransferDTO, accountResource.getRequestUser().getId());
         return ResponseEntity.ok().build();
     }
 

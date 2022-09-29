@@ -73,9 +73,20 @@ public class DirectDebitService {
         directDebitRepository.save(directDebit);
     }
 
-    public void delete(final Long id) {
-        directDebitRepository.deleteById(id);
+    public void delete(final Long id, final Long accountId) {
+         
+        Account sender = accountRepository.findById(accountId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST ,"directDebit.sender.notFound"));
+        if(directDebitRepository.existsBySenderAndId(sender, id)){
+            
+            directDebitRepository.deleteById(id);
+        }else{
+        
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "delete.directDebit.notFound");
+        }
+            
     }
+    
 
     private DirectDebitDTO mapToDTO(final DirectDebit directDebit,
             final DirectDebitDTO directDebitDTO) {

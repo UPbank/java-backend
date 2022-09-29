@@ -24,11 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import pt.ualg.upbank.model.Frequency;
 import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.StandingOrderDTO;
-import pt.ualg.upbank.model.UpdateAccountDTO;
 import pt.ualg.upbank.model.UpdateStandingOrderDTO;
 import pt.ualg.upbank.service.StandingOrderService;
 
@@ -89,14 +86,14 @@ public class StandingOrderResource {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStandingOrder(@PathVariable final Long id,
             @RequestBody @Valid final UpdateStandingOrderDTO updateStandingOrderDTO) {
-        standingOrderService.update(id, updateStandingOrderDTO);
+        standingOrderService.update(id, updateStandingOrderDTO, accountResource.getRequestUser().getId()) ;
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteStandingOrder(@PathVariable final Long id) {
-        standingOrderService.delete(id);
+        standingOrderService.delete(id, accountResource.getRequestUser().getId());
         return ResponseEntity.noContent().build();
     }
 

@@ -1,7 +1,6 @@
 package pt.ualg.upbank.model;
 
 import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
 
 
 import lombok.Getter;

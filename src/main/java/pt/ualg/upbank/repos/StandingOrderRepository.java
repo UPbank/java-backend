@@ -14,6 +14,8 @@ import pt.ualg.upbank.model.Frequency;
 
 public interface StandingOrderRepository extends JpaRepository<StandingOrder, Long> {
 
+    Optional<StandingOrder> findBySenderAndId(Account account,Long id);
+    boolean existsBySenderAndId(Account account,Long id);
     List<StandingOrder>  findByFrequency(Frequency frequency);
 
     Page<StandingOrder> findBySender(Account account, Pageable pageable);

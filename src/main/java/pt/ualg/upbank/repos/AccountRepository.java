@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import pt.ualg.upbank.domain.Account;
-import pt.ualg.upbank.domain.Transfer;
 
 
 public interface AccountRepository extends JpaRepository<Account, Long> {

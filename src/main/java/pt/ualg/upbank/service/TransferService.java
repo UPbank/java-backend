@@ -34,7 +34,6 @@ public class TransferService {
     private final TransferRepository transferRepository;
     private final AccountRepository accountRepository;
     private final TelcoProviderRepository telcoProviderRepository;
-
     private final AccountService accountService;
 
     public TransferService(final TransferRepository transferRepository,
@@ -45,6 +44,7 @@ public class TransferService {
         this.accountService = accountService;
     }
 
+    //TODO: Remove this 
     public SimplePage<TransferDTO> findAll(final Pageable pageable) {
         final Page<Transfer> page = transferRepository.findAll(pageable);
         return new SimplePage<>(page.getContent()
@@ -54,6 +54,13 @@ public class TransferService {
             page.getTotalElements(), pageable);
     }
 
+    /**
+     * Gets the {@link Transfers} of an {@link Account} 
+     * Validates the  {@link Account} in the Database;
+     * @param id of the {@link Account}
+     * @param pageable
+     * @return {@link SimplePage of {@link TransfersDTO}  
+     */
     public SimplePage<TransferDTO> getAll(final Long id, final Pageable pageable) {
         final Account account = accountRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"transfers.account.notFound"));
@@ -65,7 +72,7 @@ public class TransferService {
             page.getTotalElements(), pageable);
     }
 
-    
+    //TODO: TO implement
     public SimplePage<TransferDTO> getByName(final Long id,final String name, final Pageable pageable) {
         final Account account = accountRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"transfers.account.notFound"));
@@ -79,6 +86,14 @@ public class TransferService {
             page.getTotalElements(), pageable);
     }
 
+    /**
+     * Gets the {@link TransfersDTO} associated to the {@link Account}  filtered by start date and end date.
+     * @param id - {@link Account} to relate the {@link TransfersDTO}
+     * @param startDate 
+     * @param endDate
+     * @param pageable
+     * @return - the {@link TransfersDTO}s 
+     */
     public SimplePage<TransferDTO> getByStartDateandEndDate(final Long id,final OffsetDateTime startDate,final OffsetDateTime endDate, final Pageable pageable) {
         final Account account = accountRepository.findById(id)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"transfers.account.notFound"));
@@ -102,9 +117,7 @@ public class TransferService {
     public Long create(final TransferDTO transferDTO) {
         final Transfer transfer = new Transfer();
         mapToEntity(transferDTO, transfer);
-        
-        
-        
+         
         //Check Balance is positive 
         if(transfer.getSender().getBalance()<0){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "amount.must.be.positive");
@@ -128,16 +141,6 @@ public class TransferService {
         transfer.setDateCreated(OffsetDateTime.now());
         return transferRepository.save(transfer).getId();
     }
-
-    //  //Method for taking money from a bank account
-    //  public void removeMoney(Account account,Long amount){
-    //     account.setBalance(account.getBalance()-amount);
-    // }
-
-    //  //Method for Adding money to a bank account
-    //  public void addMoney(final Account account ,Long amount){
-    //     account.setBalance(account.getBalance()+amount);
-    // }
 
     @Transactional
     //method to deal wiht Entity and Reference payments
@@ -179,7 +182,7 @@ public class TransferService {
         transfer.setAmount(amount);
         transfer.setReceiver(reciever.getId());
         transfer.setSender(sender);
-        String json = "{type:\"TEL\", PhoneNumber:\"" + phone + "\", TelCO:\"" + reciever.getFullName() + "\"}"; 
+        String json = "{type:\"TEL\", PhoneNumber:\"" + phone + "\", TelCO:\"" + provider + "\"}"; 
         transfer.setMetadata(json);
 
         return create(transfer);
@@ -219,12 +222,14 @@ public class TransferService {
         return create(transfer);
     }
 
-    public void update(final Long id, final UpdateTransferDTO updateTransferDTO) {
+    public void update(final Long id, final UpdateTransferDTO updateTransferDTO, final Long accountId) {
+        final Account account = accountRepository.findById(accountId)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));  
         final TransferDTO transferDTO = new TransferDTO();
         transferDTO.setImage(updateTransferDTO.getImage());
         transferDTO.setNotes(updateTransferDTO.getNotes());
-        final Transfer transfer = transferRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        final Transfer transfer = transferRepository.findBySenderAndIdOrReceiverAndId(account,id,account,id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Transfer not found"));
         if(transferDTO.getNotes() != null){
             transfer.setNotes(transferDTO.getNotes());
         }

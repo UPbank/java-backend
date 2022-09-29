@@ -2,7 +2,6 @@ package pt.ualg.upbank.model;
 
 import java.time.OffsetDateTime;
 
-import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

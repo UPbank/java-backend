@@ -10,14 +10,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Transfer;
 
 
 public interface TransferRepository extends JpaRepository<Transfer, Long> {
     Page<Transfer> findBySenderOrReceiver(Account account, Account account2, Pageable pageable);
-    // Page<Transfer> findBySenderAndReceiverContainingOrReceiverAndSenderContaining(Account account,String name, Account account2,String name2, Pageable pageable);
+
+    Optional<Transfer> findBySenderAndIdOrReceiverAndId(Account account,Long id,Account account2,Long id2);
+    boolean existsBySenderAndId(Account account,Long id);
+ 
     Page<Transfer> findBySenderAndReceiverOrReceiverAndSender(Account account,Account account2, Account account3,Account account4, Pageable pageable);
 
     //TODO: implement

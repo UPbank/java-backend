@@ -1,15 +1,10 @@
 package pt.ualg.upbank.rest;
 
 import static pt.ualg.upbank.service.JwtUserDetailsService.ROLE_USER;
-
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
-import java.util.Optional;
-
 import javax.validation.Valid;
-import javax.validation.constraints.Size;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
 import pt.ualg.upbank.model.CardDTO;
 import pt.ualg.upbank.model.UpdateCardDTO;
 import pt.ualg.upbank.service.CardService;
-
 
 @RestController
 @RequestMapping(value = "/api/cards", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,11 +42,12 @@ public class CardResource {
         return ResponseEntity.ok(cardService.findAll());
     }
 
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<List<CardDTO>> getCards() {
         return ResponseEntity.ok(cardService.get(accountResource.getRequestUser().getId()));
     }
 
+    //TODO: Not in use should be deleted
     @PostMapping
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createCard(@RequestBody @Valid final CardDTO cardDTO) {
@@ -63,7 +57,9 @@ public class CardResource {
         return new ResponseEntity<>(cardService.create(cardDTO), HttpStatus.CREATED);
     }
 
-
+    /**
+     * Updates the card if it belongs to the {@link Account}  
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateCard(@PathVariable final Long id,
             @RequestBody @Valid final UpdateCardDTO updateCardDTO) {
@@ -71,7 +67,11 @@ public class CardResource {
         return ResponseEntity.ok().build();
     }
 
-    
+    /**
+     * Deletes the card if it belongs to the User´s {@link Account}
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteCard(@PathVariable final Long id) {

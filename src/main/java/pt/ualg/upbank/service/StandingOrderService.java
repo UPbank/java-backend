@@ -67,9 +67,10 @@ public class StandingOrderService {
         return standingOrderRepository.save(standingOrder).getId();
     }
 
-    public void update(final Long id,final UpdateStandingOrderDTO updateStandingOrder) {
-    
-        final StandingOrder standingOrder = standingOrderRepository.findById(id)
+    public void update(final Long id,final UpdateStandingOrderDTO updateStandingOrder, final Long accountId) {
+        final Account account = accountRepository.findById(id)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+        final StandingOrder standingOrder = standingOrderRepository.findBySenderAndId(account,id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(updateStandingOrder.getAmount()!=null){
             standingOrder.setAmount(updateStandingOrder.getAmount());
@@ -85,8 +86,15 @@ public class StandingOrderService {
         standingOrderRepository.save(standingOrder);
     }
 
-    public void delete(final Long id) {
-        standingOrderRepository.deleteById(id);
+    public void delete(final Long id, final Long accountId) {
+        
+        Account sender = accountRepository.findById(accountId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST ,"standingOrder.sender.notFound"));
+        if(standingOrderRepository.existsBySenderAndId(sender, id)){
+            
+            standingOrderRepository.deleteById(id);
+        }
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "delete.standingOrder.notFound");
     }
 
     private StandingOrderDTO mapToDTO(final StandingOrder standingOrder,

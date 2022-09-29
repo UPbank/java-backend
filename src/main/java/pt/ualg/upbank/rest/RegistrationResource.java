@@ -1,5 +1,6 @@
 package pt.ualg.upbank.rest;
 
+import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +41,7 @@ public class RegistrationResource {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.age.underage");
 
         }
+     
         if(!RegistrationService.isNifValid(registrationRequest.getTaxNumber())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.taxNumber.invalid");
         }

@@ -40,7 +40,7 @@ public class CardService {
 
     public List<CardDTO> get(final Long accountId) {
         Account account = accountRepository.findById(accountId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "cards.account.notFound"));
         return cardRepository.findByAccount(account)
                 .stream()
                 .map(card -> mapToDTO(card, new CardDTO()))
@@ -72,7 +72,7 @@ public class CardService {
     }
 
     /**
-     * Transactional method updates the information for the {@link Card}, checks if a the account exists, and the card exists in the account and the pin as 4 digits. Updates Date of last updated
+     * Transactional method updates the information for the {@link Card}, checks if a the {@link Account} exists, and the card exists in the {@link Account} and the pin as 4 digits. Updates Date of last updated
      * @param id - of the {@link Card} to update
      * @param nfcPayments
      * @param onlinePayments
@@ -83,9 +83,9 @@ public class CardService {
     public void update(final Long id, final Boolean nfcPayments, final Boolean onlinePayments, final Integer pinCode, final Long accountId) {
         CardDTO cardDTO = new CardDTO(); 
         final Account account = accountRepository.findById(accountId)
-        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Card.account.notFound"));
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "card.account.notFound"));
         final Card card = cardRepository.findByIdAndAccount(id, account)
-        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Card.card.notFound"));
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "card.card.notFound"));
 
         if(nfcPayments == null){
             cardDTO.setNfcPayments(card.getNfcPayments());

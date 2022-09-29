@@ -19,11 +19,5 @@ public class IBANGenerator {
     public static Long ibanToId(String iban){
         return Long.parseLong(iban.substring(12,  iban.length()-2));
     }
-    // public static void main(String[] args) {
-        // System.out.println(
-
-    //         IBANGenerator.generateIBAN((long)10001)
-    //     );
-    // }
  
 }

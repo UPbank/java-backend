@@ -1,26 +1,18 @@
 package pt.ualg.upbank.service;
 
-import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-
 import javax.transaction.Transactional;
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import pt.ualg.upbank.IBAN.IBANGenerator;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
 import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
-import pt.ualg.upbank.model.CardDTO;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.AddressRepository;
 
@@ -30,7 +22,6 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CardService cardService;
 
     public AccountService(final AccountRepository accountRepository,
             final AddressRepository addressRepository, 
@@ -39,7 +30,6 @@ public class AccountService {
         this.accountRepository = accountRepository;
         this.addressRepository = addressRepository;
         this.passwordEncoder = passwordEncoder;
-        this.cardService = cardService;
     }
 
     public List<AccountDTO> findAll() {
@@ -68,7 +58,13 @@ public class AccountService {
         return accountRepository.save(account).getId();
     }
 
-     @Transactional
+    /**
+     * Method to use the information from the User to update the {@link Account} of the User.
+     * @param id
+     * @param email
+     * @param addressDTO
+     */
+    @Transactional
     public void update(Long id, String email, AddressDTO addressDTO) {
         final Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -127,20 +123,21 @@ public class AccountService {
         return accountRepository.existsByEmailIgnoreCase(email);
     }
 
+    /**
+     * Checks if balance of the {@link Account} is positive
+     * @param accountDTO
+     * @return
+     */
     public boolean checkBalance(final AccountDTO accountDTO){
         return accountDTO.getBalance() > 0;
 
     }
-       //Method for taking money from a bank account
-       public void removeMoney(Account account,Long amount){
+
+    public void removeMoney(Account account,Long amount){
         accountRepository.addToAccountBalance(account.getId(), -amount);
     }
 
-     //Method for Adding money to a bank account
      public void addMoney(final Account account ,Long amount){
         accountRepository.addToAccountBalance(account.getId(), amount);
-    }
-
-
-   
+    }  
 }

@@ -20,6 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  * Represents an Address, line2 is optional.
+ * Only valid Zip-codes;
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class)

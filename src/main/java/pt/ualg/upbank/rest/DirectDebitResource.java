@@ -92,7 +92,7 @@ public class DirectDebitResource {
     @DeleteMapping("/{id}")
     @ApiResponse(responseCode = "204")
     public ResponseEntity<Void> deleteDirectDebit(@PathVariable final Long id) {
-        directDebitService.delete(id);
+        directDebitService.delete(id,accountResource.getRequestUser().getId());
         return ResponseEntity.noContent().build();
     }
 

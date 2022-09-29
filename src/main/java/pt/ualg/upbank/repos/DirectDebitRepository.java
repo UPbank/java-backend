@@ -1,6 +1,5 @@
 package pt.ualg.upbank.repos;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,6 +11,8 @@ import pt.ualg.upbank.domain.DirectDebit;
 
 
 public interface DirectDebitRepository extends JpaRepository<DirectDebit, Long> {
+    Optional<DirectDebit> findBySenderAndId(Account account,Long id);
+    boolean existsBySenderAndId(Account account,Long id);
     Optional<DirectDebit> findBySenderOrReceiverAndId(Account accountSender ,Account accountReciever, Long Id);
 
     Page<DirectDebit> findBySender(Account accountSender ,Pageable pageable);
