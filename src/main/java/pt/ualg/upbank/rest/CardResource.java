@@ -36,12 +36,7 @@ public class CardResource {
         this.accountResource = accountResource;
     }
 
-    //TODO: delete mapping
-    @GetMapping("/all")
-    public ResponseEntity<List<CardDTO>> getAllCards() {
-        return ResponseEntity.ok(cardService.findAll());
-    }
-
+  
     @GetMapping("/")
     public ResponseEntity<List<CardDTO>> getCards() {
         return ResponseEntity.ok(cardService.get(accountResource.getRequestUser().getId()));

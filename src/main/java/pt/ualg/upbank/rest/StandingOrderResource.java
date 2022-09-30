@@ -63,7 +63,7 @@ public class StandingOrderResource {
             )
         }
     )
-    @GetMapping("")
+    @GetMapping("/")
     public ResponseEntity<SimplePage<StandingOrderDTO>> getAllStandingOrders(
             @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
         return ResponseEntity.ok(standingOrderService.findAll(accountResource.getRequestUser().getId(), pageable));
@@ -74,7 +74,7 @@ public class StandingOrderResource {
         return ResponseEntity.ok(standingOrderService.get(id));
     }
 
-    @PostMapping("")
+    @PostMapping("/")
     @ApiResponse(responseCode = "201")
     public ResponseEntity<Long> createStandingOrder(
             @RequestBody @Valid final StandingOrderDTO standingOrderDTO) {

@@ -1,7 +1,6 @@
 package pt.ualg.upbank.rest;
 
 import static pt.ualg.upbank.service.JwtUserDetailsService.ROLE_USER;
-import java.util.List;
 import java.util.regex.Matcher;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -56,11 +55,6 @@ public class AccountResource {
 				return ResponseEntity.ok(getRequestUser());
 		}
 
-		//TODO: DeleteMapping
-		@GetMapping("/all")
-		public ResponseEntity<List<AccountDTO>> getAllAccount() {
-				return ResponseEntity.ok(accountService.findAll());
-		}
 
 		/**
 		 * Updates the User´s {@link Account} 
