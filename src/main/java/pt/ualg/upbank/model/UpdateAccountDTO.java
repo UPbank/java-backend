@@ -5,17 +5,15 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class UpdateAccountDTO {
-    private Long id;
+	private Long id;
 
-    @Size(max = 255)
-    private String email;
+	@Size(max = 255)
+	private String email;
 
+	@NotNull
+	private AddressDTO address;
 
-    @NotNull
-    private AddressDTO address;
-    
 }

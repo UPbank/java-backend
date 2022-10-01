@@ -6,16 +6,15 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class OtherAccountDTO {
 
-    private Long id;
+	private Long id;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 255)
-    private String fullName;
+	@NotBlank
+	@NotNull
+	@Size(max = 255)
+	private String fullName;
 
 }

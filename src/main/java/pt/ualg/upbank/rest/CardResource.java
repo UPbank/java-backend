@@ -28,50 +28,51 @@ import pt.ualg.upbank.service.CardService;
 @SecurityRequirement(name = "bearer-jwt")
 public class CardResource {
 
-    private final CardService cardService;
-    private final AccountResource accountResource;
+	private final CardService cardService;
+	private final AccountResource accountResource;
 
-    public CardResource(final CardService cardService, final AccountResource accountResource) {
-        this.cardService = cardService;
-        this.accountResource = accountResource;
-    }
+	public CardResource(final CardService cardService, final AccountResource accountResource) {
+		this.cardService = cardService;
+		this.accountResource = accountResource;
+	}
 
-  
-    @GetMapping("/")
-    public ResponseEntity<List<CardDTO>> getCards() {
-        return ResponseEntity.ok(cardService.get(accountResource.getRequestUser().getId()));
-    }
+	@GetMapping("/")
+	public ResponseEntity<List<CardDTO>> getCards() {
+		return ResponseEntity.ok(cardService.get(accountResource.getRequestUser().getId()));
+	}
 
-    //TODO: Not in use should be deleted
-    @PostMapping
-    @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createCard(@RequestBody @Valid final CardDTO cardDTO) {
-        if(cardDTO.getPinCode()!=null && cardDTO.getPinCode().toString().length()!=4){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "card.update.invalidPin");
-        }
-        return new ResponseEntity<>(cardService.create(cardDTO), HttpStatus.CREATED);
-    }
+	// TODO: Not in use should be deleted
+	@PostMapping
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Long> createCard(@RequestBody @Valid final CardDTO cardDTO) {
+		if (cardDTO.getPinCode() != null && cardDTO.getPinCode().toString().length() != 4) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "card.update.invalidPin");
+		}
+		return new ResponseEntity<>(cardService.create(cardDTO), HttpStatus.CREATED);
+	}
 
-    /**
-     * Updates the card if it belongs to the {@link Account}  
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateCard(@PathVariable final Long id,
-            @RequestBody @Valid final UpdateCardDTO updateCardDTO) {
-        cardService.update(id ,updateCardDTO.getNfcPayments(), updateCardDTO.getOnlinePayments(), updateCardDTO.getPinCode(), accountResource.getRequestUser().getId());
-        return ResponseEntity.ok().build();
-    }
+	/**
+	 * Updates the card if it belongs to the {@link Account}
+	 */
+	@PutMapping("/{id}")
+	public ResponseEntity<Void> updateCard(@PathVariable final Long id,
+			@RequestBody @Valid final UpdateCardDTO updateCardDTO) {
+		cardService.update(id, updateCardDTO.getNfcPayments(), updateCardDTO.getOnlinePayments(),
+				updateCardDTO.getPinCode(), accountResource.getRequestUser().getId());
+		return ResponseEntity.ok().build();
+	}
 
-    /**
-     * Deletes the card if it belongs to the User´s {@link Account}
-     * @param id
-     * @return
-     */
-    @DeleteMapping("/{id}")
-    @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteCard(@PathVariable final Long id) {
-        cardService.delete(id,accountResource.getRequestUser().getId());
-        return ResponseEntity.noContent().build();
-    }
+	/**
+	 * Deletes the card if it belongs to the User´s {@link Account}
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@DeleteMapping("/{id}")
+	@ApiResponse(responseCode = "204")
+	public ResponseEntity<Void> deleteCard(@PathVariable final Long id) {
+		cardService.delete(id, accountResource.getRequestUser().getId());
+		return ResponseEntity.noContent().build();
+	}
 
 }

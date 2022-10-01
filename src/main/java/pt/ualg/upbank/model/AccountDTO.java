@@ -11,61 +11,61 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class AccountDTO {
 
-    private Long id;
+	private Long id;
 
-    @NotNull
-    @Size(max = 255)
-    private String email;
+	@NotNull
+	@Size(max = 255)
+	private String email;
 
-    @Size(max = 255)
-    private String hash;
+	@Size(max = 255)
+	private String hash;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 255)
-    private String fullName;
+	@NotBlank
+	@NotNull
+	@Size(max = 255)
+	private String fullName;
 
-    @NotNull
-    private LocalDate birthdate;
+	@NotNull
+	private LocalDate birthdate;
 
-    @NotNull
-    @Size(max = 255)
-    private String taxNumber;
+	@NotNull
+	@Size(max = 255)
+	private String taxNumber;
 
-    @NotNull
-    @Size(max = 255)
-    private String idNumber;
+	@NotNull
+	@Size(max = 255)
+	private String idNumber;
 
-    @NotNull
-    private Long balance;
+	@NotNull
+	private Long balance;
 
-    @NotNull
-    private AddressDTO address;
+	@NotNull
+	private AddressDTO address;
 
-    
-    @Size(max = 255)
-    private String identifier;
-    
-    @ReadOnlyProperty
-    private String iban;
+	@Size(max = 255)
+	private String identifier;
 
-    public AccountDTO(){}
-    
-    public AccountDTO( String email, String hash, String fullName, LocalDate birthdate, String taxNumber, String idNumber, long balance, AddressDTO address){
+	@ReadOnlyProperty
+	private String iban;
 
-        this.email = email;
-        this.hash = hash;
-        this.fullName = fullName;
-        this.birthdate = birthdate;
-        this.taxNumber = taxNumber;
-        this.idNumber = idNumber;
-        this.balance = balance;
-        this.address = address;
-    }
+	public AccountDTO() {
+	}
+
+	public AccountDTO(String email, String hash, String fullName, LocalDate birthdate, String taxNumber, String idNumber,
+			long balance, AddressDTO address) {
+
+		this.email = email;
+		this.hash = hash;
+		this.fullName = fullName;
+		this.birthdate = birthdate;
+		this.taxNumber = taxNumber;
+		this.idNumber = idNumber;
+		this.balance = balance;
+		this.address = address;
+	}
 
 }

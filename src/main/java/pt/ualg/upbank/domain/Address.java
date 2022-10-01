@@ -28,48 +28,39 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 public class Address {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
-    private Long id;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@SequenceGenerator(name = "primary_sequence", sequenceName = "primary_sequence", allocationSize = 1, initialValue = 10000)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "primary_sequence")
+	private Long id;
 
-    @Column(nullable = false)
-    private String line1;
+	@Column(nullable = false)
+	private String line1;
 
-    @Column
-    private String line2;
+	@Column
+	private String line2;
 
-    @Column(nullable = false)
-    private String zipCode;
+	@Column(nullable = false)
+	private String zipCode;
 
-    @Column(nullable = false)
-    private String city;
+	@Column(nullable = false)
+	private String city;
 
-    @Column(nullable = false)
-    private String district;
-    
-    @Column(unique = true)
-    private String identifier;
+	@Column(nullable = false)
+	private String district;
 
-    @OneToMany(mappedBy = "address", cascade = CascadeType.REMOVE)
-    private Set<Account> addressAccounts;
+	@Column(unique = true)
+	private String identifier;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+	@OneToMany(mappedBy = "address", cascade = CascadeType.REMOVE)
+	private Set<Account> addressAccounts;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
+	@CreatedDate
+	@Column(nullable = false, updatable = false)
+	private OffsetDateTime dateCreated;
 
+	@LastModifiedDate
+	@Column(nullable = false)
+	private OffsetDateTime lastUpdated;
 
 }

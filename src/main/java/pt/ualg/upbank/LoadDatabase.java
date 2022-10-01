@@ -28,220 +28,211 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-
-
 @Configuration
 class LoadDatabase {
 
-  private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
+	private static final Logger log = LoggerFactory.getLogger(LoadDatabase.class);
 
-  @Bean
-  CommandLineRunner initDatabase(TelcoProviderRepository telcoProviderRepository, AccountRepository accountRepository, AddressRepository addressRepository, TelcoProviderService telcoProviderService, AccountService accountService, AddressService addressService, DirectDebitRepository directDebitRepository) {
-    TelcoProvider altice = new TelcoProvider();
-    altice.setName("Altice");
-    altice.setDateCreated(OffsetDateTime.now());
-    altice.setLastUpdated(OffsetDateTime.now());
+	@Bean
+	CommandLineRunner initDatabase(TelcoProviderRepository telcoProviderRepository, AccountRepository accountRepository,
+			AddressRepository addressRepository, TelcoProviderService telcoProviderService, AccountService accountService,
+			AddressService addressService, DirectDebitRepository directDebitRepository) {
+		TelcoProvider altice = new TelcoProvider();
+		altice.setName("Altice");
+		altice.setDateCreated(OffsetDateTime.now());
+		altice.setLastUpdated(OffsetDateTime.now());
 
-    TelcoProvider nos = new TelcoProvider();
-    nos.setName("NOS");
-    nos.setDateCreated(OffsetDateTime.now());
-    nos.setLastUpdated(OffsetDateTime.now());
+		TelcoProvider nos = new TelcoProvider();
+		nos.setName("NOS");
+		nos.setDateCreated(OffsetDateTime.now());
+		nos.setLastUpdated(OffsetDateTime.now());
 
-    TelcoProvider moche = new TelcoProvider();
-    moche.setName("Moche");
-    moche.setDateCreated(OffsetDateTime.now());
-    moche.setLastUpdated(OffsetDateTime.now());
+		TelcoProvider moche = new TelcoProvider();
+		moche.setName("Moche");
+		moche.setDateCreated(OffsetDateTime.now());
+		moche.setLastUpdated(OffsetDateTime.now());
 
-    TelcoProvider sapo = new TelcoProvider();
-    sapo.setName("Sapo");
-    sapo.setDateCreated(OffsetDateTime.now());
-    sapo.setLastUpdated(OffsetDateTime.now());
+		TelcoProvider sapo = new TelcoProvider();
+		sapo.setName("Sapo");
+		sapo.setDateCreated(OffsetDateTime.now());
+		sapo.setLastUpdated(OffsetDateTime.now());
 
-    TelcoProvider uzo = new TelcoProvider();
-    uzo.setName("UZO");
-    uzo.setDateCreated(OffsetDateTime.now());
-    uzo.setLastUpdated(OffsetDateTime.now());
+		TelcoProvider uzo = new TelcoProvider();
+		uzo.setName("UZO");
+		uzo.setDateCreated(OffsetDateTime.now());
+		uzo.setLastUpdated(OffsetDateTime.now());
 
-    TelcoProvider viaCard = new TelcoProvider();
-    viaCard.setName("Via Card");
-    viaCard.setDateCreated(OffsetDateTime.now());
-    viaCard.setLastUpdated(OffsetDateTime.now());
+		TelcoProvider viaCard = new TelcoProvider();
+		viaCard.setName("Via Card");
+		viaCard.setDateCreated(OffsetDateTime.now());
+		viaCard.setLastUpdated(OffsetDateTime.now());
 
-    TelcoProvider vodafone = new TelcoProvider();
-    vodafone.setName("Vodafone");
-    vodafone.setDateCreated(OffsetDateTime.now());
-    vodafone.setLastUpdated(OffsetDateTime.now());
+		TelcoProvider vodafone = new TelcoProvider();
+		vodafone.setName("Vodafone");
+		vodafone.setDateCreated(OffsetDateTime.now());
+		vodafone.setLastUpdated(OffsetDateTime.now());
 
-    TelcoProvider wtf = new TelcoProvider();
-    wtf.setName("WTF");
-    wtf.setDateCreated(OffsetDateTime.now());
-    wtf.setLastUpdated(OffsetDateTime.now());
-    
+		TelcoProvider wtf = new TelcoProvider();
+		wtf.setName("WTF");
+		wtf.setDateCreated(OffsetDateTime.now());
+		wtf.setLastUpdated(OffsetDateTime.now());
 
-     final AddressDTO addressDTO = new AddressDTO();
-     
+		final AddressDTO addressDTO = new AddressDTO();
 
+		Account government = new Account();
 
-      Account government =new Account();
-      
+		Account entity = new Account();
 
-      Account entity =new Account();
-  
+		Account telecomunication = new Account();
 
-      Account telecomunication =new Account();
-  
+		Account bankAccount = new Account();
 
-      Account bankAccount =new Account();
+		Account directDebit = new Account();
 
+		// DirectDebit joao = new DirectDebit();
+		// joao.setActive(true);
+		// joao.setDateCreated(2022,10,01);
+		// joao.setId(200);
+		// joao.setLastDebit(2021,01,01);
+		// joao.setLastUpdated(2021,02,01);
 
-      Account directDebit = new Account();
-      
-      // DirectDebit joao = new DirectDebit();
-      // joao.setActive(true);
-      // joao.setDateCreated(2022,10,01);
-      // joao.setId(200);
-      // joao.setLastDebit(2021,01,01);
-      // joao.setLastUpdated(2021,02,01);
-      
-      
+		return args -> {
+			if (!telcoProviderRepository.existsByName("Altice")) {
 
-    return args -> {
-      if( !telcoProviderRepository.existsByName("Altice")){
+				log.info("Preloading " + telcoProviderRepository.save(altice));
+			}
+			if (!telcoProviderRepository.existsByName("NOS")) {
+				log.info("Preloading " + telcoProviderRepository.save(nos));
 
-        log.info("Preloading " + telcoProviderRepository.save(altice));
-      }
-      if( !telcoProviderRepository.existsByName("NOS")){
-        log.info("Preloading " + telcoProviderRepository.save(nos));
+			}
+			if (!telcoProviderRepository.existsByName("Moche")) {
 
-      }
-      if( !telcoProviderRepository.existsByName("Moche")){
+				log.info("Preloading " + telcoProviderRepository.save(moche));
+			}
+			if (!telcoProviderRepository.existsByName("Sapo")) {
 
-        log.info("Preloading " + telcoProviderRepository.save(moche));
-      }
-      if( !telcoProviderRepository.existsByName("Sapo")){
+				log.info("Preloading " + telcoProviderRepository.save(sapo));
+			}
+			if (!telcoProviderRepository.existsByName("UZO")) {
 
-        log.info("Preloading " + telcoProviderRepository.save(sapo));
-      }
-      if( !telcoProviderRepository.existsByName("UZO")){
-        
-        log.info("Preloading " + telcoProviderRepository.save(uzo));
-      }
-      if( !telcoProviderRepository.existsByName("Via Card")){
+				log.info("Preloading " + telcoProviderRepository.save(uzo));
+			}
+			if (!telcoProviderRepository.existsByName("Via Card")) {
 
-        log.info("Preloading " + telcoProviderRepository.save(viaCard));
-      }
-      if( !telcoProviderRepository.existsByName("Vodafone")){
+				log.info("Preloading " + telcoProviderRepository.save(viaCard));
+			}
+			if (!telcoProviderRepository.existsByName("Vodafone")) {
 
-        log.info("Preloading " + telcoProviderRepository.save(vodafone));
-      }
-      if( !telcoProviderRepository.existsByName("WTF")){
+				log.info("Preloading " + telcoProviderRepository.save(vodafone));
+			}
+			if (!telcoProviderRepository.existsByName("WTF")) {
 
-        log.info("Preloading " + telcoProviderRepository.save(wtf));
-      }
+				log.info("Preloading " + telcoProviderRepository.save(wtf));
+			}
 
-      if(addressRepository.existsByIdentifier("General5")==false){
-        addressDTO.setCity("city");
-        addressDTO.setDistrict("district");
-        addressDTO.setLine1("line1");
-        addressDTO.setLine2("line2");
-        addressDTO.setZipCode("1234-123");
-        // addressDTO.setIdentifier("General5");
+			if (addressRepository.existsByIdentifier("General5") == false) {
+				addressDTO.setCity("city");
+				addressDTO.setDistrict("district");
+				addressDTO.setLine1("line1");
+				addressDTO.setLine2("line2");
+				addressDTO.setZipCode("1234-123");
+				// addressDTO.setIdentifier("General5");
 
-        // log.info("Preloading " + addressRepository.save(AddressService.toEntity(addressDTO, new Address())));
-      }
-      // final Address ddress= addressRepository.findByIdentifier("General5").
-      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
-      
-      if(accountRepository.existsByIdentifier("Bank Account")==false){
-        
-      bankAccount.setIdentifier("Bank Account");
-      bankAccount.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
-      bankAccount.setFullName("Bank Account");
-      bankAccount.setBalance((long)0);
-      bankAccount.setBirthdate(LocalDate.parse("1990-01-01"));
-      bankAccount.setTaxNumber("020202020");
-      bankAccount.setIdNumber("0000000002");
-      bankAccount.setEmail("bank@account.pt");
-      bankAccount.setHash("2345");
-        
-        log.info("Preloading " + accountRepository.save(bankAccount));
-      }
+				// log.info("Preloading " +
+				// addressRepository.save(AddressService.toEntity(addressDTO, new Address())));
+			}
+			// final Address ddress= addressRepository.findByIdentifier("General5").
+			// orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND
+			// ,"loadDataBase.address"));
 
-      if(accountRepository.existsByIdentifier("Services")==false){
-      //   Address ddress= addressRepository.findByIdentifier("General1").
-      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
-        entity.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
-        entity.setFullName("Services");
-        entity.setBalance((long)0);
-        entity.setBirthdate(LocalDate.parse("1994-02-03"));
-        entity.setTaxNumber("020202020");
-        entity.setIdNumber("0000000002");
-        entity.setEmail("services@services.com");
-        entity.setHash("2345");
-        
-        entity.setIdentifier("Services");
-        log.info("Preloading " + accountRepository.save(entity));
-        
-      }
-      if(accountRepository.existsByIdentifier("TelCos")==false){
-      //   Address ddress= addressRepository.findByIdentifier("General1").
-      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
+			if (accountRepository.existsByIdentifier("Bank Account") == false) {
 
+				bankAccount.setIdentifier("Bank Account");
+				bankAccount.setAddress(addressService
+						.mapToEntity(new AddressDTO((long) 1, "line1", "line2", "0000-000", "city", "district"), new Address()));
+				bankAccount.setFullName("Bank Account");
+				bankAccount.setBalance((long) 0);
+				bankAccount.setBirthdate(LocalDate.parse("1990-01-01"));
+				bankAccount.setTaxNumber("020202020");
+				bankAccount.setIdNumber("0000000002");
+				bankAccount.setEmail("bank@account.pt");
+				bankAccount.setHash("2345");
 
-      telecomunication.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
-      telecomunication.setFullName("Telecomunications");
-      telecomunication.setBalance((long)0);
-      telecomunication.setBirthdate(LocalDate.parse("1990-01-01"));
-      telecomunication.setTaxNumber("020202020");
-      telecomunication.setIdNumber("0000000002");
-      telecomunication.setEmail("telcos@telco.pt");
-      telecomunication.setHash("2345");
-      telecomunication.setIdentifier("TelCos");
+				log.info("Preloading " + accountRepository.save(bankAccount));
+			}
 
-     
-        log.info("Preloading " + accountRepository.save(telecomunication));
-      }
+			if (accountRepository.existsByIdentifier("Services") == false) {
+				// Address ddress= addressRepository.findByIdentifier("General1").
+				// orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND
+				// ,"loadDataBase.address"));
+				entity.setAddress(addressService
+						.mapToEntity(new AddressDTO((long) 1, "line1", "line2", "0000-000", "city", "district"), new Address()));
+				entity.setFullName("Services");
+				entity.setBalance((long) 0);
+				entity.setBirthdate(LocalDate.parse("1994-02-03"));
+				entity.setTaxNumber("020202020");
+				entity.setIdNumber("0000000002");
+				entity.setEmail("services@services.com");
+				entity.setHash("2345");
 
-      if(accountRepository.existsByIdentifier("Government")==false){
-      //   Address ddress= addressRepository.findByIdentifier("General1").
-      // orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND ,"loadDataBase.address"));
-        government.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
-        government.setFullName("Governo de Portugal");
-        government.setBalance((long)0);//TODO: create env variable
-        government.setBirthdate(LocalDate.parse("1143-10-05"));
-        government.setTaxNumber("9999999");
-        government.setIdNumber("0000000001");
-        government.setEmail("government@gov.pt");
-        government.setHash("1234");
-        government.setIdentifier("Government");
+				entity.setIdentifier("Services");
+				log.info("Preloading " + accountRepository.save(entity));
 
-     
-        log.info("Preloading " + accountRepository.save(government));
-      }
+			}
+			if (accountRepository.existsByIdentifier("TelCos") == false) {
+				// Address ddress= addressRepository.findByIdentifier("General1").
+				// orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND
+				// ,"loadDataBase.address"));
 
-      // if(accountRepository.existsByIdentifier("")==false){
-      //   directDebit.setAddress(addressService.mapToEntity( new AddressDTO((long)1, "line1", "line2", "0000-000", "city", "district"),new Address()));
-      //   directDebit.setFullName("Débito Direto");
-      //   directDebit.setBalance((long)0);//TODO: create env variable
-      //   directDebit.setBirthdate(LocalDate.parse("2000-01-01"));
-      //   directDebit.setTaxNumber("9898989");
-      //   directDebit.setIdNumber("0000000002");
-      //   directDebit.setEmail("direct_debit@test.pt");
-      //   directDebit.setHash("1423");
-      //   directDebit.setIdentifier("Diresct Debit");
+				telecomunication.setAddress(addressService
+						.mapToEntity(new AddressDTO((long) 1, "line1", "line2", "0000-000", "city", "district"), new Address()));
+				telecomunication.setFullName("Telecomunications");
+				telecomunication.setBalance((long) 0);
+				telecomunication.setBirthdate(LocalDate.parse("1990-01-01"));
+				telecomunication.setTaxNumber("020202020");
+				telecomunication.setIdNumber("0000000002");
+				telecomunication.setEmail("telcos@telco.pt");
+				telecomunication.setHash("2345");
+				telecomunication.setIdentifier("TelCos");
 
-      //   log.info("Preloading " + accountRepository.save(directDebit));
-      // }
+				log.info("Preloading " + accountRepository.save(telecomunication));
+			}
 
-      // if(directDebitRepository.findBySenderOrReceiverAndId())
+			if (accountRepository.existsByIdentifier("Government") == false) {
+				// Address ddress= addressRepository.findByIdentifier("General1").
+				// orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND
+				// ,"loadDataBase.address"));
+				government.setAddress(addressService
+						.mapToEntity(new AddressDTO((long) 1, "line1", "line2", "0000-000", "city", "district"), new Address()));
+				government.setFullName("Governo de Portugal");
+				government.setBalance((long) 0);// TODO: create env variable
+				government.setBirthdate(LocalDate.parse("1143-10-05"));
+				government.setTaxNumber("9999999");
+				government.setIdNumber("0000000001");
+				government.setEmail("government@gov.pt");
+				government.setHash("1234");
+				government.setIdentifier("Government");
 
-      
+				log.info("Preloading " + accountRepository.save(government));
+			}
 
-      
-    
+			// if(accountRepository.existsByIdentifier("")==false){
+			// directDebit.setAddress(addressService.mapToEntity( new AddressDTO((long)1,
+			// "line1", "line2", "0000-000", "city", "district"),new Address()));
+			// directDebit.setFullName("Débito Direto");
+			// directDebit.setBalance((long)0);//TODO: create env variable
+			// directDebit.setBirthdate(LocalDate.parse("2000-01-01"));
+			// directDebit.setTaxNumber("9898989");
+			// directDebit.setIdNumber("0000000002");
+			// directDebit.setEmail("direct_debit@test.pt");
+			// directDebit.setHash("1423");
+			// directDebit.setIdentifier("Diresct Debit");
 
-      
-  };
+			// log.info("Preloading " + accountRepository.save(directDebit));
+			// }
+
+			// if(directDebitRepository.findBySenderOrReceiverAndId())
+
+		};
+	}
 }
-}
-

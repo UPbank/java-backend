@@ -8,23 +8,22 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class DirectDebitDTO {
-    
-    @ReadOnlyProperty
-    private Long id;
 
-    @NotNull
-    private Boolean active;
+	@ReadOnlyProperty
+	private Long id;
 
-    private LocalDate lastDebit;
+	@NotNull
+	private Boolean active;
 
-    @NotNull
-    private Long receiver;
+	private LocalDate lastDebit;
 
-    @NotNull
-    private Long sender;
+	@NotNull
+	private Long receiver;
+
+	@NotNull
+	private Long sender;
 
 }

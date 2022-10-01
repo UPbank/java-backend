@@ -4,8 +4,9 @@ import java.math.BigInteger;
 
 /**
  * @author Pedro Cavalheiro
- * Class representing a Bank Identification Number that extends {@link BBAN},
- * creates and validates a NIb. 
+ *         Class representing a Bank Identification Number that extends
+ *         {@link BBAN},
+ *         creates and validates a NIb.
  */
 public class NIB extends BBAN {
 

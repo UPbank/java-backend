@@ -11,29 +11,28 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class CardDTO {
 
-    @ReadOnlyProperty
-    private Long id;
+	@ReadOnlyProperty
+	private Long id;
 
-    @Size(max = 255)
-    private String name;
+	@Size(max = 255)
+	private String name;
 
-    @NotNull
-    private LocalDate expirationDate;
+	@NotNull
+	private LocalDate expirationDate;
 
-    @NotNull
-    @Max(value = 9999)
-    private Integer pinCode;
+	@NotNull
+	@Max(value = 9999)
+	private Integer pinCode;
 
-    private Boolean nfcPayments;
+	private Boolean nfcPayments;
 
-    private Boolean onlinePayments;
+	private Boolean onlinePayments;
 
-    @NotNull
-    private Long account;
+	@NotNull
+	private Long account;
 
 }

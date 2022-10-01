@@ -11,15 +11,15 @@ import java.nio.charset.StandardCharsets;
 
 @Controller
 public class HomeController {
-    @GetMapping("/")
-    @ResponseBody
-    public String index() {
-			Resource resource = new ClassPathResource("/static/api-reference.json");
-			try {
-					return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-			} catch (IOException e) {
-					e.printStackTrace();
-			}
-			return "Could not find API reference";
-    }
+	@GetMapping("/")
+	@ResponseBody
+	public String index() {
+		Resource resource = new ClassPathResource("/static/api-reference.json");
+		try {
+			return new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "Could not find API reference";
+	}
 }

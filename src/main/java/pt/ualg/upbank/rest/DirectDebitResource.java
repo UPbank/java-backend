@@ -30,70 +30,55 @@ import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.model.UpdateDirectDebitDTO;
 import pt.ualg.upbank.service.DirectDebitService;
 
-
 @RestController
 @RequestMapping(value = "/api/directDebits", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasRole('" + ROLE_USER + "')")
 @SecurityRequirement(name = "bearer-jwt")
 public class DirectDebitResource {
 
-    private final DirectDebitService directDebitService;
-    private final AccountResource accountResource;
+	private final DirectDebitService directDebitService;
+	private final AccountResource accountResource;
 
-    public DirectDebitResource(final DirectDebitService directDebitService, final AccountResource accountResource) {
-        this.directDebitService = directDebitService;
-        this.accountResource = accountResource; 
-    }
+	public DirectDebitResource(final DirectDebitService directDebitService, final AccountResource accountResource) {
+		this.directDebitService = directDebitService;
+		this.accountResource = accountResource;
+	}
 
-    @Operation(
-            parameters = {
-                    @Parameter(
-                            name = "page",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = Integer.class)
-                    ),
-                    @Parameter(
-                            name = "size",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = Integer.class)
-                    ),
-                    @Parameter(
-                            name = "sort",
-                            in = ParameterIn.QUERY,
-                            schema = @Schema(implementation = String.class)
-                    )
-            }
-    )
-    @GetMapping("/")
-    public ResponseEntity<SimplePage<ListDirectDebitDTO>> getAllDirectDebits(
-            @Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
-        return ResponseEntity.ok(directDebitService.listAll(accountResource.getRequestUser().getId(), pageable));
-    }
+	@Operation(parameters = {
+			@Parameter(name = "page", in = ParameterIn.QUERY, schema = @Schema(implementation = Integer.class)),
+			@Parameter(name = "size", in = ParameterIn.QUERY, schema = @Schema(implementation = Integer.class)),
+			@Parameter(name = "sort", in = ParameterIn.QUERY, schema = @Schema(implementation = String.class))
+	})
+	@GetMapping("/")
+	public ResponseEntity<SimplePage<ListDirectDebitDTO>> getAllDirectDebits(
+			@Parameter(hidden = true) @SortDefault(sort = "id") @PageableDefault(size = 20) final Pageable pageable) {
+		return ResponseEntity.ok(directDebitService.listAll(accountResource.getRequestUser().getId(), pageable));
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DirectDebitDTO> getDirectDebit(@PathVariable final Long id) {
-        return ResponseEntity.ok(directDebitService.get(id));
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<DirectDebitDTO> getDirectDebit(@PathVariable final Long id) {
+		return ResponseEntity.ok(directDebitService.get(id));
+	}
 
-    @PostMapping
-    @ApiResponse(responseCode = "201")
-    public ResponseEntity<Long> createDirectDebit(
-            @RequestBody @Valid final DirectDebitDTO directDebitDTO) {
-        return new ResponseEntity<>(directDebitService.create(directDebitDTO), HttpStatus.CREATED);
-    }
+	@PostMapping
+	@ApiResponse(responseCode = "201")
+	public ResponseEntity<Long> createDirectDebit(
+			@RequestBody @Valid final DirectDebitDTO directDebitDTO) {
+		return new ResponseEntity<>(directDebitService.create(directDebitDTO), HttpStatus.CREATED);
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateDirectDebit(@PathVariable final Long id,
-            @RequestBody final UpdateDirectDebitDTO active) {
-        directDebitService.update(id,accountResource.getRequestUser().getId(), active.getActive());
-        return ResponseEntity.ok().build();
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<Void> updateDirectDebit(@PathVariable final Long id,
+			@RequestBody final UpdateDirectDebitDTO active) {
+		directDebitService.update(id, accountResource.getRequestUser().getId(), active.getActive());
+		return ResponseEntity.ok().build();
+	}
 
-    @DeleteMapping("/{id}")
-    @ApiResponse(responseCode = "204")
-    public ResponseEntity<Void> deleteDirectDebit(@PathVariable final Long id) {
-        directDebitService.delete(id,accountResource.getRequestUser().getId());
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{id}")
+	@ApiResponse(responseCode = "204")
+	public ResponseEntity<Void> deleteDirectDebit(@PathVariable final Long id) {
+		directDebitService.delete(id, accountResource.getRequestUser().getId());
+		return ResponseEntity.noContent().build();
+	}
 
 }

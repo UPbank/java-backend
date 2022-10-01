@@ -10,26 +10,25 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class ListDirectDebitDTO {
-    
-    @ReadOnlyProperty
-    private Long id;
 
-    @NotNull
-    private Boolean active;
+	@ReadOnlyProperty
+	private Long id;
 
-    private LocalDate lastDebit;
+	@NotNull
+	private Boolean active;
 
-    @NotNull
-    private OtherAccountDTO receiver;
+	private LocalDate lastDebit;
 
-    @NotNull
-    private Long sender;
+	@NotNull
+	private OtherAccountDTO receiver;
 
-		@NotNull
-		private OffsetDateTime dateCreated;
+	@NotNull
+	private Long sender;
+
+	@NotNull
+	private OffsetDateTime dateCreated;
 
 }

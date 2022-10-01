@@ -10,30 +10,28 @@ import org.springframework.data.repository.query.Param;
 
 import pt.ualg.upbank.domain.Account;
 
-
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Optional<Account> findByEmailIgnoreCase(String email);
+	Optional<Account> findByEmailIgnoreCase(String email);
 
-    boolean existsByEmailIgnoreCase(String email);
+	boolean existsByEmailIgnoreCase(String email);
 
-    boolean existsById(Long id);
-    boolean existsByIdentifier(String identifier);
-    Optional<Account> findByIdentifier(String identifier);
+	boolean existsById(Long id);
 
-    Optional<Account> findById(Long id);
+	boolean existsByIdentifier(String identifier);
 
-    List<Account> findByFullNameContaining(String fullName);
+	Optional<Account> findByIdentifier(String identifier);
 
-    @Modifying
-    @Query("UPDATE Account t set t.balance = t.balance + :amount WHERE t.id = :id")
-    void addToAccountBalance(@Param("id") Long id, @Param("amount") Long amount);
+	Optional<Account> findById(Long id);
 
-    @Modifying
-    @Query("UPDATE Account t set t.identifier = :identifier  WHERE t.id = :id")
-    void changeIdentifier(@Param("id") Long id, @Param("identifier") String identifier);
+	List<Account> findByFullNameContaining(String fullName);
 
+	@Modifying
+	@Query("UPDATE Account t set t.balance = t.balance + :amount WHERE t.id = :id")
+	void addToAccountBalance(@Param("id") Long id, @Param("amount") Long amount);
 
-    
+	@Modifying
+	@Query("UPDATE Account t set t.identifier = :identifier  WHERE t.id = :id")
+	void changeIdentifier(@Param("id") Long id, @Param("identifier") String identifier);
 
 }

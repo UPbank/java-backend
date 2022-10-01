@@ -17,53 +17,44 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class Transfer {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
-    private Long id;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@SequenceGenerator(name = "primary_sequence", sequenceName = "primary_sequence", allocationSize = 1, initialValue = 10000)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "primary_sequence")
+	private Long id;
 
-    @Column(nullable = false)
-    private Long amount;
+	@Column(nullable = false)
+	private Long amount;
 
-    @Column
-    private String metadata;
+	@Column
+	private String metadata;
 
-    @Column
-    private String notes;
+	@Column
+	private String notes;
 
-    @Column(length = 511)
-    private String image;
+	@Column(length = 511)
+	private String image;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
-    private Account sender;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sender_id", nullable = false)
+	private Account sender;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private Account receiver;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "receiver_id", nullable = false)
+	private Account receiver;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+	@CreatedDate
+	@Column(nullable = false, updatable = false)
+	private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
+	@LastModifiedDate
+	@Column(nullable = false)
+	private OffsetDateTime lastUpdated;
 
 }

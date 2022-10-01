@@ -1,1 +1,969 @@
-{"openapi":"3.0.1","info":{"title":"UPbank API","version":"v1"},"servers":[{"url":"https://api.upbank.pt","description":"Production Server"},{"url":"http://127.0.0.1:8080","description":"Dev Server"}],"paths":{"/register":{"post":{"description":"Register a new account. Must use a unique email","tags":["account"],"operationId":"register","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/RegistrationRequest"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}}}},"/authenticate":{"post":{"description":"Log into an account. Provides a JWT for temporary access.","tags":["account"],"operationId":"authenticate","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AuthenticationRequest"}}},"required":true},"responses":{"200":{"description":"OK","content":{"*/*":{"schema":{"$ref":"#/components/schemas/AuthenticationResponse"}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}}}},"/api/accounts/":{"get":{"description":"Returns the requester's account information.","tags":["account"],"operationId":"getAccount","responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AccountGet"}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]},"delete":{"description":"Delete the requester's account. Must not have balance.","tags":["account"],"operationId":"deleteAccount","responses":{"204":{"description":"No Content"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/transfers":{"get":{"description":"Returns the requester's transfers","tags":["transfer"],"operationId":"getAllTransfers","parameters":[{"name":"page","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"size","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"sort","in":"query","schema":{"type":"string"}},{"name":"minDate","in":"query","schema":{"type":"string","format":"date"}},{"name":"maxDate","in":"query","schema":{"type":"string","format":"date"}},{"name":"type","in":"query","schema":{"type":"string","enum":["INCOME","EXPENSE"]}},{"name":"fromTo","in":"query","schema":{"type":"integer","format":"int64"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SimplePageTransfer"}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/transfers/{id}":{"put":{"description":"Add notes and/or an image to a transfer or edits the existing values.","tags":["transfer"],"operationId":"updateTransfer","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TransferEdit"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/transfers/bankTransfers":{"post":{"description":"Make a new bank transfer to the given IBAN.","tags":["transfer"],"operationId":"bankTransfer","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/BankTransfer"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/transfers/servicePayments":{"post":{"description":"Send a service payment","tags":["transfer"],"operationId":"servicePayment","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ServicePayment"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/transfers/govermentPayments":{"post":{"description":"Send a service payment","tags":["transfer"],"operationId":"govermentPayment","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/GovernmentPayment"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/transfers/telcoPayments":{"post":{"description":"Send a telco payment","tags":["transfer"],"operationId":"telcoPayment","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TelcoPayment"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/standingOrders":{"get":{"description":"Returns the requester's account's standing orders.","tags":["standing-order"],"operationId":"getAllStandingOrders","parameters":[{"name":"page","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"size","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"sort","in":"query","schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SimplePageStandingOrder"}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]},"post":{"description":"Create a new standing order","tags":["standing-order"],"operationId":"createStandingOrder","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/StandingOrderCreate"}}},"required":true},"responses":{"201":{"description":"Created","content":{"application/json":{"schema":{"type":"integer","format":"int64"}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/standingOrders/{id}":{"put":{"description":"Edit a standing order","tags":["standing-order"],"operationId":"updateStandingOrder","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/StandingOrderCreate"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]},"delete":{"description":"Delete a standing order","tags":["standing-order"],"operationId":"deleteStandingOrder","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"204":{"description":"No Content"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/directDebits":{"get":{"description":"Returns the requester's account's direct debits.","tags":["direct-debit"],"operationId":"getAllDirectDebits","parameters":[{"name":"page","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"size","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"sort","in":"query","schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/SimplePageDirectDebit"}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/directDebits/{id}":{"put":{"description":"Edit a direct debit","tags":["direct-debit"],"operationId":"updateDirectDebitOrder","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/DirectDebitEdit"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]},"delete":{"description":"Delete a direct debit","tags":["direct-debit"],"operationId":"deleteDirectDebitOrder","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"204":{"description":"No Content"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/cards":{"get":{"description":"Returns the requester's account's cards.","tags":["card"],"operationId":"getAllCards","parameters":[{"name":"page","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"size","in":"query","schema":{"type":"integer","format":"int32"}},{"name":"sort","in":"query","schema":{"type":"string"}}],"responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CardGet"}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/cards/{id}":{"put":{"description":"Edit a card","tags":["card"],"operationId":"updateCardOrder","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CardEdit"}}},"required":true},"responses":{"200":{"description":"OK"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]},"delete":{"description":"Delete a card","tags":["card"],"operationId":"deleteCardOrder","parameters":[{"name":"id","in":"path","required":true,"schema":{"type":"integer","format":"int64"}}],"responses":{"204":{"description":"No Content"},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}},"/api/telcoProviders":{"get":{"tags":["telco-provider"],"operationId":"getAllTelcoProviders","responses":{"200":{"description":"OK","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/TelcoProvider"}}}}},"500":{"description":"Error","content":{"*/*":{"schema":{"$ref":"#/components/schemas/ErrorResponse"}}}}},"security":[{"bearer-jwt":[]}]}}},"components":{"schemas":{"ErrorResponse":{"type":"object","properties":{"httpStatus":{"type":"integer","format":"int32"},"exception":{"type":"string"},"message":{"type":"string"},"fieldErrors":{"type":"array","items":{"$ref":"#/components/schemas/FieldError"}}}},"FieldError":{"type":"object","properties":{"field":{"type":"string"},"errorCode":{"type":"string"}}},"Transfer":{"required":["amount","receiver","sender"],"type":"object","properties":{"id":{"type":"integer","format":"int64"},"amount":{"type":"integer","format":"int64"},"metadata":{"maxLength":255,"minLength":0,"type":"string"},"notes":{"maxLength":255,"minLength":0,"type":"string"},"image":{"maxLength":511,"minLength":0,"type":"string"},"sender":{"type":"integer","format":"int64"},"receiver":{"type":"integer","format":"int64"}}},"TransferEdit":{"type":"object","properties":{"notes":{"maxLength":255,"minLength":0,"type":"string"},"image":{"maxLength":511,"minLength":0,"type":"string"}}},"BankTransfer":{"required":["amount","iban"],"type":"object","properties":{"amount":{"type":"integer","format":"int64","minimum":1},"note":{"maxLength":255,"minLength":0,"type":"string"},"iban":{"type":"string","format":"iban"}}},"ServicePayment":{"required":["entity","reference","amount"],"type":"object","properties":{"entity":{"type":"integer","format":"int64","minimum":10000,"maximum":99999},"reference":{"type":"integer","format":"int64","minimum":100000000,"maximum":999999999},"amount":{"type":"integer","format":"int64","minimum":1}}},"GovernmentPayment":{"required":["reference","amount"],"type":"object","properties":{"reference":{"type":"integer","format":"int64","minimum":100000000000000,"maximum":999999999999999},"amount":{"type":"integer","format":"int64","minimum":1}}},"TelcoPayment":{"required":["provider","phoneNumber","amount"],"type":"object","properties":{"provider":{"type":"integer","format":"int64"},"phoneNumber":{"type":"integer","format":"int64","minimum":910000000,"maximum":969999999},"amount":{"type":"integer","format":"int64","minimum":1}}},"StandingOrderCreate":{"required":["amount","frequency","receiverIban"],"type":"object","properties":{"id":{"type":"integer","format":"int64"},"amount":{"type":"integer","format":"int64"},"frequency":{"type":"string","enum":["DAILY","WEEKLY","MONTHLY","YEARLY"]},"receiverIban":{"type":"string","format":"iban"}}},"StandingOrderGet":{"required":["amount","frequency","receiver"],"type":"object","properties":{"id":{"type":"integer","format":"int64"},"amount":{"type":"integer","format":"int64"},"frequency":{"type":"string","enum":["DAILY","WEEKLY","MONTHLY","YEARLY"]},"receiverIban":{"type":"string","format":"iban"},"receiverName":{"type":"string"}}},"DirectDebitGet":{"required":["active","receiver","sender"],"type":"object","properties":{"id":{"type":"integer","format":"int64"},"active":{"type":"boolean"},"lastDebit":{"type":"string","format":"date"},"receiver":{"type":"integer","format":"int64"},"receiverName":{"type":"string"}}},"DirectDebitEdit":{"required":["active"],"type":"object","properties":{"active":{"type":"boolean"}}},"CardGet":{"required":["account","expirationDate","pinCode"],"type":"object","properties":{"id":{"type":"integer","format":"int64"},"name":{"maxLength":255,"minLength":0,"type":"string"},"expirationDate":{"type":"string","format":"date"},"account":{"type":"integer","format":"int64"},"nfcPayments":{"type":"boolean"},"onlinePayments":{"type":"boolean"}}},"CardEdit":{"required":["account","expirationDate","pinCode"],"type":"object","properties":{"name":{"maxLength":255,"minLength":0,"type":"string"},"pinCode":{"type":"integer","format":"int32"},"nfcPayments":{"type":"boolean"},"onlinePayments":{"type":"boolean"}}},"AccountGet":{"required":["address","balance","birthdate","email","fullName","idNumber","taxNumber"],"type":"object","properties":{"id":{"type":"integer","format":"int64"},"email":{"maxLength":255,"minLength":0,"type":"string"},"hash":{"maxLength":255,"minLength":0,"type":"string"},"fullName":{"maxLength":255,"minLength":0,"type":"string"},"birthdate":{"type":"string","format":"date"},"taxNumber":{"maxLength":255,"minLength":0,"type":"string"},"idNumber":{"maxLength":255,"minLength":0,"type":"string"},"balance":{"type":"integer","format":"int64"},"iban":{"type":"string"},"address":{"$ref":"#/components/schemas/Address"}}},"Address":{"required":["city","district","line1","zipCode"],"type":"object","properties":{"line1":{"maxLength":255,"minLength":0,"type":"string"},"line2":{"maxLength":255,"minLength":0,"type":"string"},"zipCode":{"maxLength":255,"minLength":0,"type":"string"},"city":{"maxLength":255,"minLength":0,"type":"string"},"district":{"maxLength":255,"minLength":0,"type":"string"}}},"RegistrationRequest":{"required":["address","birthdate","email","fullName","idNumber","password","taxNumber"],"type":"object","properties":{"email":{"maxLength":255,"minLength":0,"type":"string"},"password":{"maxLength":255,"minLength":0,"type":"string"},"fullName":{"maxLength":255,"minLength":0,"type":"string"},"birthdate":{"type":"string","format":"date","example":"2000-01-01"},"taxNumber":{"maxLength":255,"minLength":0,"type":"string"},"idNumber":{"maxLength":255,"minLength":0,"type":"string"},"address":{"$ref":"#/components/schemas/Address"}}},"AuthenticationRequest":{"required":["email","password"],"type":"object","properties":{"email":{"maxLength":255,"minLength":0,"type":"string"},"password":{"maxLength":255,"minLength":0,"type":"string"}}},"AuthenticationResponse":{"type":"object","properties":{"accessToken":{"type":"string"}}},"SimplePageTransfer":{"type":"object","properties":{"content":{"type":"array","items":{"$ref":"#/components/schemas/Transfer"}},"totalElements":{"type":"integer","format":"int64"},"totalPages":{"type":"integer","format":"int32"},"page":{"type":"integer","format":"int32"},"size":{"type":"integer","format":"int32"},"sort":{"type":"array","items":{"type":"string"}}}},"TelcoProvider":{"required":["name"],"type":"object","properties":{"id":{"type":"integer","format":"int64"},"name":{"maxLength":255,"minLength":0,"type":"string"}}},"SimplePageStandingOrder":{"type":"object","properties":{"content":{"type":"array","items":{"$ref":"#/components/schemas/StandingOrderGet"}},"totalElements":{"type":"integer","format":"int64"},"totalPages":{"type":"integer","format":"int32"},"page":{"type":"integer","format":"int32"},"size":{"type":"integer","format":"int32"},"sort":{"type":"array","items":{"type":"string"}}}},"SimplePageDirectDebit":{"type":"object","properties":{"content":{"type":"array","items":{"$ref":"#/components/schemas/DirectDebitGet"}},"totalElements":{"type":"integer","format":"int64"},"totalPages":{"type":"integer","format":"int32"},"page":{"type":"integer","format":"int32"},"size":{"type":"integer","format":"int32"},"sort":{"type":"array","items":{"type":"string"}}}}},"securitySchemes":{"bearer-jwt":{"type":"http","scheme":"bearer","bearerFormat":"JWT"}}}}
+{
+  "openapi": "3.0.1",
+  "info": { "title": "UPbank API", "version": "v1" },
+  "servers": [
+    { "url": "https://api.upbank.pt", "description": "Production Server" },
+    { "url": "http://127.0.0.1:8080", "description": "Dev Server" }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "description": "Register a new account. Must use a unique email",
+        "tags": ["account"],
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authenticate": {
+      "post": {
+        "description": "Log into an account. Provides a JWT for temporary access.",
+        "tags": ["account"],
+        "operationId": "authenticate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthenticationRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/accounts/": {
+      "get": {
+        "description": "Returns the requester's account information.",
+        "tags": ["account"],
+        "operationId": "getAccount",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AccountGet" }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      },
+      "delete": {
+        "description": "Delete the requester's account. Must not have balance.",
+        "tags": ["account"],
+        "operationId": "deleteAccount",
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/transfers": {
+      "get": {
+        "description": "Returns the requester's transfers",
+        "tags": ["transfer"],
+        "operationId": "getAllTransfers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } },
+          {
+            "name": "minDate",
+            "in": "query",
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "maxDate",
+            "in": "query",
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": { "type": "string", "enum": ["INCOME", "EXPENSE"] }
+          },
+          {
+            "name": "fromTo",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SimplePageTransfer" }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/transfers/{id}": {
+      "put": {
+        "description": "Add notes and/or an image to a transfer or edits the existing values.",
+        "tags": ["transfer"],
+        "operationId": "updateTransfer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TransferEdit" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/transfers/bankTransfers": {
+      "post": {
+        "description": "Make a new bank transfer to the given IBAN.",
+        "tags": ["transfer"],
+        "operationId": "bankTransfer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BankTransfer" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/transfers/servicePayments": {
+      "post": {
+        "description": "Send a service payment",
+        "tags": ["transfer"],
+        "operationId": "servicePayment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ServicePayment" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/transfers/govermentPayments": {
+      "post": {
+        "description": "Send a service payment",
+        "tags": ["transfer"],
+        "operationId": "govermentPayment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GovernmentPayment" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/transfers/telcoPayments": {
+      "post": {
+        "description": "Send a telco payment",
+        "tags": ["transfer"],
+        "operationId": "telcoPayment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TelcoPayment" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/standingOrders": {
+      "get": {
+        "description": "Returns the requester's account's standing orders.",
+        "tags": ["standing-order"],
+        "operationId": "getAllStandingOrders",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimplePageStandingOrder"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      },
+      "post": {
+        "description": "Create a new standing order",
+        "tags": ["standing-order"],
+        "operationId": "createStandingOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StandingOrderCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": { "type": "integer", "format": "int64" }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/standingOrders/{id}": {
+      "put": {
+        "description": "Edit a standing order",
+        "tags": ["standing-order"],
+        "operationId": "updateStandingOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StandingOrderCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      },
+      "delete": {
+        "description": "Delete a standing order",
+        "tags": ["standing-order"],
+        "operationId": "deleteStandingOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/directDebits": {
+      "get": {
+        "description": "Returns the requester's account's direct debits.",
+        "tags": ["direct-debit"],
+        "operationId": "getAllDirectDebits",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimplePageDirectDebit"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/directDebits/{id}": {
+      "put": {
+        "description": "Edit a direct debit",
+        "tags": ["direct-debit"],
+        "operationId": "updateDirectDebitOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DirectDebitEdit" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      },
+      "delete": {
+        "description": "Delete a direct debit",
+        "tags": ["direct-debit"],
+        "operationId": "deleteDirectDebitOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/cards": {
+      "get": {
+        "description": "Returns the requester's account's cards.",
+        "tags": ["card"],
+        "operationId": "getAllCards",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          { "name": "sort", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CardGet" }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/cards/{id}": {
+      "put": {
+        "description": "Edit a card",
+        "tags": ["card"],
+        "operationId": "updateCardOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CardEdit" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      },
+      "delete": {
+        "description": "Delete a card",
+        "tags": ["card"],
+        "operationId": "deleteCardOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    },
+    "/api/telcoProviders": {
+      "get": {
+        "tags": ["telco-provider"],
+        "operationId": "getAllTelcoProviders",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/TelcoProvider" }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer-jwt": [] }]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "httpStatus": { "type": "integer", "format": "int32" },
+          "exception": { "type": "string" },
+          "message": { "type": "string" },
+          "fieldErrors": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FieldError" }
+          }
+        }
+      },
+      "FieldError": {
+        "type": "object",
+        "properties": {
+          "field": { "type": "string" },
+          "errorCode": { "type": "string" }
+        }
+      },
+      "Transfer": {
+        "required": ["amount", "receiver", "sender"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "amount": { "type": "integer", "format": "int64" },
+          "metadata": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "notes": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "image": { "maxLength": 511, "minLength": 0, "type": "string" },
+          "sender": { "type": "integer", "format": "int64" },
+          "receiver": { "type": "integer", "format": "int64" }
+        }
+      },
+      "TransferEdit": {
+        "type": "object",
+        "properties": {
+          "notes": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "image": { "maxLength": 511, "minLength": 0, "type": "string" }
+        }
+      },
+      "BankTransfer": {
+        "required": ["amount", "iban"],
+        "type": "object",
+        "properties": {
+          "amount": { "type": "integer", "format": "int64", "minimum": 1 },
+          "note": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "iban": { "type": "string", "format": "iban" }
+        }
+      },
+      "ServicePayment": {
+        "required": ["entity", "reference", "amount"],
+        "type": "object",
+        "properties": {
+          "entity": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 10000,
+            "maximum": 99999
+          },
+          "reference": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 100000000,
+            "maximum": 999999999
+          },
+          "amount": { "type": "integer", "format": "int64", "minimum": 1 }
+        }
+      },
+      "GovernmentPayment": {
+        "required": ["reference", "amount"],
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 100000000000000,
+            "maximum": 999999999999999
+          },
+          "amount": { "type": "integer", "format": "int64", "minimum": 1 }
+        }
+      },
+      "TelcoPayment": {
+        "required": ["provider", "phoneNumber", "amount"],
+        "type": "object",
+        "properties": {
+          "provider": { "type": "integer", "format": "int64" },
+          "phoneNumber": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 910000000,
+            "maximum": 969999999
+          },
+          "amount": { "type": "integer", "format": "int64", "minimum": 1 }
+        }
+      },
+      "StandingOrderCreate": {
+        "required": ["amount", "frequency", "receiverIban"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "amount": { "type": "integer", "format": "int64" },
+          "frequency": {
+            "type": "string",
+            "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]
+          },
+          "receiverIban": { "type": "string", "format": "iban" }
+        }
+      },
+      "StandingOrderGet": {
+        "required": ["amount", "frequency", "receiver"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "amount": { "type": "integer", "format": "int64" },
+          "frequency": {
+            "type": "string",
+            "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]
+          },
+          "receiverIban": { "type": "string", "format": "iban" },
+          "receiverName": { "type": "string" }
+        }
+      },
+      "DirectDebitGet": {
+        "required": ["active", "receiver", "sender"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "active": { "type": "boolean" },
+          "lastDebit": { "type": "string", "format": "date" },
+          "receiver": { "type": "integer", "format": "int64" },
+          "receiverName": { "type": "string" }
+        }
+      },
+      "DirectDebitEdit": {
+        "required": ["active"],
+        "type": "object",
+        "properties": { "active": { "type": "boolean" } }
+      },
+      "CardGet": {
+        "required": ["account", "expirationDate", "pinCode"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "expirationDate": { "type": "string", "format": "date" },
+          "account": { "type": "integer", "format": "int64" },
+          "nfcPayments": { "type": "boolean" },
+          "onlinePayments": { "type": "boolean" }
+        }
+      },
+      "CardEdit": {
+        "required": ["account", "expirationDate", "pinCode"],
+        "type": "object",
+        "properties": {
+          "name": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "pinCode": { "type": "integer", "format": "int32" },
+          "nfcPayments": { "type": "boolean" },
+          "onlinePayments": { "type": "boolean" }
+        }
+      },
+      "AccountGet": {
+        "required": [
+          "address",
+          "balance",
+          "birthdate",
+          "email",
+          "fullName",
+          "idNumber",
+          "taxNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "email": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "hash": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "fullName": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "birthdate": { "type": "string", "format": "date" },
+          "taxNumber": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "idNumber": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "balance": { "type": "integer", "format": "int64" },
+          "iban": { "type": "string" },
+          "address": { "$ref": "#/components/schemas/Address" }
+        }
+      },
+      "Address": {
+        "required": ["city", "district", "line1", "zipCode"],
+        "type": "object",
+        "properties": {
+          "line1": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "line2": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "zipCode": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "city": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "district": { "maxLength": 255, "minLength": 0, "type": "string" }
+        }
+      },
+      "RegistrationRequest": {
+        "required": [
+          "address",
+          "birthdate",
+          "email",
+          "fullName",
+          "idNumber",
+          "password",
+          "taxNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "email": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "password": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "fullName": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "birthdate": {
+            "type": "string",
+            "format": "date",
+            "example": "2000-01-01"
+          },
+          "taxNumber": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "idNumber": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "address": { "$ref": "#/components/schemas/Address" }
+        }
+      },
+      "AuthenticationRequest": {
+        "required": ["email", "password"],
+        "type": "object",
+        "properties": {
+          "email": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "password": { "maxLength": 255, "minLength": 0, "type": "string" }
+        }
+      },
+      "AuthenticationResponse": {
+        "type": "object",
+        "properties": { "accessToken": { "type": "string" } }
+      },
+      "SimplePageTransfer": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Transfer" }
+          },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "page": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "TelcoProvider": {
+        "required": ["name"],
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "maxLength": 255, "minLength": 0, "type": "string" }
+        }
+      },
+      "SimplePageStandingOrder": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StandingOrderGet" }
+          },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "page": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "SimplePageDirectDebit": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DirectDebitGet" }
+          },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "totalPages": { "type": "integer", "format": "int32" },
+          "page": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer-jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -23,84 +23,86 @@ import pt.ualg.upbank.model.AddressDTO;
 import pt.ualg.upbank.model.UpdateAccountDTO;
 import pt.ualg.upbank.service.AccountService;
 
-
 @RestController
 @RequestMapping(value = "/api/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasRole('" + ROLE_USER + "')")
 @SecurityRequirement(name = "bearer-jwt")
 public class AccountResource {
 
-		private final AccountService accountService;
+	private final AccountService accountService;
 
-		public AccountResource(final AccountService accountService) {
-				this.accountService = accountService;				
-		}
+	public AccountResource(final AccountService accountService) {
+		this.accountService = accountService;
+	}
 
-		/**
-		 * Gets the User details
-		 * @return 
-		 */
-		public AccountDTO getRequestUser() {
-				UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				String email = userDetails.getUsername();
-				return accountService.getByEmail(email);
-		}
+	/**
+	 * Gets the User details
+	 * 
+	 * @return
+	 */
+	public AccountDTO getRequestUser() {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String email = userDetails.getUsername();
+		return accountService.getByEmail(email);
+	}
 
-		/**
-		 * Gets {@link Account} of the User Logged in
-		 * @return {@link Account}
-		 */
-		@GetMapping("/")
-		public ResponseEntity<AccountDTO> getAccount() {
-				return ResponseEntity.ok(getRequestUser());
-		}
+	/**
+	 * Gets {@link Account} of the User Logged in
+	 * 
+	 * @return {@link Account}
+	 */
+	@GetMapping("/")
+	public ResponseEntity<AccountDTO> getAccount() {
+		return ResponseEntity.ok(getRequestUser());
+	}
 
+	/**
+	 * Updates the User´s {@link Account}
+	 * Validates email, and {@link Address}
+	 * 
+	 * @param updateaccountDTO
+	 * @return
+	 */
+	@PutMapping("/")
+	public ResponseEntity<Void> updateAccount(@RequestBody @Valid final UpdateAccountDTO updateaccountDTO) {
+		final String newEmail = updateaccountDTO.getEmail();
+		if (newEmail != null) {
+			final Matcher mat = RegistrationResource.pattern.matcher(newEmail);
 
-		/**
-		 * Updates the User´s {@link Account} 
-		 * Validates email, and {@link Address}
-		 * @param updateaccountDTO
-		 * @return
-		 */
-		@PutMapping("/")
-		public ResponseEntity<Void> updateAccount(@RequestBody @Valid final UpdateAccountDTO updateaccountDTO) {
-			final String newEmail = updateaccountDTO.getEmail();
-			if(newEmail != null) {
-				final Matcher mat = RegistrationResource.pattern.matcher(newEmail);
-	
-				if (!mat.matches()) {
-					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.email.invalid");
-				}
-				if (accountService.emailExists(newEmail)) {
-					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.register.taken");
-				}
+			if (!mat.matches()) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.email.invalid");
 			}
-
-			final AddressDTO newAddressDTO = updateaccountDTO.getAddress();
-			if( newAddressDTO!=null){
-				final Matcher matZipCode = RegistrationResource.patternZipCode.matcher(newAddressDTO.getZipCode());
-				if (!matZipCode.matches()) {
-					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.zip-code.invalid");
-				}
+			if (accountService.emailExists(newEmail)) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.register.taken");
 			}
-			accountService.update(getRequestUser().getId(), newEmail, newAddressDTO); 
-			return ResponseEntity.ok().build();
 		}
 
-		/**
-		 * Deletes the User´s {@link Account}  
-		 * Validates if balance of the {@link Account} is empty;
-		 * @return
-		 */
-		@DeleteMapping("/")
-		@ApiResponse(responseCode = "204")
-		public ResponseEntity<Void> deleteAccount() {
-			if(getRequestUser().getBalance()>0){
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "balance.notEmpty"); 
+		final AddressDTO newAddressDTO = updateaccountDTO.getAddress();
+		if (newAddressDTO != null) {
+			final Matcher matZipCode = RegistrationResource.patternZipCode.matcher(newAddressDTO.getZipCode());
+			if (!matZipCode.matches()) {
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "registration.zip-code.invalid");
 			}
-			accountService.delete(getRequestUser().getId()); 
-			
-			return ResponseEntity.noContent().build();
 		}
+		accountService.update(getRequestUser().getId(), newEmail, newAddressDTO);
+		return ResponseEntity.ok().build();
+	}
+
+	/**
+	 * Deletes the User´s {@link Account}
+	 * Validates if balance of the {@link Account} is empty;
+	 * 
+	 * @return
+	 */
+	@DeleteMapping("/")
+	@ApiResponse(responseCode = "204")
+	public ResponseEntity<Void> deleteAccount() {
+		if (getRequestUser().getBalance() > 0) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "balance.notEmpty");
+		}
+		accountService.delete(getRequestUser().getId());
+
+		return ResponseEntity.noContent().build();
+	}
 
 }

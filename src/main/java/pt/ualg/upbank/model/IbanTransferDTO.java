@@ -5,26 +5,20 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class IbanTransferDTO {
 
+	@NotNull
+	private Long amount;
 
-    @NotNull
-    private Long amount;
+	@Size(max = 255)
+	private String note;
 
-    @Size(max = 255)
-    private String note;
+	@Size(max = 511)
+	private String image;
 
-    @Size(max = 511)
-    private String image;
-
-    @NotNull
-    private String iban;
+	@NotNull
+	private String iban;
 
 }
-
-
-    
-

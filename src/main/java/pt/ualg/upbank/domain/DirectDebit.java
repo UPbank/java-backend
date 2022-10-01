@@ -19,47 +19,38 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class DirectDebit {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
-    private Long id;
+	@Id
+	@Column(nullable = false, updatable = false)
+	@SequenceGenerator(name = "primary_sequence", sequenceName = "primary_sequence", allocationSize = 1, initialValue = 10000)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "primary_sequence")
+	private Long id;
 
-    @Column(nullable = false)
-    private Boolean active;
+	@Column(nullable = false)
+	private Boolean active;
 
-    @Column
-    private LocalDate lastDebit;
+	@Column
+	private LocalDate lastDebit;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private Account receiver;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "receiver_id", nullable = false)
+	private Account receiver;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
-    private Account sender;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sender_id", nullable = false)
+	private Account sender;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+	@CreatedDate
+	@Column(nullable = false, updatable = false)
+	private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
+	@LastModifiedDate
+	@Column(nullable = false)
+	private OffsetDateTime lastUpdated;
 
 }

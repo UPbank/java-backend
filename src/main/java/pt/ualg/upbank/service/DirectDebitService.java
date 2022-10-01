@@ -16,117 +16,117 @@ import pt.ualg.upbank.model.SimplePage;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.DirectDebitRepository;
 
-
 @Service
 public class DirectDebitService {
 
-    private final DirectDebitRepository directDebitRepository;
-    private final AccountRepository accountRepository;
+	private final DirectDebitRepository directDebitRepository;
+	private final AccountRepository accountRepository;
 
-    public DirectDebitService(final DirectDebitRepository directDebitRepository,
-            final AccountRepository accountRepository) {
-        this.directDebitRepository = directDebitRepository;
-        this.accountRepository = accountRepository;
-    }
-
-    public SimplePage<DirectDebitDTO> findAll(final Long id,final Pageable pageable) {
-        final Account account = accountRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
-        final Page<DirectDebit> page = directDebitRepository.findBySender(account ,pageable);
-        return new SimplePage<>(page.getContent()
-                .stream()
-                .map(directDebit -> mapToDTO(directDebit, new DirectDebitDTO()))
-                .collect(Collectors.toList()),
-                page.getTotalElements(), pageable);
-    }
-
-		public SimplePage<ListDirectDebitDTO> listAll(final Long id,final Pageable pageable) {
-			final Account account = accountRepository.findById(id)
-					.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
-			final Page<DirectDebit> page = directDebitRepository.findBySender(account ,pageable);
-			return new SimplePage<>(page.getContent()
-							.stream()
-							.map(directDebit -> mapToListDTO(directDebit, new ListDirectDebitDTO()))
-							.collect(Collectors.toList()),
-							page.getTotalElements(), pageable);
+	public DirectDebitService(final DirectDebitRepository directDebitRepository,
+			final AccountRepository accountRepository) {
+		this.directDebitRepository = directDebitRepository;
+		this.accountRepository = accountRepository;
 	}
 
-    public DirectDebitDTO get(final Long id) {
-        return directDebitRepository.findById(id)
-                .map(directDebit -> mapToDTO(directDebit, new DirectDebitDTO()))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
+	public SimplePage<DirectDebitDTO> findAll(final Long id, final Pageable pageable) {
+		final Account account = accountRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+		final Page<DirectDebit> page = directDebitRepository.findBySender(account, pageable);
+		return new SimplePage<>(page.getContent()
+				.stream()
+				.map(directDebit -> mapToDTO(directDebit, new DirectDebitDTO()))
+				.collect(Collectors.toList()),
+				page.getTotalElements(), pageable);
+	}
 
-    public Long create(final DirectDebitDTO directDebitDTO) {
-        final DirectDebit directDebit = new DirectDebit();
-        mapToEntity(directDebitDTO, directDebit);
-        return directDebitRepository.save(directDebit).getId();
-    }
+	public SimplePage<ListDirectDebitDTO> listAll(final Long id, final Pageable pageable) {
+		final Account account = accountRepository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account not found"));
+		final Page<DirectDebit> page = directDebitRepository.findBySender(account, pageable);
+		return new SimplePage<>(page.getContent()
+				.stream()
+				.map(directDebit -> mapToListDTO(directDebit, new ListDirectDebitDTO()))
+				.collect(Collectors.toList()),
+				page.getTotalElements(), pageable);
+	}
 
-    public void update(final Long id ,final Long accountId ,final Boolean boll) {
-    final Account account= accountRepository.findById(accountId)
-        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        final DirectDebit directDebit = directDebitRepository.findBySenderOrReceiverAndId(account, account ,id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-            directDebit.setActive(boll);
-            directDebit.setLastDebit(LocalDate.now());
-        directDebitRepository.save(directDebit);
-    }
+	public DirectDebitDTO get(final Long id) {
+		return directDebitRepository.findById(id)
+				.map(directDebit -> mapToDTO(directDebit, new DirectDebitDTO()))
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+	}
 
-    public void delete(final Long id, final Long accountId) {
-         
-        Account sender = accountRepository.findById(accountId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST ,"directDebit.sender.notFound"));
-        if(directDebitRepository.existsBySenderAndId(sender, id)){
-            
-            directDebitRepository.deleteById(id);
-        }else{
-        
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "delete.directDebit.notFound");
-        }
-            
-    }
-    
+	public Long create(final DirectDebitDTO directDebitDTO) {
+		final DirectDebit directDebit = new DirectDebit();
+		mapToEntity(directDebitDTO, directDebit);
+		return directDebitRepository.save(directDebit).getId();
+	}
 
-    private DirectDebitDTO mapToDTO(final DirectDebit directDebit,
-            final DirectDebitDTO directDebitDTO) {
-        directDebitDTO.setId(directDebit.getId());
-        directDebitDTO.setActive(directDebit.getActive());
-        directDebitDTO.setLastDebit(directDebit.getLastDebit());
-        directDebitDTO.setReceiver(directDebit.getReceiver() == null ? null : directDebit.getReceiver().getId());
-        directDebitDTO.setSender(directDebit.getSender() == null ? null : directDebit.getSender().getId());
-        return directDebitDTO;
-    }
+	public void update(final Long id, final Long accountId, final Boolean boll) {
+		final Account account = accountRepository.findById(accountId)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		final DirectDebit directDebit = directDebitRepository.findBySenderOrReceiverAndId(account, account, id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		directDebit.setActive(boll);
+		directDebit.setLastDebit(LocalDate.now());
+		directDebitRepository.save(directDebit);
+	}
 
-		private ListDirectDebitDTO mapToListDTO(final DirectDebit directDebit,
-            final ListDirectDebitDTO directDebitDTO) {
-        directDebitDTO.setId(directDebit.getId());
-        directDebitDTO.setActive(directDebit.getActive());
-        directDebitDTO.setLastDebit(directDebit.getLastDebit());
-				directDebitDTO.setDateCreated(directDebit.getDateCreated());
-				OtherAccountDTO receiver = null;
-				if (directDebit.getReceiver() != null) {
-					receiver = new OtherAccountDTO();
-					receiver.setId(directDebit.getReceiver().getId());
-					receiver.setFullName(directDebit.getReceiver().getFullName());
-				}
-				
-        directDebitDTO.setReceiver(receiver);
-        directDebitDTO.setSender(directDebit.getSender() == null ? null : directDebit.getSender().getId());
-        return directDebitDTO;
-    }
+	public void delete(final Long id, final Long accountId) {
 
-    private DirectDebit mapToEntity(final DirectDebitDTO directDebitDTO,
-            final DirectDebit directDebit) {
-        directDebit.setActive(directDebitDTO.getActive());
-        directDebit.setLastDebit(directDebitDTO.getLastDebit());
-        final Account receiver = directDebitDTO.getReceiver() == null ? null : accountRepository.findById(directDebitDTO.getReceiver())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found"));
-        directDebit.setReceiver(receiver);
-        final Account sender = directDebitDTO.getSender() == null ? null : accountRepository.findById(directDebitDTO.getSender())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender not found"));
-        directDebit.setSender(sender);
-        return directDebit;
-    }
+		Account sender = accountRepository.findById(accountId)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "directDebit.sender.notFound"));
+		if (directDebitRepository.existsBySenderAndId(sender, id)) {
+
+			directDebitRepository.deleteById(id);
+		} else {
+
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "delete.directDebit.notFound");
+		}
+
+	}
+
+	private DirectDebitDTO mapToDTO(final DirectDebit directDebit,
+			final DirectDebitDTO directDebitDTO) {
+		directDebitDTO.setId(directDebit.getId());
+		directDebitDTO.setActive(directDebit.getActive());
+		directDebitDTO.setLastDebit(directDebit.getLastDebit());
+		directDebitDTO.setReceiver(directDebit.getReceiver() == null ? null : directDebit.getReceiver().getId());
+		directDebitDTO.setSender(directDebit.getSender() == null ? null : directDebit.getSender().getId());
+		return directDebitDTO;
+	}
+
+	private ListDirectDebitDTO mapToListDTO(final DirectDebit directDebit,
+			final ListDirectDebitDTO directDebitDTO) {
+		directDebitDTO.setId(directDebit.getId());
+		directDebitDTO.setActive(directDebit.getActive());
+		directDebitDTO.setLastDebit(directDebit.getLastDebit());
+		directDebitDTO.setDateCreated(directDebit.getDateCreated());
+		OtherAccountDTO receiver = null;
+		if (directDebit.getReceiver() != null) {
+			receiver = new OtherAccountDTO();
+			receiver.setId(directDebit.getReceiver().getId());
+			receiver.setFullName(directDebit.getReceiver().getFullName());
+		}
+
+		directDebitDTO.setReceiver(receiver);
+		directDebitDTO.setSender(directDebit.getSender() == null ? null : directDebit.getSender().getId());
+		return directDebitDTO;
+	}
+
+	private DirectDebit mapToEntity(final DirectDebitDTO directDebitDTO,
+			final DirectDebit directDebit) {
+		directDebit.setActive(directDebitDTO.getActive());
+		directDebit.setLastDebit(directDebitDTO.getLastDebit());
+		final Account receiver = directDebitDTO.getReceiver() == null ? null
+				: accountRepository.findById(directDebitDTO.getReceiver())
+						.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "receiver not found"));
+		directDebit.setReceiver(receiver);
+		final Account sender = directDebitDTO.getSender() == null ? null
+				: accountRepository.findById(directDebitDTO.getSender())
+						.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "sender not found"));
+		directDebit.setSender(sender);
+		return directDebit;
+	}
 
 }

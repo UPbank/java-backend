@@ -13,22 +13,21 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.ualg.upbank.model.TelcoProviderDTO;
 import pt.ualg.upbank.service.TelcoProviderService;
 
-
 @RestController
 @RequestMapping(value = "/api/telcoProviders", produces = MediaType.APPLICATION_JSON_VALUE)
 @PreAuthorize("hasRole('" + ROLE_USER + "')")
 @SecurityRequirement(name = "bearer-jwt")
 public class TelcoProviderResource {
 
-    private final TelcoProviderService telcoProviderService;
+	private final TelcoProviderService telcoProviderService;
 
-    public TelcoProviderResource(final TelcoProviderService telcoProviderService) {
-        this.telcoProviderService = telcoProviderService;
-    }
+	public TelcoProviderResource(final TelcoProviderService telcoProviderService) {
+		this.telcoProviderService = telcoProviderService;
+	}
 
-    @GetMapping("/")
-    public ResponseEntity<List<TelcoProviderDTO>> getAllTelcoProviders() {
-        return ResponseEntity.ok(telcoProviderService.findAll());
-    }
+	@GetMapping("/")
+	public ResponseEntity<List<TelcoProviderDTO>> getAllTelcoProviders() {
+		return ResponseEntity.ok(telcoProviderService.findAll());
+	}
 
 }

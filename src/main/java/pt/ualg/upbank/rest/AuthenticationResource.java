@@ -15,36 +15,35 @@ import pt.ualg.upbank.model.AuthenticationResponse;
 import pt.ualg.upbank.service.JwtTokenService;
 import pt.ualg.upbank.service.JwtUserDetailsService;
 
-
 @RestController
 public class AuthenticationResource {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUserDetailsService jwtUserDetailsService;
-    private final JwtTokenService jwtTokenService;
+	private final AuthenticationManager authenticationManager;
+	private final JwtUserDetailsService jwtUserDetailsService;
+	private final JwtTokenService jwtTokenService;
 
-    public AuthenticationResource(final AuthenticationManager authenticationManager,
-            final JwtUserDetailsService jwtUserDetailsService,
-            final JwtTokenService jwtTokenService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUserDetailsService = jwtUserDetailsService;
-        this.jwtTokenService = jwtTokenService;
-    }
- 
-    @PostMapping("/authenticate")
-    public AuthenticationResponse authenticate(
-            @RequestBody @Valid final AuthenticationRequest authenticationRequest) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    authenticationRequest.getEmail(), authenticationRequest.getPassword()));
-        } catch (final BadCredentialsException ex) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+	public AuthenticationResource(final AuthenticationManager authenticationManager,
+			final JwtUserDetailsService jwtUserDetailsService,
+			final JwtTokenService jwtTokenService) {
+		this.authenticationManager = authenticationManager;
+		this.jwtUserDetailsService = jwtUserDetailsService;
+		this.jwtTokenService = jwtTokenService;
+	}
 
-        final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getEmail());
-        final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setAccessToken(jwtTokenService.generateToken(userDetails));
-        return authenticationResponse;
-    }
+	@PostMapping("/authenticate")
+	public AuthenticationResponse authenticate(
+			@RequestBody @Valid final AuthenticationRequest authenticationRequest) {
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+					authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+		} catch (final BadCredentialsException ex) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+		}
+
+		final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+		final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+		authenticationResponse.setAccessToken(jwtTokenService.generateToken(userDetails));
+		return authenticationResponse;
+	}
 
 }

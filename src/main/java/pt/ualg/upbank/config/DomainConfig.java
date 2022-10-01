@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
 @Configuration
 @EntityScan("pt.ualg.upbank.domain")
 @EnableJpaRepositories("pt.ualg.upbank.repos")
@@ -18,9 +17,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 public class DomainConfig {
 
-    @Bean(name = "auditingDateTimeProvider")
-    public DateTimeProvider dateTimeProvider() {
-        return () -> Optional.of(OffsetDateTime.now());
-    }
+	@Bean(name = "auditingDateTimeProvider")
+	public DateTimeProvider dateTimeProvider() {
+		return () -> Optional.of(OffsetDateTime.now());
+	}
 
 }
