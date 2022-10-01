@@ -5,17 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
-import net.bytebuddy.asm.Advice.Local;
 import pt.ualg.upbank.domain.Account;
 import pt.ualg.upbank.domain.Address;
-import pt.ualg.upbank.domain.DirectDebit;
 import pt.ualg.upbank.domain.TelcoProvider;
-import pt.ualg.upbank.model.AccountDTO;
 import pt.ualg.upbank.model.AddressDTO;
-import pt.ualg.upbank.model.TelcoProviderDTO;
 import pt.ualg.upbank.repos.AccountRepository;
 import pt.ualg.upbank.repos.AddressRepository;
 import pt.ualg.upbank.repos.DirectDebitRepository;
@@ -26,7 +20,6 @@ import pt.ualg.upbank.service.TelcoProviderService;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Optional;
 
 @Configuration
 class LoadDatabase {
